@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="apha" default="build">
+    <property file="${project.basedir}/config/build.properties" />
+
+    <fileset dir="${sources.dir}" id="sources">
+        <include name="**/*.php" />
+    </fileset>
+
+    <fileset dir="${testsources.dir}" id="testsources">
+        <include name="**" />
+    </fileset>
+
+    <target name="clean" description="Clean build artifacts.">
+        <phingcall target="clean:build" />
+        <phingcall target="clean:test" />
+    </target>
+
+    <target name="clean:build">
+        <delete dir="${project.basedir}/target/build" quiet="true" />
+        <mkdir dir="${project.basedir}/target/build" />
+    </target>
+
+    <target name="clean:test">
+        <delete dir="${project.basedir}/target/reports/test" quiet="true" />
+        <mkdir dir="${project.basedir}/target/reports" />
+    </target>
+
+    <target name="build" description="Build library.">
+        <phingcall target="clean" />
+        <phingcall target="lint" />
+        <phingcall target="test:unit" />
+    </target>
+
+    <target name="lint" description="Lint for syntax errors and code style.">
+        <phplint haltonfailure="true">
+            <fileset refid="sources" />
+            <fileset refid="testsources" />
+        </phplint>
+    </target>
+
+    <target name="test" description="Run all tests.">
+        <phingcall target="test:unit" />
+    </target>
+
+    <target name="test:unit" description="Run unit tests.">
+        <exec
+            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml"
+            passthru="true"
+            checkreturn="true"
+        />
+        <echo message="Test report at: file://${project.basedir}/target/reports/test/index.html" />
+    </target>
+</project>
