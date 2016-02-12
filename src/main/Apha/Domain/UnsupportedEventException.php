@@ -4,7 +4,7 @@ namespace Apha\Domain;
 
 use Apha\Domain\Message\Event;
 
-class UnsupportedEventException extends DomainException
+class UnsupportedEventException extends \DomainException
 {
     /**
      * @var string
