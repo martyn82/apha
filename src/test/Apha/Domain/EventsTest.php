@@ -17,10 +17,11 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         self::assertCount(count($events), $instance->getIterator());
     }
 
+    /**
+     * @expectedException \TypeError
+     */
     public function testConstructRaisesErrorIfNotAllElementsAreEvent()
     {
-        self::setExpectedException('TypeError');
-
         $events = [
             new \stdClass()
         ];

@@ -4,7 +4,7 @@ namespace Apha\Domain;
 
 class EventTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNameReturnsTheBaseClassName()
+    public function testGetNameReturnsTheEventName()
     {
         self::assertEquals('EventTest_FakeEvent', EventTest_FakeEvent::getName());
 
