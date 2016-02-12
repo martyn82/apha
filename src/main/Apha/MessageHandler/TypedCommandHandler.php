@@ -8,6 +8,7 @@ trait TypedCommandHandler
 {
     /**
      * @param Command $command
+     * @throws \InvalidArgumentException
      */
     public function handle(Command $command)
     {
