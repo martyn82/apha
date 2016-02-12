@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Apha\Domain;
+namespace Apha\Domain\Message;
 
 class Events implements \IteratorAggregate
 {

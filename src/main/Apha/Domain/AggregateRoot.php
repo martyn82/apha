@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Apha\Domain;
 
+use Apha\Domain\Message\Event;
+use Apha\Domain\Message\Events;
 use Ramsey\Uuid\UuidInterface;
 
 abstract class AggregateRoot

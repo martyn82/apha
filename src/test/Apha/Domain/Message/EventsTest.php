@@ -1,6 +1,6 @@
 <?php
 
-namespace Apha\Domain;
+namespace Apha\Domain\Message;
 
 class EventsTest extends \PHPUnit_Framework_TestCase
 {

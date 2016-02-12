@@ -2,6 +2,8 @@
 
 namespace Apha\Domain;
 
+use Apha\Domain\Message\Event;
+
 class UnsupportedEventException extends DomainException
 {
     /**
