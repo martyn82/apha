@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace Apha\Domain\Message;
 
+use JMS\Serializer\Annotation as Serializer;
+
 abstract class Event
 {
     /**
+     * @Serializer\Type("int")
      * @var int
      */
     private $version;
