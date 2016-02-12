@@ -27,7 +27,7 @@ class CommandBus
     {
         $commandClassName = get_class($command);
 
-        if (!isset($this->commandHandlerMap[$commandClassName])) {
+        if (!array_key_exists($commandClassName, $this->commandHandlerMap)) {
             throw new NoCommandHandlerException($command);
         }
 
