@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\EventStore;
 
-use Ramsey\Uuid\UuidInterface;
+use Apha\Domain\Identity;
 
 class AggregateNotFoundException extends \DomainException
 {
@@ -13,14 +13,14 @@ class AggregateNotFoundException extends \DomainException
     private static $messageTemplate = "Aggregate with ID '%s' not found.";
 
     /**
-     * @param UuidInterface $aggregateId
+     * @param Identity $aggregateId
      */
-    public function __construct(UuidInterface $aggregateId)
+    public function __construct(Identity $aggregateId)
     {
         parent::__construct(
             sprintf(
                 static::$messageTemplate,
-                $aggregateId->toString()
+                $aggregateId->getValue()
             )
         );
     }

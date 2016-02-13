@@ -25,22 +25,22 @@ require_once dirname(__FILE__) . '/../vendor/autoload.php';
 final class CreateUser implements \Apha\Message\Command
 {
     /**
-     * @var \Ramsey\Uuid\UuidInterface
+     * @var \Apha\Domain\Identity
      */
     private $id;
 
     /**
-     * @param \Ramsey\Uuid\UuidInterface $id
+     * @param \Apha\Domain\Identity $id
      */
-    public function __construct(\Ramsey\Uuid\UuidInterface $id)
+    public function __construct(\Apha\Domain\Identity $id)
     {
         $this->id = $id;
     }
 
     /**
-     * @return \Ramsey\Uuid\UuidInterface
+     * @return \Apha\Domain\Identity
      */
-    public function getId()
+    public function getId() : \Apha\Domain\Identity
     {
         return $this->id;
     }
@@ -52,22 +52,22 @@ final class CreateUser implements \Apha\Message\Command
 final class UserCreated extends \Apha\Message\Event
 {
     /**
-     * @var \Ramsey\Uuid\UuidInterface
+     * @var \Apha\Domain\Identity
      */
     private $id;
 
     /**
-     * @param \Ramsey\Uuid\UuidInterface $id
+     * @param \Apha\Domain\Identity $id
      */
-    public function __construct(\Ramsey\Uuid\UuidInterface $id)
+    public function __construct(\Apha\Domain\Identity $id)
     {
         $this->id = $id;
     }
 
     /**
-     * @return \Ramsey\Uuid\UuidInterface
+     * @return \Apha\Domain\Identity
      */
-    public function getId()
+    public function getId() : \Apha\Domain\Identity
     {
         return $this->id;
     }
@@ -130,7 +130,7 @@ class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
         $eventName = $event->getEventName();
         echo "Handling event: '{$eventName}'.\n";
 
-        $events = $this->storage->find($event->getId()->toString());
+        $events = $this->storage->find($event->getId()->getValue());
         var_dump($events);
     }
 }
@@ -171,15 +171,15 @@ class Repository
 class User extends \Apha\Domain\AggregateRoot
 {
     /**
-     * @var \Ramsey\Uuid\UuidInterface
+     * @var \Apha\Domain\Identity
      */
     private $id;
 
     /**
-     * @param \Ramsey\Uuid\UuidInterface $id
+     * @param \Apha\Domain\Identity $id
      * @return User
      */
-    public static function create(\Ramsey\Uuid\UuidInterface $id) : self
+    public static function create(\Apha\Domain\Identity $id) : self
     {
         $instance = new self($id);
         $instance->applyChange(new UserCreated($id));
@@ -187,18 +187,18 @@ class User extends \Apha\Domain\AggregateRoot
     }
 
     /**
-     * @param \Ramsey\Uuid\UuidInterface $id
+     * @param \Apha\Domain\Identity $id
      */
-    protected function __construct(\Ramsey\Uuid\UuidInterface $id)
+    protected function __construct(\Apha\Domain\Identity $id)
     {
         $this->id = $id;
         parent::__construct();
     }
 
     /**
-     * @return \Ramsey\Uuid\UuidInterface
+     * @return \Apha\Domain\Identity
      */
-    public function getId() : \Ramsey\Uuid\UuidInterface
+    public function getId() : \Apha\Domain\Identity
     {
         return $this->id;
     }
@@ -239,4 +239,4 @@ $commandBus = new \Apha\MessageBus\SimpleCommandBus([
 ]);
 
 // Send the command
-$commandBus->send(new CreateUser(\Ramsey\Uuid\Uuid::uuid4()));
+$commandBus->send(new CreateUser(\Apha\Domain\Identity::createNew()));

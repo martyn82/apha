@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Apha\Domain;
 
 use Apha\Message\{Event, Events};
-use Ramsey\Uuid\UuidInterface;
 
 abstract class AggregateRoot
 {
@@ -21,9 +20,9 @@ abstract class AggregateRoot
     }
 
     /**
-     * @return UuidInterface
+     * @return Identity
      */
-    abstract public function getId() : UuidInterface;
+    abstract public function getId() : Identity;
 
     /**
      * @return Events

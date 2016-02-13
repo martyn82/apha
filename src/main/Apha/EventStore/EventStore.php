@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Apha\EventStore;
 
 use Apha\Message\{Event, Events};
+use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\SimpleEventBus;
 use JMS\Serializer\SerializerInterface;
-use Ramsey\Uuid\{Uuid, UuidInterface};
 
 class EventStore
 {
@@ -56,15 +56,15 @@ class EventStore
     }
 
     /**
-     * @param UuidInterface $aggregateId
+     * @param Identity $aggregateId
      * @param Events $events
      * @param int $expectedPlayHead
      * @throws ConcurrencyException
      */
-    public function save(UuidInterface $aggregateId, Events $events, int $expectedPlayHead)
+    public function save(Identity $aggregateId, Events $events, int $expectedPlayHead)
     {
         if (!$this->isValidPlayHead($aggregateId, $expectedPlayHead)) {
-            throw new ConcurrencyException($expectedPlayHead, $this->current[$aggregateId->toString()]);
+            throw new ConcurrencyException($expectedPlayHead, $this->current[$aggregateId->getValue()]);
         }
 
         $playHead = $expectedPlayHead;
@@ -80,21 +80,21 @@ class EventStore
     }
 
     /**
-     * @param UuidInterface $aggregateId
+     * @param Identity $aggregateId
      * @param int $playHead
      * @return bool
      */
-    private function isValidPlayHead(UuidInterface $aggregateId, int $playHead) : bool
+    private function isValidPlayHead(Identity $aggregateId, int $playHead) : bool
     {
-        $descriptors = $this->storage->find($aggregateId->toString());
+        $descriptors = $this->storage->find($aggregateId->getValue());
 
         if (!empty($descriptors)) {
-            $this->current[$aggregateId->toString()] = end($descriptors)->getPlayHead();
+            $this->current[$aggregateId->getValue()] = end($descriptors)->getPlayHead();
         } else {
-            $this->current[$aggregateId->toString()] = -1;
+            $this->current[$aggregateId->getValue()] = -1;
         }
 
-        if ($playHead != -1 && $this->current[$aggregateId->toString()] != $playHead) {
+        if ($playHead != -1 && $this->current[$aggregateId->getValue()] != $playHead) {
             return false;
         }
 
@@ -102,13 +102,13 @@ class EventStore
     }
 
     /**
-     * @param UuidInterface $aggregateId
+     * @param Identity $aggregateId
      * @param Event $event
      */
-    private function saveEvent(UuidInterface $aggregateId, Event $event)
+    private function saveEvent(Identity $aggregateId, Event $event)
     {
         $eventData = EventDescriptor::record(
-            $aggregateId->toString(),
+            $aggregateId->getValue(),
             $event->getEventName(),
             $this->serializer->serialize($event, 'json'),
             $event->getVersion()
@@ -118,17 +118,17 @@ class EventStore
     }
 
     /**
-     * @param UuidInterface $aggregateId
+     * @param Identity $aggregateId
      * @return Events
      * @throws AggregateNotFoundException
      */
-    public function getEventsForAggregate(UuidInterface $aggregateId) : Events
+    public function getEventsForAggregate(Identity $aggregateId) : Events
     {
-        if (!$this->storage->contains($aggregateId->toString())) {
+        if (!$this->storage->contains($aggregateId->getValue())) {
             throw new AggregateNotFoundException($aggregateId);
         }
 
-        $eventData = $this->storage->find($aggregateId->toString());
+        $eventData = $this->storage->find($aggregateId->getValue());
 
         $events = array_map(
             function (EventDescriptor $data) {
@@ -145,13 +145,13 @@ class EventStore
     }
 
     /**
-     * @return UuidInterface[]
+     * @return Identity[]
      */
     public function getAggregateIds() : array
     {
         return array_map(
             function (string $identity) {
-                return Uuid::fromString($identity);
+                return Identity::fromString($identity);
             },
             $this->storage->findIdentities()
         );

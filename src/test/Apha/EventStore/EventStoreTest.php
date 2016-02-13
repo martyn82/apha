@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Apha\EventStore;
 
 use Apha\Message\{Event, Events};
+use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\SimpleEventBus;
 use JMS\Serializer\SerializerInterface;
-use Ramsey\Uuid\Uuid;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,7 +60,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getSerializer();
         $eventMap = $this->getEventMap();
 
-        $aggregateId = Uuid::uuid4();
+        $aggregateId = Identity::createNew();
 
         $events = new Events([
             new EventStoreTest_Event1(),
@@ -89,7 +89,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getSerializer();
         $eventMap = $this->getEventMap();
 
-        $aggregateId = Uuid::uuid4();
+        $aggregateId = Identity::createNew();
 
         $events = new Events([
             new EventStoreTest_Event1(),
@@ -117,7 +117,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getSerializer();
         $eventMap = $this->getEventMap();
 
-        $aggregateId = Uuid::uuid4();
+        $aggregateId = Identity::createNew();
 
         $events = new Events([
             new EventStoreTest_Event1(),
@@ -126,7 +126,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
 
         $descriptors = [
             EventDescriptor::reconstructFromArray([
-                'identity' => $aggregateId->toString(),
+                'identity' => $aggregateId->getValue(),
                 'event' => EventStoreTest_Event1::getName(),
                 'payload' => '{}',
                 'playHead' => 1,
@@ -136,7 +136,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
 
         $storage->expects(self::once())
             ->method('find')
-            ->with($aggregateId->toString())
+            ->with($aggregateId->getValue())
             ->willReturn($descriptors);
 
         $storage->expects(self::exactly($events->size()))
@@ -160,18 +160,18 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getSerializer();
         $eventMap = $this->getEventMap();
 
-        $aggregateId = Uuid::uuid4();
+        $aggregateId = Identity::createNew();
 
         $descriptors = [
             EventDescriptor::reconstructFromArray([
-                'identity' => $aggregateId->toString(),
+                'identity' => $aggregateId->getValue(),
                 'event' => EventStoreTest_Event1::getName(),
                 'payload' => '{}',
                 'playHead' => 1,
                 'recorded' => date('r')
             ]),
             EventDescriptor::reconstructFromArray([
-                'identity' => $aggregateId->toString(),
+                'identity' => $aggregateId->getValue(),
                 'event' => EventStoreTest_Event2::getName(),
                 'payload' => '{}',
                 'playHead' => 2,
@@ -192,7 +192,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
 
         $storage->expects(self::once())
             ->method('find')
-            ->with($aggregateId->toString())
+            ->with($aggregateId->getValue())
             ->willReturn($descriptors);
 
         $serializer->expects(self::exactly(count($descriptors)))
@@ -219,7 +219,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getSerializer();
         $eventMap = $this->getEventMap();
 
-        $aggregateId = Uuid::uuid4();
+        $aggregateId = Identity::createNew();
 
         $eventStore = new EventStore($eventBus, $storage, $serializer, $eventMap);
         $eventStore->getEventsForAggregate($aggregateId);

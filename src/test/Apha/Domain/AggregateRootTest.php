@@ -5,7 +5,7 @@ namespace Domain;
 
 use Apha\Domain\AggregateRoot;
 use Apha\Message\{Event, Events};
-use Ramsey\Uuid\{Uuid, UuidInterface};
+use Apha\Domain\Identity;
 
 class AggregateRootTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,9 +67,9 @@ class AggregateRootTest_AggregateRoot extends AggregateRoot
         parent::__construct();
     }
 
-    public function getId() : UuidInterface
+    public function getId() : Identity
     {
-        return Uuid::uuid4();
+        return Identity::createNew();
     }
 
     public function applyChange(Event $event)

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\ReadStore;
 
-use Ramsey\Uuid\UuidInterface;
+use Apha\Domain\Identity;
 
 interface Document
 {
@@ -19,9 +19,9 @@ interface Document
     public function deserialize(array $serialized) : self;
 
     /**
-     * @return UuidInterface
+     * @return Identity
      */
-    public function getId() : UuidInterface;
+    public function getId() : Identity;
 
     /**
      * @return int

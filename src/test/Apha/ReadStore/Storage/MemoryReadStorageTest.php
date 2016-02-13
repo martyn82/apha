@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Apha\ReadStore\Storage;
 
+use Apha\Domain\Identity;
 use Apha\ReadStore\Document;
-use Ramsey\Uuid\Uuid;
 
 class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
 {
@@ -119,7 +119,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
                 ->setMethods(['getFoo', 'getBar'])
                 ->getMockForAbstractClass();
 
-            $storage->upsert(Uuid::uuid4()->toString(), $documents[$i]);
+            $storage->upsert(Identity::createNew()->getValue(), $documents[$i]);
         }
 
         return $documents;
