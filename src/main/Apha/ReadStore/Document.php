@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\ReadStore;
 
-use Apha\Domain\Identity;
+use Apha\Message\Event;
 
 interface Document
 {
@@ -19,12 +19,18 @@ interface Document
     public function deserialize(array $serialized) : self;
 
     /**
-     * @return Identity
+     * @return string
      */
-    public function getId() : Identity;
+    public function getId() : string;
 
     /**
      * @return int
      */
     public function getVersion() : int;
+
+    /**
+     * @param Event $event
+     * @return void
+     */
+    public function apply(Event $event);
 }
