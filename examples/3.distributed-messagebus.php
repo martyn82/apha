@@ -28,36 +28,3 @@ class QueueingSystem
     }
 }
 
-/**
- * A distributed command bus that employs a queueing system for sending commands to distributed systems.
- */
-class DistributedCommandBus extends \Apha\MessageBus\CommandBus
-{
-    /**
-     * @var QueueingSystem
-     */
-    private $queue;
-
-    /**
-     * @var \JMS\Serializer\SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @param QueueingSystem $queue
-     * @param \JMS\Serializer\SerializerInterface $serializer
-     */
-    public function __construct(QueueingSystem $queue, \JMS\Serializer\SerializerInterface $serializer)
-    {
-        $this->queue = $queue;
-        $this->serializer = $serializer;
-    }
-
-    /**
-     * @param \Apha\Message\Command $command
-     */
-    public function send(\Apha\Message\Command $command)
-    {
-        $this->queue->enqueue($this->serializer->serialize($command, 'json'));
-    }
-}
