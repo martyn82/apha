@@ -23,6 +23,7 @@ interface ReadStorage
     /**
      * @param string $identity
      * @return Document
+     * @throws DocumentNotFoundException
      */
     public function find(string $identity) : Document;
 
