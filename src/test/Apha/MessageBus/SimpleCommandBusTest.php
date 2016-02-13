@@ -6,7 +6,7 @@ namespace Apha\MessageBus;
 use Apha\Message\Command;
 use Apha\MessageHandler\CommandHandler;
 
-class CommandBusTest extends \PHPUnit_Framework_TestCase
+class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -28,7 +28,7 @@ class CommandBusTest extends \PHPUnit_Framework_TestCase
             ->method('handle')
             ->with($command);
 
-        $commandBus = new CommandBus($commandHandlerMap);
+        $commandBus = new SimpleCommandBus($commandHandlerMap);
         $commandBus->send($command);
     }
 
@@ -41,7 +41,7 @@ class CommandBusTest extends \PHPUnit_Framework_TestCase
         $command = $this->getMockBuilder(Command::class)
             ->getMockForAbstractClass();
 
-        $commandBus = new CommandBus([]);
+        $commandBus = new SimpleCommandBus([]);
         $commandBus->send($command);
     }
 }
