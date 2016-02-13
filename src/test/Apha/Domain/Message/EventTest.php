@@ -5,7 +5,10 @@ namespace Apha\Domain\Message;
 
 class EventTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetNameReturnsTheEventName()
+    /**
+     * @test
+     */
+    public function getNameReturnsTheEventName()
     {
         self::assertEquals('EventTest_FakeEvent', EventTest_FakeEvent::getName());
 

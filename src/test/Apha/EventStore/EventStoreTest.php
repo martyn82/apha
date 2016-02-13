@@ -11,6 +11,9 @@ use Ramsey\Uuid\Uuid;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return EventBus
+     */
     private function getEventBus()
     {
         return $this->getMockBuilder(EventBus::class)
@@ -18,18 +21,27 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    /**
+     * @return EventStorage
+     */
     private function getEventStorage()
     {
         return $this->getMockBuilder(EventStorage::class)
             ->getMockForAbstractClass();
     }
 
+    /**
+     * @return SerializerInterface
+     */
     public function getSerializer()
     {
         return $this->getMockBuilder(SerializerInterface::class)
             ->getMockForAbstractClass();
     }
 
+    /**
+     * @return EventClassMap
+     */
     public function getEventMap()
     {
         return $this->getMockBuilder(EventClassMap::class)
@@ -38,7 +50,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    public function testSaveEventsForAggregateAppendsEventsToStorageForNewAggregate()
+    /**
+     * @test
+     */
+    public function saveEventsForAggregateAppendsEventsToStorageForNewAggregate()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();
@@ -64,9 +79,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \Apha\EventStore\ConcurrencyException
      */
-    public function testSaveEventsWithDifferentPlayHeadThrowsException()
+    public function saveEventsWithDifferentPlayHeadThrowsException()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();
@@ -91,7 +107,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $eventStore->save($aggregateId, $events, 0);
     }
 
-    public function testSaveEventsForAggregateAppendsEventsToStorageForExistingAggregate()
+    /**
+     * @test
+     */
+    public function saveEventsForAggregateAppendsEventsToStorageForExistingAggregate()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();
@@ -131,7 +150,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $eventStore->save($aggregateId, $events, 1);
     }
 
-    public function testGetEventsForAggregateRetrievesEventLog()
+    /**
+     * @test
+     */
+    public function getEventsForAggregateRetrievesEventLog()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();
@@ -187,9 +209,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \Apha\EventStore\AggregateNotFoundException
      */
-    public function testGetEventsForAggregateThrowsExceptionIfAggregateNotFound()
+    public function getEventsForAggregateThrowsExceptionIfAggregateNotFound()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();
@@ -202,7 +225,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $eventStore->getEventsForAggregate($aggregateId);
     }
 
-    public function testGetAggregateIdsRetrievesIdentitiesFromStorage()
+    /**
+     * @test
+     */
+    public function getAggregateIdsRetrievesIdentitiesFromStorage()
     {
         $eventBus = $this->getEventBus();
         $storage = $this->getEventStorage();

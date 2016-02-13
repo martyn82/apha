@@ -7,7 +7,10 @@ use Apha\Domain\Message\Event;
 
 class EventClassMapTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstructWithMappingAddsToMap()
+    /**
+     * @test
+     */
+    public function constructWithMappingAddsToMap()
     {
         $map = new EventClassMap([
             EventClassMapTest_Event1::class,
@@ -19,9 +22,10 @@ class EventClassMapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \OutOfBoundsException
      */
-    public function testGetClassByNameThrowsExceptionIfEventNotInMap()
+    public function getClassByNameThrowsExceptionIfEventNotInMap()
     {
         $map = new EventClassMap([]);
         $map->getClassByName('foo');

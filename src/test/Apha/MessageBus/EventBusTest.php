@@ -8,7 +8,10 @@ use Apha\MessageHandler\EventHandler;
 
 class EventBusTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPublishPropagatesEventToRegisteredHandlers()
+    /**
+     * @test
+     */
+    public function publishPropagatesEventToRegisteredHandlers()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();
@@ -34,7 +37,10 @@ class EventBusTest extends \PHPUnit_Framework_TestCase
         $eventBus->publish($event);
     }
 
-    public function testPublishEventWithoutHandlerPassesSilently()
+    /**
+     * @test
+     */
+    public function publishEventWithoutHandlerPassesSilently()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();

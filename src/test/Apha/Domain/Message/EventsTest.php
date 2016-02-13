@@ -5,7 +5,10 @@ namespace Apha\Domain\Message;
 
 class EventsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstructAcceptsArrayWithEvents()
+    /**
+     * @test
+     */
+    public function constructAcceptsArrayWithEvents()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();
@@ -19,9 +22,10 @@ class EventsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \TypeError
      */
-    public function testConstructRaisesErrorIfNotAllElementsAreEvent()
+    public function constructRaisesErrorIfNotAllElementsAreEvent()
     {
         $events = [
             new \stdClass()
@@ -30,7 +34,10 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         new Events($events);
     }
 
-    public function testAddAddsEventToList()
+    /**
+     * @test
+     */
+    public function addAddsEventToList()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();
@@ -41,7 +48,10 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         self::assertCount(1, $instance->getIterator());
     }
 
-    public function testClearMakesListEmpty()
+    /**
+     * @test
+     */
+    public function clearMakesListEmpty()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();
@@ -52,7 +62,10 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         self::assertCount(0, $instance->getIterator());
     }
 
-    public function testSizeReturnsNumberOfEvents()
+    /**
+     * @test
+     */
+    public function sizeReturnsNumberOfEvents()
     {
         $event = $this->getMockBuilder(Event::class)
             ->getMock();

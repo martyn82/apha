@@ -7,7 +7,10 @@ use Apha\Domain\Message\Event;
 
 class TypedEventHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHandleWithTypeInflection()
+    /**
+     * @test
+     */
+    public function handleWithTypeInflection()
     {
         $handler = $this->getMockBuilder(TypedEventHandler::class)
             ->setMethods(['onSomeEvent'])
@@ -30,9 +33,10 @@ class TypedEventHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testHandleThrowsExceptionForUnknownEvent()
+    public function handleThrowsExceptionForUnknownEvent()
     {
         $handler = $this->getMockBuilder(TypedEventHandler::class)
             ->getMockForTrait();

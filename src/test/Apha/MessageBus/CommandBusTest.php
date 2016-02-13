@@ -8,7 +8,10 @@ use Apha\MessageHandler\CommandHandler;
 
 class CommandBusTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSendWithCommandWillCallHandleOnAppropriateCommandHandler()
+    /**
+     * @test
+     */
+    public function sendWithCommandWillCallHandleOnAppropriateCommandHandler()
     {
         $command = $this->getMockBuilder(Command::class)
             ->getMockForAbstractClass();
@@ -30,9 +33,10 @@ class CommandBusTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \Apha\MessageBus\NoCommandHandlerException
      */
-    public function testSendThrowsExceptionIfNoHandlerForCommand()
+    public function sendThrowsExceptionIfNoHandlerForCommand()
     {
         $command = $this->getMockBuilder(Command::class)
             ->getMockForAbstractClass();

@@ -7,7 +7,10 @@ use Apha\Domain\Message\Command;
 
 class TypedCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHandleWithTypeInflection()
+    /**
+     * @test
+     */
+    public function handleWithTypeInflection()
     {
         $handler = $this->getMockBuilder(TypedCommandHandler::class)
             ->setMethods(['handleSomeCommand'])
@@ -25,9 +28,10 @@ class TypedCommandHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testHandleThrowsExceptionForUnknownCommand()
+    public function handleThrowsExceptionForUnknownCommand()
     {
         $handler = $this->getMockBuilder(TypedCommandHandler::class)
             ->getMockForTrait();

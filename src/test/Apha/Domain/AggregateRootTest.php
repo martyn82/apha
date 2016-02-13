@@ -9,7 +9,10 @@ use Ramsey\Uuid\{Uuid, UuidInterface};
 
 class AggregateRootTest extends \PHPUnit_Framework_TestCase
 {
-    public function testMarkChangesCommittedClearsEventLog()
+    /**
+     * @test
+     */
+    public function markChangesCommittedClearsEventLog()
     {
         $aggregateRoot = new AggregateRootTest_AggregateRoot();
 
@@ -22,7 +25,10 @@ class AggregateRootTest extends \PHPUnit_Framework_TestCase
         self::assertCount(0, $aggregateRoot->getUncommittedChanges()->getIterator());
     }
 
-    public function testLoadFromHistoryAppliesEventsFromHistory()
+    /**
+     * @test
+     */
+    public function loadFromHistoryAppliesEventsFromHistory()
     {
         $aggregateRoot = new AggregateRootTest_AggregateRoot();
 
@@ -37,9 +43,10 @@ class AggregateRootTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \Apha\Domain\UnsupportedEventException
      */
-    public function testApplyUnsupportedEventThrowsException()
+    public function applyUnsupportedEventThrowsException()
     {
         $aggregateRoot = new AggregateRootTest_AggregateRoot();
         $event = new AggregateRootTest_UnsupportedEvent();
