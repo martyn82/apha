@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\EventStore;
 
-use Apha\Domain\Message\{Event, Events};
+use Apha\Message\{Event, Events};
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\EventBus;
 use JMS\Serializer\SerializerInterface;

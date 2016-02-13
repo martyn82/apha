@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Apha\Domain\Message;
+namespace Apha\Message;
 
 class EventsTest extends \PHPUnit_Framework_TestCase
 {

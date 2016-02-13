@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\EventStore;
 
-use Apha\Domain\Message\Event;
+use Apha\Message\Event;
 
 class EventClassMapTest extends \PHPUnit_Framework_TestCase
 {

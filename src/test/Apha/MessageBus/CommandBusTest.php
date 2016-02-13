@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\MessageBus;
 
-use Apha\Domain\Message\Command;
+use Apha\Message\Command;
 use Apha\MessageHandler\CommandHandler;
 
 class CommandBusTest extends \PHPUnit_Framework_TestCase

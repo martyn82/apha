@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\MessageHandler;
 
-use Apha\Domain\Message\Command;
+use Apha\Message\Command;
 
 class TypedCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {

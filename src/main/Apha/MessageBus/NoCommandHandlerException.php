@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\MessageBus;
 
-use Apha\Domain\Message\Command;
+use Apha\Message\Command;
 
 class NoCommandHandlerException extends \Exception
 {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\MessageBus;
 
-use Apha\Domain\Message\Event;
+use Apha\Message\Event;
 use Apha\MessageHandler\EventHandler;
 
 class EventBus

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\Domain;
 
-use Apha\Domain\Message\Event;
+use Apha\Message\Event;
 
 class UnsupportedEventException extends \DomainException
 {

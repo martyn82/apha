@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Apha\Domain\Message;
+namespace Apha\Message;
 
 use JMS\Serializer\Annotation as Serializer;
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Apha\MessageHandler;
 
-use Apha\Domain\Message\Event;
+use Apha\Message\Event;
 
 interface EventHandler
 {
