@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Apha\EventStore;
 
-use Apha\Domain\Message\Events;
+use Apha\Domain\Message\{Event, Events};
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\EventBus;
-use Apha\Domain\Message\Event;
 use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
 

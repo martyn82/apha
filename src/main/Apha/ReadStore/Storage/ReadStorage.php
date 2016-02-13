@@ -21,6 +21,12 @@ interface ReadStorage
     public function delete(string $identity);
 
     /**
+     * @param string $identity
+     * @return Document
+     */
+    public function find(string $identity) : Document;
+
+    /**
      * @param int $offset
      * @param int $limit
      * @return Document[]

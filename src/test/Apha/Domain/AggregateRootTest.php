@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Domain;
 
 use Apha\Domain\AggregateRoot;
-use Apha\Domain\Message\Event;
-use Apha\Domain\Message\Events;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
+use Apha\Domain\Message\{Event, Events};
+use Ramsey\Uuid\{Uuid, UuidInterface};
 
 class AggregateRootTest extends \PHPUnit_Framework_TestCase
 {
