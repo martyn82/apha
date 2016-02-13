@@ -1,6 +1,13 @@
 <?php
 declare(strict_types = 1);
-require_once dirname(__FILE__) . '/../../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
+
+/*
+ * This example demonstrates the basics of the command bus and event bus.
+ *
+ * A command is sent by the command bus and handled by a registered handler. Afterwards, an event is published to be
+ * handled by registered handlers.
+ */
 
 /**
  * Demonstrate command class.
