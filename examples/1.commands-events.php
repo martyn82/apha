@@ -55,7 +55,7 @@ $commandBus = new \Apha\MessageBus\SimpleCommandBus([
 ]);
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\EventBus([
+$eventBus = new \Apha\MessageBus\SimpleEventBus([
     Demonstrated::class => [new DemonstratedHandler()]
 ]);
 

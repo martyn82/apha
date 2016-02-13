@@ -5,18 +5,18 @@ namespace Apha\EventStore;
 
 use Apha\Message\{Event, Events};
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\EventBus;
+use Apha\MessageBus\SimpleEventBus;
 use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return EventBus
+     * @return SimpleEventBus
      */
     private function getEventBus()
     {
-        return $this->getMockBuilder(EventBus::class)
+        return $this->getMockBuilder(SimpleEventBus::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

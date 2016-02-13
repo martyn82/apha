@@ -216,7 +216,7 @@ class User extends \Apha\Domain\AggregateRoot
 $eventStorage = new \Apha\EventStore\Storage\MemoryEventStorage();
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\EventBus([
+$eventBus = new \Apha\MessageBus\SimpleEventBus([
     UserCreated::class => [new UserCreatedHandler($eventStorage)]
 ]);
 

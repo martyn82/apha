@@ -5,14 +5,14 @@ namespace Apha\EventStore;
 
 use Apha\Message\{Event, Events};
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\EventBus;
+use Apha\MessageBus\SimpleEventBus;
 use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\{Uuid, UuidInterface};
 
 class EventStore
 {
     /**
-     * @var EventBus
+     * @var SimpleEventBus
      */
     private $eventBus;
 
@@ -37,13 +37,13 @@ class EventStore
     private $current;
 
     /**
-     * @param EventBus $eventBus
+     * @param SimpleEventBus $eventBus
      * @param EventStorage $storage
      * @param SerializerInterface $serializer
      * @param EventClassMap $eventMap
      */
     public function __construct(
-        EventBus $eventBus,
+        SimpleEventBus $eventBus,
         EventStorage $storage,
         SerializerInterface $serializer,
         EventClassMap $eventMap

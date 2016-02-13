@@ -6,7 +6,7 @@ namespace Apha\MessageBus;
 use Apha\Message\Event;
 use Apha\MessageHandler\EventHandler;
 
-class EventBusTest extends \PHPUnit_Framework_TestCase
+class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -30,7 +30,7 @@ class EventBusTest extends \PHPUnit_Framework_TestCase
             ->method('on')
             ->with($event);
 
-        $eventBus = new EventBus([
+        $eventBus = new SimpleEventBus([
             get_class($event) => [$handler1, $handler2]
         ]);
 
@@ -45,7 +45,7 @@ class EventBusTest extends \PHPUnit_Framework_TestCase
         $event = $this->getMockBuilder(Event::class)
             ->getMock();
 
-        $eventBus = new EventBus([]);
+        $eventBus = new SimpleEventBus([]);
         $eventBus->publish($event);
     }
 }
