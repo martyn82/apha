@@ -6,7 +6,7 @@ namespace Apha\MessageBus;
 use Apha\Message\Event;
 use Apha\MessageHandler\EventHandler;
 
-class SimpleEventBus
+class SimpleEventBus extends EventBus
 {
     /**
      * @var array
