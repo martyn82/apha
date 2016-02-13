@@ -64,7 +64,7 @@ class EventStore
     public function save(UuidInterface $aggregateId, Events $events, int $expectedPlayHead)
     {
         if (!$this->isValidPlayHead($aggregateId, $expectedPlayHead)) {
-            throw new ConcurrencyException($expectedPlayHead, -1);
+            throw new ConcurrencyException($expectedPlayHead, $this->current[$aggregateId->toString()]);
         }
 
         $playHead = $expectedPlayHead;
