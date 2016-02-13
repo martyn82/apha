@@ -234,7 +234,7 @@ $eventStore = new \Apha\EventStore\EventStore(
 $repository = new Repository($eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\MessageBus\CommandBus([
+$commandBus = new \Apha\MessageBus\SimpleCommandBus([
     CreateUser::class => new CreateUserHandler($repository)
 ]);
 
