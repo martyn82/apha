@@ -6,7 +6,7 @@ namespace Apha\ReadStore\Storage;
 use Apha\Domain\Identity;
 use Apha\ReadStore\Document;
 
-class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
+class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadStorageTest
 {
     /**
      * @test
@@ -91,6 +91,16 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
      */
+    public function findThrowsExceptionIfDocumentCannotBeFound()
+    {
+        $storage = new MemoryReadStorage();
+        $storage->find('someidentity');
+    }
+
+    /**
+     * @test
+     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     */
     public function clearRemovesAllDocumentsFromStorage()
     {
         $identity = 'someidentity';
@@ -103,6 +113,18 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
 
         $storage->clear();
         $storage->find($identity);
+    }
+
+    /**
+     * @test
+     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     */
+    public function clearIsIdempotent()
+    {
+        $storage = new MemoryReadStorage();
+        $storage->clear();
+
+        $storage->find('someidentity');
     }
 
     /**
@@ -148,6 +170,15 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase
         self::assertContains($documents[3], $page2);
         self::assertContains($documents[4], $page2);
         self::assertContains($documents[5], $page2);
+    }
+
+    /**
+     * @test
+     */
+    public function findAllRetrievesEmptyArrayIfNoneFound()
+    {
+        $storage = new MemoryReadStorage();
+        self::assertEmpty($storage->findAll());
     }
 
     /**
