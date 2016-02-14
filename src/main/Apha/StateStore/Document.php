@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore;
+namespace Apha\StateStore;
 
 use Apha\Message\Event;
 

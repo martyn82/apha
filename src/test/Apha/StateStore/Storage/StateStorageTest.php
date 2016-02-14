@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
-interface ReadStorageTest
+interface StateStorageTest
 {
     public function upsertAddsDocumentToStorage();
 

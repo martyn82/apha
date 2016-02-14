@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
 use Apha\Domain\Identity;
-use Apha\ReadStore\Document;
+use Apha\StateStore\Document;
 
-class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadStorageTest
+class MemoryStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**
      * @test
@@ -18,7 +18,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
         $identity = 'someidentity';
 
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->upsert($identity, $document);
 
         self::assertSame($document, $storage->find($identity));
@@ -37,7 +37,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
         $identity = 'someidentity';
 
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->upsert($identity, $initialDocument);
         $storage->upsert($identity, $secondDocument);
 
@@ -46,7 +46,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
     /**
      * @test
-     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     * @expectedException \Apha\StateStore\Storage\DocumentNotFoundException
      */
     public function deleteRemovesDocumentFromStorage()
     {
@@ -55,7 +55,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
         $identity = 'someidentity';
 
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->upsert($identity, $document);
 
         $storage->delete($identity);
@@ -67,7 +67,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
      */
     public function deleteIsIdempotent()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         self::assertEmpty($storage->delete('nonexistent'));
     }
 
@@ -81,7 +81,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
         $document = $this->getMockBuilder(Document::class)
             ->getMockForAbstractClass();
 
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->upsert($identity, $document);
 
         self::assertSame($document, $storage->find($identity));
@@ -89,17 +89,17 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
     /**
      * @test
-     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     * @expectedException \Apha\StateStore\Storage\DocumentNotFoundException
      */
     public function findThrowsExceptionIfDocumentCannotBeFound()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->find('someidentity');
     }
 
     /**
      * @test
-     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     * @expectedException \Apha\StateStore\Storage\DocumentNotFoundException
      */
     public function clearRemovesAllDocumentsFromStorage()
     {
@@ -108,7 +108,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
         $document = $this->getMockBuilder(Document::class)
             ->getMockForAbstractClass();
 
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->upsert($identity, $document);
 
         $storage->clear();
@@ -117,11 +117,11 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
     /**
      * @test
-     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     * @expectedException \Apha\StateStore\Storage\DocumentNotFoundException
      */
     public function clearIsIdempotent()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $storage->clear();
 
         $storage->find('someidentity');
@@ -129,10 +129,10 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
 
     /**
      * @param int $count
-     * @param MemoryReadStorage $storage
+     * @param MemoryStateStorage $storage
      * @return Document[]
      */
-    public function documentsProvider(int $count, MemoryReadStorage $storage) : array
+    public function documentsProvider(int $count, MemoryStateStorage $storage) : array
     {
         $documents = [];
 
@@ -152,7 +152,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
      */
     public function findAllRetrievesAPageOfDocuments()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $documents = $this->documentsProvider(6, $storage);
 
         // retrieve first page
@@ -177,7 +177,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
      */
     public function findAllRetrievesEmptyArrayIfNoneFound()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         self::assertEmpty($storage->findAll());
     }
 
@@ -186,7 +186,7 @@ class MemoryReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadS
      */
     public function findByRetrievesAPageOfDocumentsMatchingCriteria()
     {
-        $storage = new MemoryReadStorage();
+        $storage = new MemoryStateStorage();
         $documents = $this->documentsProvider(6, $storage);
 
         $documents[0]->expects(self::any())

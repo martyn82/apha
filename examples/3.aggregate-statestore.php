@@ -3,7 +3,7 @@ declare(strict_types = 1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /*
- * This example demonstrates the use of a ReadStore to store documents. Documents are the snapshots of aggregates after
+ * This example demonstrates the use of a StateStore to store documents. Documents are the snapshots of aggregates after
  * their history of events have been applied.
  *
  * Whenever an event on an aggregate is published, the readstore is updated by a handler.
@@ -103,14 +103,14 @@ class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
 class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
 {
     /**
-     * @var \Apha\ReadStore\Storage\MemoryReadStorage
+     * @var \Apha\StateStore\Storage\MemoryStateStorage
      */
     private $storage;
 
     /**
-     * @param \Apha\ReadStore\Storage\MemoryReadStorage $storage
+     * @param \Apha\StateStore\Storage\MemoryStateStorage $storage
      */
-    public function __construct(\Apha\ReadStore\Storage\MemoryReadStorage $storage)
+    public function __construct(\Apha\StateStore\Storage\MemoryStateStorage $storage)
     {
         $this->storage = $storage;
     }
@@ -126,7 +126,7 @@ class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
         try {
             $document = $this->storage->find($event->getId()->getValue());
             $document->apply($event);
-        } catch (\Apha\ReadStore\Storage\DocumentNotFoundException $e) {
+        } catch (\Apha\StateStore\Storage\DocumentNotFoundException $e) {
             $document = new UserDocument($event->getId()->getValue(), $event->getVersion());
         }
 
@@ -216,7 +216,7 @@ class User extends \Apha\Domain\AggregateRoot
 /**
  * Read model of the User aggregate.
  */
-class UserDocument implements \Apha\ReadStore\Document
+class UserDocument implements \Apha\StateStore\Document
 {
     /**
      * @var string
@@ -247,9 +247,9 @@ class UserDocument implements \Apha\ReadStore\Document
 
     /**
      * @param array $serialized
-     * @return \Apha\ReadStore\Document
+     * @return \Apha\StateStore\Document
      */
-    public function deserialize(array $serialized) : \Apha\ReadStore\Document
+    public function deserialize(array $serialized) : \Apha\StateStore\Document
     {
     }
 
@@ -280,7 +280,7 @@ class UserDocument implements \Apha\ReadStore\Document
 }
 
 // Read storage device where snapshots are stored
-$readStorage = new \Apha\ReadStore\Storage\MemoryReadStorage();
+$readStorage = new \Apha\StateStore\Storage\MemoryStateStorage();
 
 // A new event bus with a mapping to specify what handlers to call for what event.
 $eventBus = new \Apha\MessageBus\SimpleEventBus([

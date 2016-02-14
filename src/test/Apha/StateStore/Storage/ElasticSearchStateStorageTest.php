@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
 use Apha\Message\Event;
-use Apha\ReadStore\Document;
+use Apha\StateStore\Document;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Namespaces\IndicesNamespace;
@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 
-class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadStorageTest
+class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**
      * @return Client
@@ -53,7 +53,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $client->expects(self::once())
             ->method('index');
 
-        $storage = new ElasticSearchReadStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
         $storage->upsert('1', $document);
     }
 
@@ -70,7 +70,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $client->expects(self::exactly(2))
             ->method('index');
 
-        $storage = new ElasticSearchReadStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
         $storage->upsert('1', $initialDocument);
         $storage->upsert('2', $secondDocument);
     }
@@ -86,7 +86,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $client->expects(self::once())
             ->method('delete');
 
-        $storage = new ElasticSearchReadStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
         $storage->delete('1');
     }
 
@@ -102,7 +102,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
             ->method('delete')
             ->willThrowException(new Missing404Exception());
 
-        $storage = new ElasticSearchReadStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
         $storage->delete('1');
     }
 
@@ -119,7 +119,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
             ->method('get')
             ->willReturn($serializer->serialize($document, 'json'));
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             ElasticSearchReadStorageTest_Document::class,
@@ -133,7 +133,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
 
     /**
      * @test
-     * @expectedException \Apha\ReadStore\Storage\DocumentNotFoundException
+     * @expectedException \Apha\StateStore\Storage\DocumentNotFoundException
      */
     public function findThrowsExceptionIfDocumentCannotBeFound()
     {
@@ -144,7 +144,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
             ->method('get')
             ->willThrowException(new Missing404Exception());
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             ElasticSearchReadStorageTest_Document::class,
@@ -179,7 +179,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
             ->method('create')
             ->with(['index' => 'foo']);
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             Document::class,
@@ -210,7 +210,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
             ->with(['index' => 'foo'])
             ->willThrowException(new Missing404Exception());
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             Document::class,
@@ -250,7 +250,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             ElasticSearchReadStorageTest_Document::class,
@@ -292,7 +292,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             ElasticSearchReadStorageTest_Document::class,
@@ -315,7 +315,7 @@ class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implement
         $limit = 3;
         $criteria = ['foo' => 'foo'];
 
-        $storage = new ElasticSearchReadStorage(
+        $storage = new ElasticSearchStateStorage(
             $client,
             $serializer,
             ElasticSearchReadStorageTest_Document::class,

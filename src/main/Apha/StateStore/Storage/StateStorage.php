@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
-use Apha\ReadStore\Document;
+use Apha\StateStore\Document;
 
-interface ReadStorage
+interface StateStorage
 {
     /**
      * @param string $identity

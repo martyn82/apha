@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
 class DocumentNotFoundException extends \InvalidArgumentException
 {

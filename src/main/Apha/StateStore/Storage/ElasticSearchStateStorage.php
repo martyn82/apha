@@ -1,14 +1,14 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\ReadStore\Storage;
+namespace Apha\StateStore\Storage;
 
-use Apha\ReadStore\Document;
+use Apha\StateStore\Document;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use JMS\Serializer\SerializerInterface;
 
-class ElasticSearchReadStorage implements ReadStorage
+class ElasticSearchStateStorage implements StateStorage
 {
     /**
      * @var Client
