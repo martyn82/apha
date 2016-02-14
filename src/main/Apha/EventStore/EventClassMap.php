@@ -43,7 +43,7 @@ class EventClassMap
      * @return string
      * @throws \OutOfBoundsException
      */
-    public function getClassByName(string $name)
+    public function getClassByEventName(string $name)
     {
         if (!$this->innerMap->containsKey($name)) {
             throw new \OutOfBoundsException("Event class not mapped: '{$name}'.");

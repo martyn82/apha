@@ -3,11 +3,13 @@ declare(strict_types = 1);
 
 namespace Apha\Domain;
 
+use JMS\Serializer\Annotation as Serializer;
 use Ramsey\Uuid\Uuid;
 
 class Identity
 {
     /**
+     * @Serializer\Type("string")
      * @var string
      */
     private $value;

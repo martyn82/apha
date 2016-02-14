@@ -17,8 +17,8 @@ class EventClassMapTest extends \PHPUnit_Framework_TestCase
             EventClassMapTest_Event2::class
         ]);
 
-        self::assertEquals(EventClassMapTest_Event1::class, $map->getClassByName('EventClassMapTest_Event1'));
-        self::assertEquals(EventClassMapTest_Event2::class, $map->getClassByName('EventClassMapTest_Event2'));
+        self::assertEquals(EventClassMapTest_Event1::class, $map->getClassByEventName('EventClassMapTest_Event1'));
+        self::assertEquals(EventClassMapTest_Event2::class, $map->getClassByEventName('EventClassMapTest_Event2'));
     }
 
     /**
@@ -28,7 +28,7 @@ class EventClassMapTest extends \PHPUnit_Framework_TestCase
     public function getClassByNameThrowsExceptionIfEventNotInMap()
     {
         $map = new EventClassMap([]);
-        $map->getClassByName('foo');
+        $map->getClassByEventName('foo');
     }
 }
 
