@@ -1,9 +1,11 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Apha\EventStore;
 
-use Apha\Message\{Event, Events};
+use Apha\Message\{
+    Event, Events
+};
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\SimpleEventBus;
@@ -47,7 +49,8 @@ class EventStore
         EventStorage $storage,
         SerializerInterface $serializer,
         EventClassMap $eventMap
-    ) {
+    )
+    {
         $this->eventBus = $eventBus;
         $this->storage = $storage;
         $this->serializer = $serializer;

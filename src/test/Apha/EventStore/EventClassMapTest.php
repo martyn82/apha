@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Apha\EventStore;
 
@@ -32,5 +32,10 @@ class EventClassMapTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class EventClassMapTest_Event1 extends Event {}
-class EventClassMapTest_Event2 extends Event {}
+class EventClassMapTest_Event1 extends Event
+{
+}
+
+class EventClassMapTest_Event2 extends Event
+{
+}

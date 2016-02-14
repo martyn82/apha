@@ -8,9 +8,9 @@ use Apha\ReadStore\Document;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Namespaces\IndicesNamespace;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\Annotation as Serializer;
 
 class ElasticSearchReadStorageTest extends \PHPUnit_Framework_TestCase implements ReadStorageTest
 {

@@ -48,7 +48,8 @@ class ElasticSearchReadStorage implements ReadStorage
         string $documentClass,
         string $index,
         string $type
-    ) {
+    )
+    {
         $this->client = $client;
         $this->serializer = $serializer;
         $this->documentClass = $documentClass;

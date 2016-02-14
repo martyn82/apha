@@ -1,9 +1,11 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Apha\EventStore;
 
-use Apha\Message\{Event, Events};
+use Apha\Message\{
+    Event, Events
+};
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\SimpleEventBus;
@@ -251,5 +253,10 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class EventStoreTest_Event1 extends Event {}
-class EventStoreTest_Event2 extends Event {}
+class EventStoreTest_Event1 extends Event
+{
+}
+
+class EventStoreTest_Event2 extends Event
+{
+}

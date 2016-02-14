@@ -12,12 +12,16 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * Demonstrate command class.
  */
-final class Demonstrate implements \Apha\Message\Command {}
+final class Demonstrate implements \Apha\Message\Command
+{
+}
 
 /**
  * Demonstrated event class.
  */
-final class Demonstrated extends \Apha\Message\Event {}
+final class Demonstrated extends \Apha\Message\Event
+{
+}
 
 /**
  * Handler for Demonstrate command.

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Apha\Message;
 
@@ -17,4 +17,6 @@ class EventTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class EventTest_FakeEvent extends Event {}
+class EventTest_FakeEvent extends Event
+{
+}

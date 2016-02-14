@@ -1,11 +1,13 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Domain;
 
 use Apha\Domain\AggregateRoot;
-use Apha\Message\{Event, Events};
 use Apha\Domain\Identity;
+use Apha\Message\{
+    Event, Events
+};
 
 class AggregateRootTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,8 +57,13 @@ class AggregateRootTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class AggregateRootTest_UnsupportedEvent extends Event {}
-class AggregateRootTest_Event extends Event {}
+class AggregateRootTest_UnsupportedEvent extends Event
+{
+}
+
+class AggregateRootTest_Event extends Event
+{
+}
 
 class AggregateRootTest_AggregateRoot extends AggregateRoot
 {

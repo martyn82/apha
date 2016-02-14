@@ -1,9 +1,11 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Apha\Domain;
 
-use Apha\Message\{Event, Events};
+use Apha\Message\{
+    Event, Events
+};
 
 abstract class AggregateRoot
 {
