@@ -8,13 +8,13 @@ use Apha\Message\{
 };
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\SimpleEventBus;
+use Apha\MessageBus\EventBus;
 use JMS\Serializer\SerializerInterface;
 
 class EventStore
 {
     /**
-     * @var SimpleEventBus
+     * @var EventBus
      */
     private $eventBus;
 
@@ -39,13 +39,13 @@ class EventStore
     private $current;
 
     /**
-     * @param SimpleEventBus $eventBus
+     * @param EventBus $eventBus
      * @param EventStorage $storage
      * @param SerializerInterface $serializer
      * @param EventClassMap $eventMap
      */
     public function __construct(
-        SimpleEventBus $eventBus,
+        EventBus $eventBus,
         EventStorage $storage,
         SerializerInterface $serializer,
         EventClassMap $eventMap

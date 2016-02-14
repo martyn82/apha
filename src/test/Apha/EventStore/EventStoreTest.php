@@ -8,17 +8,17 @@ use Apha\Message\{
 };
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\SimpleEventBus;
+use Apha\MessageBus\EventBus;
 use JMS\Serializer\SerializerInterface;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return SimpleEventBus
+     * @return EventBus
      */
     private function getEventBus()
     {
-        return $this->getMockBuilder(SimpleEventBus::class)
+        return $this->getMockBuilder(EventBus::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
