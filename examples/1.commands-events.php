@@ -2,6 +2,10 @@
 declare(strict_types = 1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
+\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+    'JMS\Serializer\Annotation', __DIR__ . '/../vendor/jms/serializer/src'
+);
+
 /*
  * This example demonstrates the basics of the command bus and event bus.
  *

@@ -2,6 +2,10 @@
 declare(strict_types = 1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
+\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+    'JMS\Serializer\Annotation', __DIR__ . '/../vendor/jms/serializer/src'
+);
+
 /*
  * This example demonstrates the use of a StateStore to store documents. Documents are the snapshots of aggregates after
  * their history of events have been applied.
