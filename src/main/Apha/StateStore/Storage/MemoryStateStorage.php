@@ -80,7 +80,7 @@ class MemoryStateStorage implements StateStorage
         // perform AND match on criteria
         $filteredDocuments = array_reduce(
             $this->data,
-            function (array $result, Document $item) use ($criteria) {
+            function (array $result, Document $item) use ($criteria) : array {
                 foreach ($criteria as $key => $value) {
                     $getterMethod = 'get' . ucfirst($key);
 

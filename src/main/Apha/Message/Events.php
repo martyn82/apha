@@ -16,7 +16,7 @@ class Events implements \IteratorAggregate
     public function __construct(array $events = [])
     {
         $this->events = array_map(
-            function (Event $event) {
+            function (Event $event) : Event {
                 return $event;
             },
             $events

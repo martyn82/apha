@@ -46,7 +46,7 @@ class MemoryEventStorage implements EventStorage
         }
 
         return array_map(
-            function (array $event) {
+            function (array $event) : EventDescriptor {
                 return EventDescriptor::reconstructFromArray($event);
             },
             $this->data[$identity]

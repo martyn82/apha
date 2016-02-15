@@ -134,7 +134,7 @@ class EventStore
         $eventData = $this->storage->find($aggregateId->getValue());
 
         $events = array_map(
-            function (EventDescriptor $data) {
+            function (EventDescriptor $data) : Event {
                 return $this->serializer->deserialize(
                     $data->getPayload(),
                     $this->eventMap->getClassByEventName($data->getEvent()),
@@ -153,7 +153,7 @@ class EventStore
     public function getAggregateIds() : array
     {
         return array_map(
-            function (string $identity) {
+            function (string $identity) : Identity {
                 return Identity::fromString($identity);
             },
             $this->storage->findIdentities()

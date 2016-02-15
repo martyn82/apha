@@ -200,7 +200,7 @@ class ElasticSearchStateStorage implements StateStorage
         }
 
         return array_map(
-            function (array $hit) {
+            function (array $hit) : Document {
                 return $this->serializer->deserialize($hit['_source'], $this->documentClass, 'json');
             },
             $result['hits']['hits']
