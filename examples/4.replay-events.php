@@ -163,7 +163,7 @@ class DemonstratedEventHandler implements \Apha\MessageHandler\EventHandler
 }
 
 // A serializer
-$serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+$serializer = new \Apha\Serializer\JsonSerializer();
 
 // An event storage
 $eventStorage = new \Apha\EventStore\Storage\MemoryEventStorage();
@@ -198,7 +198,7 @@ $eventStorage->append(
     \Apha\EventStore\EventDescriptor::record(
         $identity->getValue(),
         $event->getEventName(),
-        $serializer->serialize($event, 'json'),
+        $serializer->serialize($event),
         $event->getVersion()
     )
 );
@@ -210,7 +210,7 @@ $eventStorage->append(
     \Apha\EventStore\EventDescriptor::record(
         $identity->getValue(),
         $event->getEventName(),
-        $serializer->serialize($event, 'json'),
+        $serializer->serialize($event),
         $event->getVersion()
     )
 );

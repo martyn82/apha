@@ -12,17 +12,17 @@ use Apha\EventStore\Storage\EventStorage;
 use Apha\Message\Event;
 use Apha\Message\Events;
 use Apha\MessageBus\EventBus;
-use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\SerializerBuilder;
+use Apha\Serializer\JsonSerializer;
+use Apha\Serializer\Serializer;
 
 class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return SerializerInterface
+     * @return Serializer
      */
     private function getSerializer()
     {
-        return SerializerBuilder::create()->build();
+        return new JsonSerializer();
     }
 
     /**
@@ -56,14 +56,14 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
     /**
      * @param EventBus $eventBus
      * @param EventStorage $eventStorage
-     * @param SerializerInterface $serializer
+     * @param Serializer $serializer
      * @param EventClassMap $eventClassMap
      * @return EventStore
      */
     private function getEventStore(
         EventBus $eventBus,
         EventStorage $eventStorage,
-        SerializerInterface $serializer,
+        Serializer $serializer,
         EventClassMap $eventClassMap
     )
     {
@@ -107,13 +107,13 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
             EventDescriptor::record(
                 $aggregateId->getValue(),
                 $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0], 'json'),
+                $serializer->serialize($basicEvents[0]),
                 1
             ),
             EventDescriptor::record(
                 $aggregateId->getValue(),
                 $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0], 'json'),
+                $serializer->serialize($basicEvents[0]),
                 2
             )
         ];
@@ -168,13 +168,13 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
             EventDescriptor::record(
                 $aggregateId->getValue(),
                 $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0], 'json'),
+                $serializer->serialize($basicEvents[0]),
                 1
             ),
             EventDescriptor::record(
                 $aggregateId->getValue(),
                 $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0], 'json'),
+                $serializer->serialize($basicEvents[0]),
                 2
             )
         ];

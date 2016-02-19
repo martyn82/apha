@@ -9,7 +9,7 @@ use Apha\Message\{
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\EventBus;
-use JMS\Serializer\SerializerInterface;
+    use Apha\Serializer\Serializer;
 
 class EventStore
 {
@@ -24,7 +24,7 @@ class EventStore
     private $storage;
 
     /**
-     * @var SerializerInterface
+     * @var Serializer
      */
     private $serializer;
 
@@ -41,13 +41,13 @@ class EventStore
     /**
      * @param EventBus $eventBus
      * @param EventStorage $storage
-     * @param SerializerInterface $serializer
+     * @param Serializer $serializer
      * @param EventClassMap $eventMap
      */
     public function __construct(
         EventBus $eventBus,
         EventStorage $storage,
-        SerializerInterface $serializer,
+        Serializer $serializer,
         EventClassMap $eventMap
     )
     {
@@ -113,7 +113,7 @@ class EventStore
         $eventData = EventDescriptor::record(
             $aggregateId->getValue(),
             $event->getEventName(),
-            $this->serializer->serialize($event, 'json'),
+            $this->serializer->serialize($event),
             $event->getVersion()
         );
 
@@ -137,8 +137,7 @@ class EventStore
             function (EventDescriptor $data) : Event {
                 return $this->serializer->deserialize(
                     $data->getPayload(),
-                    $this->eventMap->getClassByEventName($data->getEvent()),
-                    'json'
+                    $this->eventMap->getClassByEventName($data->getEvent())
                 );
             },
             $eventData

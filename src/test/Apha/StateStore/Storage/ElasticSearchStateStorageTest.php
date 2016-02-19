@@ -4,13 +4,12 @@ declare(strict_types = 1);
 namespace Apha\StateStore\Storage;
 
 use Apha\Message\Event;
+use Apha\Serializer\JsonSerializer;
 use Apha\StateStore\Document;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Namespaces\IndicesNamespace;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\SerializerInterface;
 
 class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
@@ -25,11 +24,11 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     }
 
     /**
-     * @return SerializerInterface
+     * @return \Apha\Serializer\Serializer
      */
-    private function createSerializer() : SerializerInterface
+    private function createSerializer() : \Apha\Serializer\Serializer
     {
-        return SerializerBuilder::create()->build();
+        return new JsonSerializer();
     }
 
     /**
@@ -117,7 +116,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
 
         $client->expects(self::once())
             ->method('get')
-            ->willReturn($serializer->serialize($document, 'json'));
+            ->willReturn($serializer->serialize($document));
 
         $storage = new ElasticSearchStateStorage(
             $client,
@@ -223,10 +222,10 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     /**
      * @param int $count
      * @param Client $client
-     * @param SerializerInterface $serializer
+     * @param \Apha\Serializer\Serializer $serializer
      * @return Document[]
      */
-    public function documentsProvider(int $count, Client $client, SerializerInterface $serializer) : array
+    public function documentsProvider(int $count, Client $client, \Apha\Serializer\Serializer $serializer) : array
     {
         $documents = [];
         $result = [];
@@ -235,7 +234,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
             $documents[$i] = new ElasticSearchReadStorageTest_Document('foo', 'bar');
 
             $result[] = [
-                '_source' => $serializer->serialize($documents[$i], 'json')
+                '_source' => $serializer->serialize($documents[$i])
             ];
         }
 

@@ -9,7 +9,7 @@ use Apha\Message\{
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\EventBus;
-use JMS\Serializer\SerializerInterface;
+use Apha\Serializer\Serializer;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,11 +33,11 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return SerializerInterface
+     * @return Serializer
      */
     public function getSerializer()
     {
-        return $this->getMockBuilder(SerializerInterface::class)
+        return $this->getMockBuilder(Serializer::class)
             ->getMockForAbstractClass();
     }
 

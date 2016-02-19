@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace Apha\StateStore\Storage;
 
+use Apha\Serializer\Serializer;
 use Apha\StateStore\Document;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use JMS\Serializer\SerializerInterface;
 
 class ElasticSearchStateStorage implements StateStorage
 {
@@ -16,7 +16,7 @@ class ElasticSearchStateStorage implements StateStorage
     private $client;
 
     /**
-     * @var SerializerInterface
+     * @var Serializer
      */
     private $serializer;
 
@@ -37,14 +37,14 @@ class ElasticSearchStateStorage implements StateStorage
 
     /**
      * @param Client $client
-     * @param SerializerInterface $serializer
+     * @param Serializer $serializer
      * @param string $documentClass
      * @param string $index
      * @param string $type
      */
     public function __construct(
         Client $client,
-        SerializerInterface $serializer,
+        Serializer $serializer,
         string $documentClass,
         string $index,
         string $type
@@ -75,7 +75,7 @@ class ElasticSearchStateStorage implements StateStorage
         }
 
         if ($document != null) {
-            $params['body'] = $this->serializer->serialize($document, 'json');
+            $params['body'] = $this->serializer->serialize($document);
         }
 
         if ($refresh) {
@@ -117,7 +117,7 @@ class ElasticSearchStateStorage implements StateStorage
     {
         try {
             $data = $this->client->get($this->createParams($identity));
-            return $this->serializer->deserialize($data, $this->documentClass, 'json');
+            return $this->serializer->deserialize($data, $this->documentClass);
         } catch (Missing404Exception $e) {
             throw new DocumentNotFoundException($identity);
         }
@@ -201,7 +201,7 @@ class ElasticSearchStateStorage implements StateStorage
 
         return array_map(
             function (array $hit) : Document {
-                return $this->serializer->deserialize($hit['_source'], $this->documentClass, 'json');
+                return $this->serializer->deserialize($hit['_source'], $this->documentClass);
             },
             $result['hits']['hits']
         );
