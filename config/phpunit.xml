@@ -26,5 +26,6 @@
         <log type="coverage-clover" target="../target/reports/test/coverage.xml" />
         <log type="junit" target="../target/reports/test/logfile.xml" />
         <log type="testdox-html" target="../target/reports/test/testdox.html" />
+        <log type="testdox-text" target="../target/reports/test/testdox.txt" />
     </logging>
 </phpunit>

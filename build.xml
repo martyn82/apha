@@ -44,10 +44,11 @@
 
     <target name="test:unit" description="Run unit tests.">
         <exec
-            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml --testdox"
+            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml"
             passthru="true"
             checkreturn="true"
         />
+        <exec command="cat ${project.basedir}/target/reports/test/testdox.txt" passthru="true" />
         <echo message="Test report at: file://${project.basedir}/target/reports/test/index.html" />
     </target>
 </project>
