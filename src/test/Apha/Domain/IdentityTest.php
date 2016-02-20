@@ -8,7 +8,7 @@ class IdentityTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function createNewGeneratesNewUUID()
+    public function createNewGeneratesNewIdentity()
     {
         $instance = Identity::createNew();
 
