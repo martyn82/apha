@@ -44,7 +44,7 @@
 
     <target name="test:unit" description="Run unit tests.">
         <exec
-            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml"
+            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml --testdox"
             passthru="true"
             checkreturn="true"
         />
