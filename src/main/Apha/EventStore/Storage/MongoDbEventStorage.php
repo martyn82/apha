@@ -5,6 +5,7 @@ namespace Apha\EventStore\Storage;
 
 use Apha\EventStore\EventDescriptor;
 use MongoDB\Collection;
+use MongoDB\Model\BSONDocument;
 
 class MongoDbEventStorage implements EventStorage
 {
@@ -26,6 +27,8 @@ class MongoDbEventStorage implements EventStorage
     {
         $this->collection = $collection;
         $this->identityField = $identityField;
+
+        $this->collection->createIndex([$this->identityField => 1]);
     }
 
     /**
@@ -57,8 +60,8 @@ class MongoDbEventStorage implements EventStorage
         $cursor = $this->collection->find([$this->identityField => $identity]);
 
         return array_map(
-            function (array $eventData) : EventDescriptor {
-                return EventDescriptor::reconstructFromArray($eventData);
+            function (BSONDocument $eventData) : EventDescriptor {
+                return EventDescriptor::reconstructFromArray($eventData->getArrayCopy());
             },
             $cursor->toArray()
         );
@@ -69,6 +72,6 @@ class MongoDbEventStorage implements EventStorage
      */
     public function findIdentities() : array
     {
-        return $this->collection->distinct($this->identityField)->toArray();
+        return $this->collection->distinct($this->identityField);
     }
 }

@@ -5,19 +5,80 @@ namespace Apha\EventStore\Storage;
 
 use Apha\EventStore\EventDescriptor;
 use MongoDB\Collection;
-use MongoDB\Driver\Cursor;
-use MongoDB\InsertOneResult;
+use MongoDB\Driver\Command;
+use MongoDB\Driver\Manager;
+use MongoDB\Driver\Query;
 
 class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements EventStorageTest
 {
+    /**
+     * @var Manager
+     */
+    private static $manager;
+
+    /**
+     * @var Collection
+     */
+    private static $collection;
+
+    /**
+     * @var string
+     */
+    private static $testDb;
+
+    /**
+     * @var string
+     */
+    private static $testCollection;
+
+    /**
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$testDb = uniqid('test_');
+        self::$testCollection = uniqid();
+
+        self::$manager = new Manager(
+            'mongodb://localhost:27017'
+        );
+    }
+
+    /**
+     */
+    public static function tearDownAfterClass()
+    {
+        if (self::$collection == null) {
+            return;
+        }
+
+        try {
+            self::$collection->drop(['dropDatabase' => 1]);
+        } catch (\Exception $e) {
+        }
+    }
+
+    protected function setUp()
+    {
+        try {
+            self::$manager->selectServer(self::$manager->getReadPreference());
+        } catch (\Exception $e) {
+            self::markTestSkipped($e->getMessage());
+        }
+
+        self::$collection = new Collection(self::$manager, self::$testDb, self::$testCollection);
+    }
+
+    protected function tearDown()
+    {
+        self::$collection->drop();
+    }
+
     /**
      * @return Collection
      */
     private function getCollection()
     {
-        return $this->getMockBuilder(Collection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return self::$collection;
     }
 
     /**
@@ -29,11 +90,6 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
         $identityField = 'identity';
 
         $collection = $this->getCollection();
-
-        $collection->expects(self::once())
-            ->method('count')
-            ->with([$identityField => $identity])
-            ->willReturn(0);
 
         $storage = new MongoDbEventStorage($collection, $identityField);
         self::assertFalse($storage->contains($identity));
@@ -49,12 +105,16 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $collection = $this->getCollection();
 
-        $collection->expects(self::once())
-            ->method('count')
-            ->with([$identityField => $identity])
-            ->willReturn(1);
+        $event = EventDescriptor::record(
+            $identity,
+            'someevent',
+            '{}',
+            1
+        );
 
         $storage = new MongoDbEventStorage($collection, $identityField);
+        $storage->append($event);
+
         self::assertTrue($storage->contains($identity));
     }
 
@@ -73,19 +133,6 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
             '{}',
             1
         );
-
-        $insertOneResult = $this->getMockBuilder(InsertOneResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $insertOneResult->expects(self::once())
-            ->method('isAcknowledged')
-            ->willReturn(true);
-
-        $collection->expects(self::once())
-            ->method('insertOne')
-            ->with($event->toArray())
-            ->willReturn($insertOneResult);
 
         $storage = new MongoDbEventStorage($collection, $identityField);
         self::assertTrue($storage->append($event));
@@ -115,19 +162,8 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
             2
         );
 
-        $insertOneResult = $this->getMockBuilder(InsertOneResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $insertOneResult->expects(self::any())
-            ->method('isAcknowledged')
-            ->willReturn(true);
-
-        $collection->expects(self::exactly(2))
-            ->method('insertOne')
-            ->willReturn($insertOneResult);
-
         $storage = new MongoDbEventStorage($collection, $identityField);
+
         self::assertTrue($storage->append($event1));
         self::assertTrue($storage->append($event2));
     }
@@ -141,19 +177,6 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $identityField = 'identity';
         $identity  = 'identity';
-
-        $collection->expects(self::once())
-            ->method('find')
-            ->with([$identityField => $identity])
-            ->willReturn(new class {
-                /**
-                 * @return array
-                 */
-                public function toArray() : array
-                {
-                    return [];
-                }
-            });
 
         $storage = new MongoDbEventStorage($collection, $identityField);
         self::assertEmpty($storage->find($identity));
@@ -175,6 +198,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
             '{}',
             1
         );
+
         $event2 = EventDescriptor::record(
             $identity,
             'someevent2',
@@ -182,54 +206,12 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
             2
         );
 
-        $insertOneResult = $this->getMockBuilder(InsertOneResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $insertOneResult->expects(self::any())
-            ->method('isAcknowledged')
-            ->willReturn(true);
-
-        $collection->expects(self::any())
-            ->method('insertOne')
-            ->willReturn($insertOneResult);
-
-        $collection->expects(self::once())
-            ->method('find')
-            ->with([$identityField => $identity])
-            ->willReturn(new class ([$event1, $event2]) {
-                /**
-                 * @var array
-                 */
-                private $eventDescriptors;
-
-                /**
-                 * @param array $eventDescriptors
-                 */
-                public function __construct(array $eventDescriptors)
-                {
-                    $this->eventDescriptors = $eventDescriptors;
-                }
-
-                /**
-                 * @return array
-                 */
-                public function toArray() : array
-                {
-                    return array_map(
-                        function (EventDescriptor $event) : array {
-                            return $event->toArray();
-                        },
-                        $this->eventDescriptors
-                    );
-                }
-            });
-
         $storage = new MongoDbEventStorage($collection, $identityField);
         $storage->append($event1);
         $storage->append($event2);
 
         $events = $storage->find($identity);
+
         self::assertCount(2, $events);
         self::assertEquals($event1, $events[0]);
         self::assertEquals($event2, $events[1]);
@@ -252,50 +234,13 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
             '{}',
             1
         );
+
         $event2 = EventDescriptor::record(
             $identity2,
             'someevent',
             '{}',
             1
         );
-
-        $insertOneResult = $this->getMockBuilder(InsertOneResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $insertOneResult->expects(self::any())
-            ->method('isAcknowledged')
-            ->willReturn(true);
-
-        $collection->expects(self::any())
-            ->method('insertOne')
-            ->willReturn($insertOneResult);
-
-        $collection->expects(self::once())
-            ->method('distinct')
-            ->with($identityField)
-            ->willReturn(new class ([$identity1, $identity2]) {
-                /**
-                 * @var array
-                 */
-                private $identities;
-
-                /**
-                 * @param array $identities
-                 */
-                public function __construct(array $identities)
-                {
-                    $this->identities = $identities;
-                }
-
-                /**
-                 * @return array
-                 */
-                public function toArray() : array
-                {
-                    return $this->identities;
-                }
-            });
 
         $storage = new MongoDbEventStorage($collection, $identityField);
         $storage->append($event1);

@@ -7,20 +7,73 @@ use Apha\Message\Event;
 use Apha\Serializer\JsonSerializer;
 use Apha\StateStore\Document;
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use Elasticsearch\Namespaces\IndicesNamespace;
+use Elasticsearch\ClientBuilder;
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use JMS\Serializer\Annotation as Serializer;
 
 class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**
+     * @var Client
+     */
+    private static $client;
+
+    /**
+     * @var string
+     */
+    private static $index;
+
+    /**
+     * @var string
+     */
+    private static $type;
+
+    /**
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$index = uniqid('test_');
+        self::$type = uniqid();
+
+        self::$client = ClientBuilder::create()->build();
+    }
+
+    /**
+     */
+    public static function tearDownAfterClass()
+    {
+        self::$index = null;
+        self::$type = null;
+        self::$client = null;
+    }
+
+    /**
+     */
+    protected function setUp()
+    {
+        try {
+            self::$client->indices()->create(['index' => self::$index]);
+        } catch (NoNodesAvailableException $e) {
+            self::markTestSkipped($e->getMessage());
+        }
+    }
+
+    /**
+     */
+    protected function tearDown()
+    {
+        try {
+            self::$client->indices()->delete(['index' => self::$index]);
+        } catch (\Exception $e) {
+        }
+    }
+
+    /**
      * @return Client
      */
     private function createClient() : Client
     {
-        return $this->getMockBuilder(Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return self::$client;
     }
 
     /**
@@ -41,6 +94,25 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     }
 
     /**
+     * @param Client $client
+     * @param \Apha\Serializer\Serializer $serializer
+     * @param string $documentClass [optional]
+     * @return ElasticSearchStateStorage
+     */
+    private function createStorage(
+        Client $client,
+        \Apha\Serializer\Serializer $serializer,
+        string $documentClass = null
+    ) : ElasticSearchStateStorage
+    {
+        if ($documentClass == null) {
+            $documentClass = Document::class;
+        }
+
+        return new ElasticSearchStateStorage($client, $serializer, $documentClass, self::$index, self::$type);
+    }
+
+    /**
      * @test
      */
     public function upsertAddsDocumentToStorage()
@@ -49,10 +121,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $serializer = $this->createSerializer();
         $document = $this->createDocument();
 
-        $client->expects(self::once())
-            ->method('index');
-
-        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = $this->createStorage($client, $serializer);
         $storage->upsert('1', $document);
     }
 
@@ -66,10 +135,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $initialDocument = $this->createDocument();
         $secondDocument = $this->createDocument();
 
-        $client->expects(self::exactly(2))
-            ->method('index');
-
-        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = $this->createStorage($client, $serializer);
         $storage->upsert('1', $initialDocument);
         $storage->upsert('2', $secondDocument);
     }
@@ -82,10 +148,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $client->expects(self::once())
-            ->method('delete');
-
-        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = $this->createStorage($client, $serializer);
         $storage->delete('1');
     }
 
@@ -97,11 +160,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $client->expects(self::once())
-            ->method('delete')
-            ->willThrowException(new Missing404Exception());
-
-        $storage = new ElasticSearchStateStorage($client, $serializer, Document::class, 'foo', 'bar');
+        $storage = $this->createStorage($client, $serializer);
         $storage->delete('1');
     }
 
@@ -112,20 +171,14 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     {
         $client = $this->createClient();
         $serializer = $this->createSerializer();
-        $document = new ElasticSearchReadStorageTest_Document('foo', 'bar');
 
-        $client->expects(self::once())
-            ->method('get')
-            ->willReturn($serializer->serialize($document));
+        $identity = '1';
+        $document = new ElasticSearchStateStorageTest_Document('foo', 'bar');
 
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            ElasticSearchReadStorageTest_Document::class,
-            'foo',
-            'bar'
-        );
-        $found = $storage->find('1');
+        $storage = $this->createStorage($client, $serializer, ElasticSearchStateStorageTest_Document::class);
+        $storage->upsert($identity, $document);
+
+        $found = $storage->find($identity);
 
         self::assertEquals($document, $found);
     }
@@ -139,18 +192,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $client->expects(self::once())
-            ->method('get')
-            ->willThrowException(new Missing404Exception());
-
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            ElasticSearchReadStorageTest_Document::class,
-            'foo',
-            'bar'
-        );
-
+        $storage = $this->createStorage($client, $serializer, ElasticSearchStateStorageTest_Document::class);
         $storage->find('1');
     }
 
@@ -162,29 +204,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $indices = $this->getMockBuilder(IndicesNamespace::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $client->expects(self::exactly(2))
-            ->method('indices')
-            ->willReturn($indices);
-
-        $indices->expects(self::once())
-            ->method('delete')
-            ->with(['index' => 'foo']);
-
-        $indices->expects(self::once())
-            ->method('create')
-            ->with(['index' => 'foo']);
-
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            Document::class,
-            'foo',
-            'bar'
-        );
+        $storage = $this->createStorage($client, $serializer);
         $storage->clear();
     }
 
@@ -196,26 +216,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $indices = $this->getMockBuilder(IndicesNamespace::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $client->expects(self::exactly(2))
-            ->method('indices')
-            ->willReturn($indices);
-
-        $indices->expects(self::once())
-            ->method('delete')
-            ->with(['index' => 'foo'])
-            ->willThrowException(new Missing404Exception());
-
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            Document::class,
-            'foo',
-            'bar'
-        );
+        $storage = $this->createStorage($client, $serializer);
         $storage->clear();
     }
 
@@ -231,7 +232,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $result = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $documents[$i] = new ElasticSearchReadStorageTest_Document('foo', 'bar');
+            $documents[$i] = new ElasticSearchStateStorageTest_Document('foo', 'bar');
 
             $result[] = [
                 '_source' => $serializer->serialize($documents[$i])
@@ -249,38 +250,8 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            ElasticSearchReadStorageTest_Document::class,
-            'foo',
-            'bar'
-        );
-
-        $hits = $this->documentsProvider(6, $client, $serializer);
-        $offset = 0;
-        $limit = 3;
-
-        $client->expects(self::once())
-            ->method('search')
-            ->with([
-                'index' => 'foo',
-                'type' => 'bar',
-                'body' => [
-                    'query' => [
-                        'match_all' => []
-                    ]
-                ],
-                'from' => $offset,
-                'size' => $limit
-            ])
-            ->willReturn([
-                'hits' => [
-                    'hits' => $hits
-                ]
-            ]);
-
-        $storage->findAll($offset, $limit);
+        $storage = $this->createStorage($client, $serializer, ElasticSearchStateStorageTest_Document::class);
+        $storage->findAll(0, 3);
     }
 
     /**
@@ -291,13 +262,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            ElasticSearchReadStorageTest_Document::class,
-            'foo',
-            'bar'
-        );
+        $storage = $this->createStorage($client, $serializer, ElasticSearchStateStorageTest_Document::class);
         self::assertEmpty($storage->findAll());
     }
 
@@ -309,50 +274,20 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
         $client = $this->createClient();
         $serializer = $this->createSerializer();
 
-        $hits = $this->documentsProvider(6, $client, $serializer);
-        $offset = 0;
-        $limit = 3;
-        $criteria = ['foo' => 'foo'];
+        $identity = '1';
+        $document = new ElasticSearchStateStorageTest_Document('foo', 'bar');
 
-        $storage = new ElasticSearchStateStorage(
-            $client,
-            $serializer,
-            ElasticSearchReadStorageTest_Document::class,
-            'foo',
-            'bar'
-        );
+        $storage = $this->createStorage($client, $serializer, ElasticSearchStateStorageTest_Document::class);
+        $storage->upsert($identity, $document);
 
-        $client->expects(self::once())
-            ->method('search')
-            ->with([
-                'index' => 'foo',
-                'type' => 'bar',
-                'body' => [
-                    'query' => [
-                        'filtered' => [
-                            'query' => [
-                                'match_all' => []
-                            ]
-                        ],
-                        'filter' => [
-                            'term' => $criteria
-                        ]
-                    ]
-                ],
-                'from' => $offset,
-                'size' => $limit
-            ])
-            ->willReturn([
-                'hits' => [
-                    'hits' => $hits
-                ]
-            ]);
+        $matches = $storage->findBy(['foo' => 'foo'], 0, 3);
 
-        $storage->findBy($criteria, $offset, $limit);
+        self::assertCount(1, $matches);
+        self::assertEquals($matches[0], $document);
     }
 }
 
-class ElasticSearchReadStorageTest_Document implements Document
+class ElasticSearchStateStorageTest_Document implements Document
 {
     /**
      * @Serializer\Type("string")

@@ -117,7 +117,10 @@ class ElasticSearchStateStorage implements StateStorage
     {
         try {
             $data = $this->client->get($this->createParams($identity));
-            return $this->serializer->deserialize($data, $this->documentClass);
+            return $this->serializer->deserialize(
+                $this->serializer->serialize($data['_source']),
+                $this->documentClass
+            );
         } catch (Missing404Exception $e) {
             throw new DocumentNotFoundException($identity);
         }
@@ -170,10 +173,10 @@ class ElasticSearchStateStorage implements StateStorage
             'filtered' => [
                 'query' => [
                     'match_all' => []
+                ],
+                'filter' => [
+                    'term' => $criteria
                 ]
-            ],
-            'filter' => [
-                'term' => $criteria
             ]
         ];
 
@@ -184,7 +187,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @param array $query
      * @param int $offset
      * @param int $limit
-     * @return array
+     * @return Document[]
      */
     private function query(array $query, int $offset, int $limit) : array
     {
@@ -201,7 +204,10 @@ class ElasticSearchStateStorage implements StateStorage
 
         return array_map(
             function (array $hit) : Document {
-                return $this->serializer->deserialize($hit['_source'], $this->documentClass);
+                return $this->serializer->deserialize(
+                    $this->serializer->serialize($hit['_source']),
+                    $this->documentClass
+                );
             },
             $result['hits']['hits']
         );
