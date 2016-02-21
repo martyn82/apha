@@ -8,7 +8,7 @@ use JMS\Serializer\SerializerBuilder;
 class JsonSerializer implements Serializer
 {
     /**
-     * @var \JMS\Serializer\Serializer
+     * @var \JMS\Serializer\SerializerInterface
      */
     private $serializer;
 
@@ -21,9 +21,9 @@ class JsonSerializer implements Serializer
 
     /**
      * @param mixed $value
-     * @return mixed
+     * @return string
      */
-    public function serialize($value)
+    public function serialize($value) : string
     {
         return $this->serializer->serialize($value, 'json');
     }

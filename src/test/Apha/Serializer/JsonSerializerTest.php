@@ -9,9 +9,9 @@ class JsonSerializerTest extends SerializerTest
      * @test
      * @dataProvider serializableProvider
      * @param mixed $value
-     * @param string $expected
+     * @param mixed $expected
      */
-    public function serializeSerializesValue($value, string $expected)
+    public function serializeSerializesValue($value, $expected)
     {
         $serializer = new JsonSerializer();
         $serialized = $serializer->serialize($value);
@@ -22,15 +22,48 @@ class JsonSerializerTest extends SerializerTest
     /**
      * @test
      * @dataProvider deserializeProvider
-     * @param string $serialized
+     * @param mixed $serialized
      * @param string $type
      * @param mixed $expected
      */
-    public function deserializeReconstructsValue(string $serialized, string $type, $expected)
+    public function deserializeReconstructsValue($serialized, string $type, $expected)
     {
         $serializer = new JsonSerializer();
         $actual = $serializer->deserialize($serialized, $type);
 
         self::assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return array
+     */
+    public function serializableProvider() : array
+    {
+        return [
+            [new SerializerTest_Serializable(), '{"foo":"bar"}'],
+            [['foo' => 'bar'], '{"foo":"bar"}'],
+            [[], "[]"],
+            [
+                ['int' => 123, 'bool-true' => true, 'bool-false' => false, 'str' => 'string', 'null' => null],
+                '{"int":123,"bool-true":true,"bool-false":false,"str":"string"}' // null values are ignored
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function deserializeProvider() : array
+    {
+        return [
+            ['{"foo":"bar"}', SerializerTest_Serializable::class, new SerializerTest_Serializable()],
+            ['{"foo":"bar"}', 'array', ['foo' => 'bar']],
+            ["[]", 'array', []],
+            [
+                '{"int":123,"bool-true":true,"bool-false":false,"str":"string"}',
+                'array',
+                ['int' => 123, 'bool-true' => true, 'bool-false' => false, 'str' => 'string']
+            ]
+        ];
     }
 }
