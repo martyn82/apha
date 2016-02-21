@@ -295,7 +295,7 @@ $eventBus = new \Apha\MessageBus\SimpleEventBus([
 $eventStore = new \Apha\EventStore\EventStore(
     $eventBus,
     new \Apha\EventStore\Storage\MemoryEventStorage(),
-    \JMS\Serializer\SerializerBuilder::create()->build(),
+    new \Apha\Serializer\JsonSerializer(),
     new \Apha\EventStore\EventClassMap([
         UserCreated::class
     ])
