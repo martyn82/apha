@@ -3,9 +3,8 @@ declare(strict_types = 1);
 
 namespace Apha\Domain;
 
-use Apha\Message\{
-    Event, Events
-};
+use Apha\Message\Event;
+use Apha\Message\Events;
 
 abstract class AggregateRoot
 {
