@@ -13,14 +13,14 @@ trait TypedEventHandler
      */
     public function on(Event $event)
     {
-        $this->handleByInflection($event);
+        $this->handleEventByInflection($event);
     }
 
     /**
      * @param Event $event
      * @throws \InvalidArgumentException
      */
-    private function handleByInflection(Event $event)
+    private function handleEventByInflection(Event $event)
     {
         $eventHandleMethod = 'on' . $event->getEventName();
 

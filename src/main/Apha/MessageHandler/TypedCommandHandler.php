@@ -13,14 +13,14 @@ trait TypedCommandHandler
      */
     public function handle(Command $command)
     {
-        $this->handleByInflection($command);
+        $this->handleCommandByInflection($command);
     }
 
     /**
      * @param Command $command
      * @throws \InvalidArgumentException
      */
-    private function handleByInflection(Command $command)
+    private function handleCommandByInflection(Command $command)
     {
         $commandClassName = get_class($command);
         $classNameParts = explode('\\', $commandClassName);
