@@ -5,9 +5,7 @@ namespace Apha\EventStore\Storage;
 
 use Apha\EventStore\EventDescriptor;
 use MongoDB\Collection;
-use MongoDB\Driver\Command;
 use MongoDB\Driver\Manager;
-use MongoDB\Driver\Query;
 
 class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements EventStorageTest
 {
@@ -36,7 +34,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
     public static function setUpBeforeClass()
     {
         self::$testDb = uniqid('test_');
-        self::$testCollection = uniqid();
+        self::$testCollection = uniqid('test_');
 
         self::$manager = new Manager(
             'mongodb://localhost:27017'
