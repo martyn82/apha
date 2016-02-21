@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Apha\MessageBus;
 
 use Apha\Message\Command;
+use Apha\MessageHandler\CommandHandler;
 use Psr\Log\LoggerInterface;
 
 class LoggingCommandBus extends CommandBus
@@ -26,6 +27,15 @@ class LoggingCommandBus extends CommandBus
     {
         $this->commandBus = $commandBus;
         $this->logger = $logger;
+    }
+
+    /**
+     * @param string $commandClass
+     * @param CommandHandler $handler
+     */
+    public function addHandler(string $commandClass, CommandHandler $handler)
+    {
+        $this->commandBus->addHandler($commandClass, $handler);
     }
 
     /**

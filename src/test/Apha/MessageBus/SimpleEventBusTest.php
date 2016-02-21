@@ -48,4 +48,25 @@ class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
         $eventBus = new SimpleEventBus([]);
         $eventBus->publish($event);
     }
+
+    /**
+     * @test
+     */
+    public function addHandlerRegistersHandlerForEvent()
+    {
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $handler = $this->getMockBuilder(EventHandler::class)
+            ->getMockForAbstractClass();
+
+        $handler->expects(self::once())
+            ->method('on')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([]);
+        $eventBus->addHandler(get_class($event), $handler);
+
+        $eventBus->publish($event);
+    }
 }

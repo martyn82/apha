@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Apha\MessageBus;
 
 use Apha\Message\Command;
+use Apha\MessageHandler\CommandHandler;
 
 class SimpleCommandBus extends CommandBus
 {
@@ -21,6 +22,20 @@ class SimpleCommandBus extends CommandBus
     }
 
     /**
+     * @param string $commandClass
+     * @param CommandHandler $handler
+     * @throws CommandHandlerAlreadyExistsException
+     */
+    public function addHandler(string $commandClass, CommandHandler $handler)
+    {
+        if (array_key_exists($commandClass, $this->commandHandlerMap)) {
+            throw new CommandHandlerAlreadyExistsException($commandClass);
+        }
+
+        $this->commandHandlerMap[$commandClass] = $handler;
+    }
+
+    /**
      * @param Command $command
      * @throws NoCommandHandlerException
      */
@@ -32,6 +47,7 @@ class SimpleCommandBus extends CommandBus
             throw new NoCommandHandlerException($command);
         }
 
+        /* @var $handler CommandHandler */
         $handler = $this->commandHandlerMap[$commandClassName];
         $handler->handle($command);
     }

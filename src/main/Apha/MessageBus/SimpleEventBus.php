@@ -22,6 +22,15 @@ class SimpleEventBus extends EventBus
     }
 
     /**
+     * @param string $eventClass
+     * @param EventHandler $handler
+     */
+    public function addHandler(string $eventClass, EventHandler $handler)
+    {
+        $this->eventHandlerMap[$eventClass][] = $handler;
+    }
+
+    /**
      * @param Event $event
      */
     public function publish(Event $event)

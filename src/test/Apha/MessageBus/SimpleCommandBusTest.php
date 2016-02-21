@@ -44,4 +44,43 @@ class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
         $commandBus = new SimpleCommandBus([]);
         $commandBus->send($command);
     }
+
+    /**
+     * @test
+     */
+    public function addHandlerRegistersHandlerForCommand()
+    {
+        $command = $this->getMockBuilder(Command::class)
+            ->getMockForAbstractClass();
+
+        $handler = $this->getMockBuilder(CommandHandler::class)
+            ->getMockForAbstractClass();
+
+        $handler->expects(self::once())
+            ->method('handle')
+            ->with($command);
+
+        $commandBus = new SimpleCommandBus([]);
+        $commandBus->addHandler(get_class($command), $handler);
+
+        $commandBus->send($command);
+    }
+
+    /**
+     * @test
+     * @expectedException \Apha\MessageBus\CommandHandlerAlreadyExistsException
+     */
+    public function addHandlerThrowsExceptionIfCommandAlreadyHasAHandler()
+    {
+        $command = $this->getMockBuilder(Command::class)
+            ->getMockForAbstractClass();
+
+        $handler = $this->getMockBuilder(CommandHandler::class)
+            ->getMockForAbstractClass();
+
+        $commandBus = new SimpleCommandBus([
+            get_class($command) => $handler
+        ]);
+        $commandBus->addHandler(get_class($command), $handler);
+    }
 }

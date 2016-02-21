@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Apha\MessageBus;
 
 use Apha\Message\Event;
+use Apha\MessageHandler\EventHandler;
 use Psr\Log\LoggerInterface;
 
 class LoggingEventBus extends EventBus
@@ -26,6 +27,15 @@ class LoggingEventBus extends EventBus
     {
         $this->eventBus = $eventBus;
         $this->logger = $logger;
+    }
+
+    /**
+     * @param string $eventClass
+     * @param EventHandler $handler
+     */
+    public function addHandler(string $eventClass, EventHandler $handler)
+    {
+        $this->eventBus->addHandler($eventClass, $handler);
     }
 
     /**
