@@ -221,6 +221,20 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     }
 
     /**
+     * @test
+     */
+    public function callClearWithNonExistingIndexIsOk()
+    {
+        $client = $this->createClient();
+        $serializer = $this->createSerializer();
+
+        $storage = $this->createStorage($client, $serializer);
+        self::$client->indices()->delete(['index' => self::$index]);
+
+        $storage->clear();
+    }
+
+    /**
      * @param int $count
      * @param Client $client
      * @param \Apha\Serializer\Serializer $serializer

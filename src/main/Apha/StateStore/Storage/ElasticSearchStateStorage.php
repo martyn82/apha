@@ -198,7 +198,7 @@ class ElasticSearchStateStorage implements StateStorage
 
         $result = $this->client->search($params);
 
-        if (empty($result) || !array_key_exists('hits', $result)) {
+        if (empty($result['hits']['hits'])) {
             return [];
         }
 
