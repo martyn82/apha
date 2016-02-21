@@ -3,13 +3,12 @@ declare(strict_types = 1);
 
 namespace Apha\EventStore;
 
-use Apha\Message\{
-    Event, Events
-};
+use Apha\Message\Event;
+use Apha\Message\Events;
 use Apha\Domain\Identity;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\MessageBus\EventBus;
-    use Apha\Serializer\Serializer;
+use Apha\Serializer\Serializer;
 
 class EventStore
 {

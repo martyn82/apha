@@ -162,6 +162,9 @@ class DemonstratedEventHandler implements \Apha\MessageHandler\EventHandler
     }
 }
 
+// A logger
+$logger = new \Monolog\Logger('default');
+
 // A serializer
 $serializer = new \Apha\Serializer\JsonSerializer();
 
@@ -172,10 +175,13 @@ $eventStorage = new \Apha\EventStore\Storage\MemoryEventStorage();
 $stateStorage = new \Apha\StateStore\Storage\MemoryStateStorage();
 
 // An event bus with an event handler bound to the DemonstratedEvent
-$eventBus = new \Apha\MessageBus\SimpleEventBus([
-    CreatedEvent::class => [new DemonstratedEventHandler($stateStorage)],
-    DemonstratedEvent::class => [new DemonstratedEventHandler($stateStorage)]
-]);
+$eventBus = new \Apha\MessageBus\LoggingEventBus(
+    new \Apha\MessageBus\SimpleEventBus([
+        CreatedEvent::class => [new DemonstratedEventHandler($stateStorage)],
+        DemonstratedEvent::class => [new DemonstratedEventHandler($stateStorage)]
+    ]),
+    $logger
+);
 
 // The event store
 $eventStore = new \Apha\EventStore\EventStore(
@@ -214,7 +220,6 @@ $eventStorage->append(
         $event->getVersion()
     )
 );
-
 
 // Use the EventPlayer to replay the events for an Aggregate.
 $eventPlayer = new \Apha\Replay\AggregateEventPlayer($eventBus, $eventStore);

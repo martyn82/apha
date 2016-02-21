@@ -81,11 +81,18 @@ class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
     private $repository;
 
     /**
-     * @param Repository $repository
+     * @var \Psr\Log\LoggerInterface
      */
-    public function __construct(Repository $repository)
+    private $logger;
+
+    /**
+     * @param Repository $repository
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(Repository $repository, \Psr\Log\LoggerInterface $logger)
     {
         $this->repository = $repository;
+        $this->logger = $logger;
     }
 
     /**
@@ -94,7 +101,10 @@ class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
     public function handle(\Apha\Message\Command $command)
     {
         $commandName = get_class($command);
-        echo "Handling command: '{$commandName}'.\n";
+        $this->logger->info('Handle command', [
+            'command' => $commandName,
+            'handler' => get_class($this)
+        ]);
 
         $user = User::create($command->getId());
         $this->repository->store($user);
@@ -112,11 +122,18 @@ class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
     private $storage;
 
     /**
-     * @param \Apha\StateStore\Storage\MemoryStateStorage $storage
+     * @var \Psr\Log\LoggerInterface
      */
-    public function __construct(\Apha\StateStore\Storage\MemoryStateStorage $storage)
+    private $logger;
+
+    /**
+     * @param \Apha\StateStore\Storage\MemoryStateStorage $storage
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(\Apha\StateStore\Storage\MemoryStateStorage $storage, \Psr\Log\LoggerInterface $logger)
     {
         $this->storage = $storage;
+        $this->logger = $logger;
     }
 
     /**
@@ -125,7 +142,10 @@ class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
     public function on(\Apha\Message\Event $event)
     {
         $eventName = $event->getEventName();
-        echo "Handling event: '{$eventName}'.\n";
+        $this->logger->info('Handle event', [
+            'command' => $eventName,
+            'handler' => get_class($this)
+        ]);
 
         try {
             $document = $this->storage->find($event->getId()->getValue());
@@ -283,13 +303,18 @@ class UserDocument implements \Apha\StateStore\Document
     }
 }
 
+$logger = new \Monolog\Logger('default');
+
 // Read storage device where snapshots are stored
 $readStorage = new \Apha\StateStore\Storage\MemoryStateStorage();
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\SimpleEventBus([
-    UserCreated::class => [new UserCreatedHandler($readStorage)]
-]);
+$eventBus = new \Apha\MessageBus\LoggingEventBus(
+    new \Apha\MessageBus\SimpleEventBus([
+        UserCreated::class => [new UserCreatedHandler($readStorage, $logger)]
+    ]),
+    $logger
+);
 
 // An event store to store events
 $eventStore = new \Apha\EventStore\EventStore(
@@ -305,9 +330,12 @@ $eventStore = new \Apha\EventStore\EventStore(
 $repository = new Repository($eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\MessageBus\SimpleCommandBus([
-    CreateUser::class => new CreateUserHandler($repository)
-]);
+$commandBus = new \Apha\MessageBus\LoggingCommandBus(
+    new \Apha\MessageBus\SimpleCommandBus([
+        CreateUser::class => new CreateUserHandler($repository, $logger)
+    ]),
+    $logger
+);
 
 // Send the command
 $commandBus->send(new CreateUser(\Apha\Domain\Identity::createNew()));

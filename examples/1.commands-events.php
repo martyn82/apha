@@ -33,12 +33,28 @@ final class Demonstrated extends \Apha\Message\Event
 class DemonstrateHandler implements \Apha\MessageHandler\CommandHandler
 {
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @param \Apha\Message\Command $command
      */
     public function handle(\Apha\Message\Command $command)
     {
         $commandName = get_class($command);
-        echo "Handling command: '{$commandName}'.\n";
+        $this->logger->info('Handle command', [
+            'command' => $commandName,
+            'handler' => get_class($this)
+        ]);
     }
 }
 
@@ -48,27 +64,48 @@ class DemonstrateHandler implements \Apha\MessageHandler\CommandHandler
 class DemonstratedHandler implements \Apha\MessageHandler\EventHandler
 {
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @param \Apha\Message\Event $event
      */
     public function on(\Apha\Message\Event $event)
     {
         $eventName = $event->getEventName();
-        echo "Handling event: '{$eventName}'.\n";
+        $this->logger->info('Handle event', [
+            'event' => $eventName,
+            'handler' => get_class($this)
+        ]);
     }
 }
 
+$logger = new \Monolog\Logger('default');
+
 // A new command bus with a mapping to specify what handler to call for what command.
 $commandBus = new \Apha\MessageBus\SimpleCommandBus([
-    Demonstrate::class => new DemonstrateHandler()
+    Demonstrate::class => new DemonstrateHandler($logger)
 ]);
 
 // A new event bus with a mapping to specify what handlers to call for what event.
 $eventBus = new \Apha\MessageBus\SimpleEventBus([
-    Demonstrated::class => [new DemonstratedHandler()]
+    Demonstrated::class => [new DemonstratedHandler($logger)]
 ]);
 
+$loggingCommandBus = new \Apha\MessageBus\LoggingCommandBus($commandBus, $logger);
+$loggingEventBus = new \Apha\MessageBus\LoggingEventBus($eventBus, $logger);
+
 // Send the command
-$commandBus->send(new Demonstrate());
+$loggingCommandBus->send(new Demonstrate());
 
 // Publish the event (the lack of an exception means success)
-$eventBus->publish(new Demonstrated());
+$loggingEventBus->publish(new Demonstrated());
