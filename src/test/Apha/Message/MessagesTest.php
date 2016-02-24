@@ -70,6 +70,6 @@ class MessagesTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class MessagesTest_Message implements Message
+class MessagesTest_Message extends Message
 {
 }

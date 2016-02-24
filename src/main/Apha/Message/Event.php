@@ -5,7 +5,7 @@ namespace Apha\Message;
 
 use JMS\Serializer\Annotation as Serializer;
 
-abstract class Event implements Message
+abstract class Event extends Message
 {
     /**
      * @Serializer\Type("integer")

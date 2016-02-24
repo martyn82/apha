@@ -3,6 +3,6 @@ declare(strict_types = 1);
 
 namespace Apha\Message;
 
-interface Command extends Message
+abstract class Command extends Message
 {
 }

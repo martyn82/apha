@@ -19,7 +19,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * Command class to create a user.
  */
-final class CreateUser implements \Apha\Message\Command
+final class CreateUser extends \Apha\Message\Command
 {
     /**
      * @var \Apha\Domain\Identity

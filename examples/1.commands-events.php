@@ -16,7 +16,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * Demonstrate command class.
  */
-final class Demonstrate implements \Apha\Message\Command
+final class Demonstrate extends \Apha\Message\Command
 {
 }
 
