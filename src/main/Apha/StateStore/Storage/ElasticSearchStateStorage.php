@@ -5,13 +5,13 @@ namespace Apha\StateStore\Storage;
 
 use Apha\Serializer\Serializer;
 use Apha\StateStore\Document;
-use Elasticsearch\Client;
+use Elasticsearch\Client as ElasticClient;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class ElasticSearchStateStorage implements StateStorage
 {
     /**
-     * @var Client
+     * @var ElasticClient
      */
     private $client;
 
@@ -36,14 +36,14 @@ class ElasticSearchStateStorage implements StateStorage
     private $type;
 
     /**
-     * @param Client $client
+     * @param ElasticClient $client
      * @param Serializer $serializer
      * @param string $documentClass
      * @param string $index
      * @param string $type
      */
     public function __construct(
-        Client $client,
+        ElasticClient $client,
         Serializer $serializer,
         string $documentClass,
         string $index,

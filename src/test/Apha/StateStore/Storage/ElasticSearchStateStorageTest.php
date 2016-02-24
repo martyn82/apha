@@ -6,7 +6,7 @@ namespace Apha\StateStore\Storage;
 use Apha\Message\Event;
 use Apha\Serializer\JsonSerializer;
 use Apha\StateStore\Document;
-use Elasticsearch\Client;
+use Elasticsearch\Client as ElasticClient;
 use Elasticsearch\ClientBuilder;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use JMS\Serializer\Annotation as Serializer;
@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation as Serializer;
 class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**
-     * @var Client
+     * @var ElasticClient
      */
     private static $client;
 
@@ -69,9 +69,9 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     }
 
     /**
-     * @return Client
+     * @return ElasticClient
      */
-    private function createClient(): Client
+    private function createClient(): ElasticClient
     {
         return self::$client;
     }
@@ -94,13 +94,13 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     }
 
     /**
-     * @param Client $client
+     * @param ElasticClient $client
      * @param \Apha\Serializer\Serializer $serializer
      * @param string $documentClass [optional]
      * @return ElasticSearchStateStorage
      */
     private function createStorage(
-        Client $client,
+        ElasticClient $client,
         \Apha\Serializer\Serializer $serializer,
         string $documentClass = null
     ) : ElasticSearchStateStorage
@@ -236,11 +236,11 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
 
     /**
      * @param int $count
-     * @param Client $client
+     * @param ElasticClient $client
      * @param \Apha\Serializer\Serializer $serializer
      * @return Document[]
      */
-    public function documentsProvider(int $count, Client $client, \Apha\Serializer\Serializer $serializer): array
+    public function documentsProvider(int $count, ElasticClient $client, \Apha\Serializer\Serializer $serializer): array
     {
         $documents = [];
         $result = [];
