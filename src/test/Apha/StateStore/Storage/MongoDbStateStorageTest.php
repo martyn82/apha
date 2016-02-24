@@ -277,7 +277,7 @@ class MongoDbStateStorageTest_Document implements Document
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -285,7 +285,7 @@ class MongoDbStateStorageTest_Document implements Document
     /**
      * @return int
      */
-    public function getVersion() : int
+    public function getVersion(): int
     {
         return $this->version;
     }

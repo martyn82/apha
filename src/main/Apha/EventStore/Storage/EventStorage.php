@@ -11,22 +11,22 @@ interface EventStorage
      * @param string $identity
      * @return bool
      */
-    public function contains(string $identity) : bool;
+    public function contains(string $identity): bool;
 
     /**
      * @param EventDescriptor $event
      * @return bool
      */
-    public function append(EventDescriptor $event) : bool;
+    public function append(EventDescriptor $event): bool;
 
     /**
      * @param string $identity
      * @return EventDescriptor[]
      */
-    public function find(string $identity) : array;
+    public function find(string $identity): array;
 
     /**
      * @return string[]
      */
-    public function findIdentities() : array;
+    public function findIdentities(): array;
 }

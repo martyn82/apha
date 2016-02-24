@@ -16,7 +16,7 @@ class Messages implements \IteratorAggregate
     public function __construct(array $messages = [])
     {
         $this->messages = array_map(
-            function (Message $message) : Message {
+            function (Message $message): Message {
                 return $message;
             },
             $messages
@@ -34,7 +34,7 @@ class Messages implements \IteratorAggregate
     /**
      * @return int
      */
-    public function size() : int
+    public function size(): int
     {
         return count($this->messages);
     }
@@ -49,7 +49,7 @@ class Messages implements \IteratorAggregate
     /**
      * @return \Iterator
      */
-    public function getIterator() : \Iterator
+    public function getIterator(): \Iterator
     {
         return new \ArrayIterator($this->messages);
     }

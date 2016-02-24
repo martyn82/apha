@@ -63,7 +63,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @param Document $document
      * @return array
      */
-    private function createParams(string $identity = null, bool $refresh = false, Document $document = null) : array
+    private function createParams(string $identity = null, bool $refresh = false, Document $document = null): array
     {
         $params = [
             'index' => $this->index,
@@ -113,7 +113,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @return Document
      * @throws DocumentNotFoundException
      */
-    public function find(string $identity) : Document
+    public function find(string $identity): Document
     {
         try {
             $data = $this->client->get($this->createParams($identity));
@@ -131,7 +131,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findAll(int $offset = 0, int $limit = 500) : array
+    public function findAll(int $offset = 0, int $limit = 500): array
     {
         $query = [
             'match_all' => []
@@ -167,7 +167,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findBy(array $criteria, int $offset = 0, int $limit = 500) : array
+    public function findBy(array $criteria, int $offset = 0, int $limit = 500): array
     {
         $query = [
             'filtered' => [
@@ -189,7 +189,7 @@ class ElasticSearchStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    private function query(array $query, int $offset, int $limit) : array
+    private function query(array $query, int $offset, int $limit): array
     {
         $params = $this->createParams();
         $params['body'] = ['query' => $query];
@@ -203,7 +203,7 @@ class ElasticSearchStateStorage implements StateStorage
         }
 
         return array_map(
-            function (array $hit) : Document {
+            function (array $hit): Document {
                 return $this->serializer->deserialize(
                     $this->serializer->serialize($hit['_source']),
                     $this->documentClass

@@ -37,7 +37,7 @@ final class EventDescriptor
      * @param int $playHead
      * @return EventDescriptor
      */
-    public static function record(string $identity, string $event, string $payload, int $playHead) : self
+    public static function record(string $identity, string $event, string $payload, int $playHead): self
     {
         return new self(
             $identity,
@@ -52,7 +52,7 @@ final class EventDescriptor
      * @param array $data
      * @return EventDescriptor
      */
-    public static function reconstructFromArray(array $data) : self
+    public static function reconstructFromArray(array $data): self
     {
         return new self(
             $data['identity'],

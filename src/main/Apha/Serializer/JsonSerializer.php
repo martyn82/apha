@@ -23,7 +23,7 @@ class JsonSerializer implements Serializer
      * @param mixed $value
      * @return string
      */
-    public function serialize($value) : string
+    public function serialize($value): string
     {
         return $this->serializer->serialize($value, 'json');
     }

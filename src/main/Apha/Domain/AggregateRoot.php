@@ -23,12 +23,12 @@ abstract class AggregateRoot
     /**
      * @return Identity
      */
-    abstract public function getId() : Identity;
+    abstract public function getId(): Identity;
 
     /**
      * @return Events
      */
-    public function getUncommittedChanges() : Events
+    public function getUncommittedChanges(): Events
     {
         return $this->changes;
     }

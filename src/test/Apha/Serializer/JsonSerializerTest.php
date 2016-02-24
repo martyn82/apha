@@ -37,7 +37,7 @@ class JsonSerializerTest extends SerializerTest
     /**
      * @return array
      */
-    public function serializableProvider() : array
+    public function serializableProvider(): array
     {
         return [
             [new SerializerTest_Serializable(), '{"foo":"bar"}'],
@@ -53,7 +53,7 @@ class JsonSerializerTest extends SerializerTest
     /**
      * @return array
      */
-    public function deserializeProvider() : array
+    public function deserializeProvider(): array
     {
         return [
             ['{"foo":"bar"}', SerializerTest_Serializable::class, new SerializerTest_Serializable()],

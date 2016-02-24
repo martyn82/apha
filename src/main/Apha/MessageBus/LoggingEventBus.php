@@ -42,7 +42,7 @@ class LoggingEventBus extends EventBus
      * @param Event $event
      * @return bool
      */
-    public function publish(Event $event) : bool
+    public function publish(Event $event): bool
     {
         $this->logger->info('Dispatch event', [
             'event' => get_class($event),

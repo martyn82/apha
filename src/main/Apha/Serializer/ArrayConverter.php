@@ -21,7 +21,7 @@ class ArrayConverter
      * @param object $object
      * @return array
      */
-    public function objectToArray($object) : array
+    public function objectToArray($object): array
     {
         return json_decode(
             $this->serializer->serialize($object),

@@ -17,7 +17,7 @@ class Identity
     /**
      * @return Identity
      */
-    public static function createNew() : self
+    public static function createNew(): self
     {
         return new self(Uuid::uuid4()->toString());
     }
@@ -26,7 +26,7 @@ class Identity
      * @param string $value
      * @return Identity
      */
-    public static function fromString(string $value) : self
+    public static function fromString(string $value): self
     {
         return new self($value);
     }

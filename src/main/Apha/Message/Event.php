@@ -16,7 +16,7 @@ abstract class Event implements Message
     /**
      * @return string
      */
-    public static function getName() : string
+    public static function getName(): string
     {
         $eventClassParts = explode('\\', static::class);
         return end($eventClassParts);
@@ -25,7 +25,7 @@ abstract class Event implements Message
     /**
      * @return string
      */
-    public function getEventName() : string
+    public function getEventName(): string
     {
         return static::getName();
     }
@@ -33,7 +33,7 @@ abstract class Event implements Message
     /**
      * @return int
      */
-    final public function getVersion() : int
+    final public function getVersion(): int
     {
         return $this->version;
     }

@@ -16,7 +16,7 @@ class MemoryEventStorage implements EventStorage
      * @param string $identity
      * @return bool
      */
-    public function contains(string $identity) : bool
+    public function contains(string $identity): bool
     {
         return array_key_exists($identity, $this->data);
     }
@@ -25,7 +25,7 @@ class MemoryEventStorage implements EventStorage
      * @param EventDescriptor $event
      * @return bool
      */
-    public function append(EventDescriptor $event) : bool
+    public function append(EventDescriptor $event): bool
     {
         if (!$this->contains($event->getIdentity())) {
             $this->data[$event->getIdentity()] = [];
@@ -39,14 +39,14 @@ class MemoryEventStorage implements EventStorage
      * @param string $identity
      * @return EventDescriptor[]
      */
-    public function find(string $identity) : array
+    public function find(string $identity): array
     {
         if (!$this->contains($identity)) {
             return [];
         }
 
         return array_map(
-            function (array $event) : EventDescriptor {
+            function (array $event): EventDescriptor {
                 return EventDescriptor::reconstructFromArray($event);
             },
             $this->data[$identity]
@@ -56,7 +56,7 @@ class MemoryEventStorage implements EventStorage
     /**
      * @return string[]
      */
-    public function findIdentities() : array
+    public function findIdentities(): array
     {
         return array_keys($this->data);
     }

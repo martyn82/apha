@@ -86,7 +86,7 @@ class EventStore
      * @param int $playHead
      * @return bool
      */
-    private function isValidPlayHead(Identity $aggregateId, int $playHead) : bool
+    private function isValidPlayHead(Identity $aggregateId, int $playHead): bool
     {
         $descriptors = $this->storage->find($aggregateId->getValue());
 
@@ -124,7 +124,7 @@ class EventStore
      * @return Events
      * @throws AggregateNotFoundException
      */
-    public function getEventsForAggregate(Identity $aggregateId) : Events
+    public function getEventsForAggregate(Identity $aggregateId): Events
     {
         if (!$this->storage->contains($aggregateId->getValue())) {
             throw new AggregateNotFoundException($aggregateId);
@@ -133,7 +133,7 @@ class EventStore
         $eventData = $this->storage->find($aggregateId->getValue());
 
         $events = array_map(
-            function (EventDescriptor $data) : Event {
+            function (EventDescriptor $data): Event {
                 return $this->serializer->deserialize(
                     $data->getPayload(),
                     $this->eventMap->getClassByEventName($data->getEvent())
@@ -148,10 +148,10 @@ class EventStore
     /**
      * @return Identity[]
      */
-    public function getAggregateIds() : array
+    public function getAggregateIds(): array
     {
         return array_map(
-            function (string $identity) : Identity {
+            function (string $identity): Identity {
                 return Identity::fromString($identity);
             },
             $this->storage->findIdentities()

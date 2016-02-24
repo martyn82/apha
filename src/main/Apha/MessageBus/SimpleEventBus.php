@@ -34,7 +34,7 @@ class SimpleEventBus extends EventBus
      * @param Event $event
      * @return bool
      */
-    public function publish(Event $event) : bool
+    public function publish(Event $event): bool
     {
         $eventClassName = get_class($event);
 

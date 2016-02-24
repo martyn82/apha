@@ -10,12 +10,12 @@ interface Document
     /**
      * @return string
      */
-    public function getId() : string;
+    public function getId(): string;
 
     /**
      * @return int
      */
-    public function getVersion() : int;
+    public function getVersion(): int;
 
     /**
      * @param Event $event

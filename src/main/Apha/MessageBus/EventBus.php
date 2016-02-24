@@ -19,5 +19,5 @@ abstract class EventBus
      * @param Event $event
      * @return bool
      */
-    abstract public function publish(Event $event) : bool;
+    abstract public function publish(Event $event): bool;
 }

@@ -35,7 +35,7 @@ class MongoDbEventStorage implements EventStorage
      * @param string $identity
      * @return bool
      */
-    public function contains(string $identity) : bool
+    public function contains(string $identity): bool
     {
         return $this->collection->count([$this->identityField => $identity]) > 0;
     }
@@ -44,7 +44,7 @@ class MongoDbEventStorage implements EventStorage
      * @param EventDescriptor $event
      * @return bool
      */
-    public function append(EventDescriptor $event) : bool
+    public function append(EventDescriptor $event): bool
     {
         $eventData = $event->toArray();
         $result = $this->collection->insertOne($eventData);
@@ -55,12 +55,12 @@ class MongoDbEventStorage implements EventStorage
      * @param string $identity
      * @return EventDescriptor[]
      */
-    public function find(string $identity) : array
+    public function find(string $identity): array
     {
         $cursor = $this->collection->find([$this->identityField => $identity]);
 
         return array_map(
-            function (BSONDocument $eventData) : EventDescriptor {
+            function (BSONDocument $eventData): EventDescriptor {
                 return EventDescriptor::reconstructFromArray($eventData->getArrayCopy());
             },
             $cursor->toArray()
@@ -70,7 +70,7 @@ class MongoDbEventStorage implements EventStorage
     /**
      * @return string[]
      */
-    public function findIdentities() : array
+    public function findIdentities(): array
     {
         return $this->collection->distinct($this->identityField);
     }

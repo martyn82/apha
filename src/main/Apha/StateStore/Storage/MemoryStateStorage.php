@@ -40,7 +40,7 @@ class MemoryStateStorage implements StateStorage
      * @return Document
      * @throws DocumentNotFoundException
      */
-    public function find(string $identity) : Document
+    public function find(string $identity): Document
     {
         if (!array_key_exists($identity, $this->data)) {
             throw new DocumentNotFoundException($identity);
@@ -54,7 +54,7 @@ class MemoryStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findAll(int $offset = 0, int $limit = 500) : array
+    public function findAll(int $offset = 0, int $limit = 500): array
     {
         return array_values(
             array_slice($this->data, $offset, $limit)
@@ -75,12 +75,12 @@ class MemoryStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findBy(array $criteria, int $offset = 0, int $limit = 500) : array
+    public function findBy(array $criteria, int $offset = 0, int $limit = 500): array
     {
         // perform AND match on criteria
         $filteredDocuments = array_reduce(
             $this->data,
-            function (array $result, Document $item) use ($criteria) : array {
+            function (array $result, Document $item) use ($criteria): array {
                 foreach ($criteria as $key => $value) {
                     $getterMethod = 'get' . ucfirst($key);
 

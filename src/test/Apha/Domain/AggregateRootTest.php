@@ -74,7 +74,7 @@ class AggregateRootTest_AggregateRoot extends AggregateRoot
         parent::__construct();
     }
 
-    public function getId() : Identity
+    public function getId(): Identity
     {
         return Identity::createNew();
     }

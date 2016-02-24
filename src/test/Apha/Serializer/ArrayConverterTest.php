@@ -37,7 +37,7 @@ class ArrayConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function serializableProvider() : array
+    public function serializableProvider(): array
     {
         return [
             [new SerializerTest_Serializable(), ["foo" => "bar"]],
@@ -53,7 +53,7 @@ class ArrayConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function deserializeProvider() : array
+    public function deserializeProvider(): array
     {
         $object1 = new \stdClass();
         $object1->foo = 'bar';

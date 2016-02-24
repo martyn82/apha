@@ -25,14 +25,14 @@ interface StateStorage
      * @return Document
      * @throws DocumentNotFoundException
      */
-    public function find(string $identity) : Document;
+    public function find(string $identity): Document;
 
     /**
      * @param int $offset
      * @param int $limit
      * @return Document[]
      */
-    public function findAll(int $offset = 0, int $limit = 500) : array;
+    public function findAll(int $offset = 0, int $limit = 500): array;
 
     /**
      * @return void
@@ -45,5 +45,5 @@ interface StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findBy(array $criteria, int $offset = 0, int $limit = 500) : array;
+    public function findBy(array $criteria, int $offset = 0, int $limit = 500): array;
 }

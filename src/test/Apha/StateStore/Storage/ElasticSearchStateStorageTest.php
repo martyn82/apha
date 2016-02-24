@@ -71,7 +71,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     /**
      * @return Client
      */
-    private function createClient() : Client
+    private function createClient(): Client
     {
         return self::$client;
     }
@@ -79,7 +79,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     /**
      * @return \Apha\Serializer\Serializer
      */
-    private function createSerializer() : \Apha\Serializer\Serializer
+    private function createSerializer(): \Apha\Serializer\Serializer
     {
         return new JsonSerializer();
     }
@@ -87,7 +87,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     /**
      * @return Document
      */
-    private function createDocument() : Document
+    private function createDocument(): Document
     {
         return $this->getMockBuilder(Document::class)
             ->getMockForAbstractClass();
@@ -240,7 +240,7 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
      * @param \Apha\Serializer\Serializer $serializer
      * @return Document[]
      */
-    public function documentsProvider(int $count, Client $client, \Apha\Serializer\Serializer $serializer) : array
+    public function documentsProvider(int $count, Client $client, \Apha\Serializer\Serializer $serializer): array
     {
         $documents = [];
         $result = [];
@@ -328,7 +328,7 @@ class ElasticSearchStateStorageTest_Document implements Document
     /**
      * @return string
      */
-    public function getFoo() : string
+    public function getFoo(): string
     {
         return $this->foo;
     }
@@ -336,7 +336,7 @@ class ElasticSearchStateStorageTest_Document implements Document
     /**
      * @return string
      */
-    public function getBar() : string
+    public function getBar(): string
     {
         return $this->bar;
     }
@@ -344,7 +344,7 @@ class ElasticSearchStateStorageTest_Document implements Document
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         return '1';
     }
@@ -352,7 +352,7 @@ class ElasticSearchStateStorageTest_Document implements Document
     /**
      * @return int
      */
-    public function getVersion() : int
+    public function getVersion(): int
     {
         return 1;
     }

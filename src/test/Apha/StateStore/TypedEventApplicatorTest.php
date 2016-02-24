@@ -61,7 +61,7 @@ class TypedEventApplicator_Document implements Document
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -69,7 +69,7 @@ class TypedEventApplicator_Document implements Document
     /**
      * @return int
      */
-    public function getVersion() : int
+    public function getVersion(): int
     {
         return $this->version;
     }
@@ -85,7 +85,7 @@ class TypedEventApplicator_Document implements Document
     /**
      * @return bool
      */
-    public function typedEventApplied() : bool
+    public function typedEventApplied(): bool
     {
         return $this->typedEventApplied;
     }

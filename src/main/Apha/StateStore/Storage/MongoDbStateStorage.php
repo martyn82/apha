@@ -82,7 +82,7 @@ class MongoDbStateStorage implements StateStorage
      * @return Document
      * @throws DocumentNotFoundException
      */
-    public function find(string $identity) : Document
+    public function find(string $identity): Document
     {
         /* @var $result BSONDocument */
         $result = $this->collection->findOne([$this->identityField => $identity]);
@@ -105,7 +105,7 @@ class MongoDbStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findAll(int $offset = 0, int $limit = 500) : array
+    public function findAll(int $offset = 0, int $limit = 500): array
     {
         $cursor = $this->collection->find([], ['skip' => $offset, 'limit' => $limit]);
 
@@ -134,12 +134,12 @@ class MongoDbStateStorage implements StateStorage
      * @param int $limit
      * @return Document[]
      */
-    public function findBy(array $criteria, int $offset = 0, int $limit = 500) : array
+    public function findBy(array $criteria, int $offset = 0, int $limit = 500): array
     {
         $cursor = $this->collection->find($criteria, ['skip' => $offset, 'limit' => $limit]);
 
         return array_map(
-            function (BSONDocument $document) : Document {
+            function (BSONDocument $document): Document {
                 $data = $document->getArrayCopy();
                 unset($data['_id']);
 

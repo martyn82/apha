@@ -132,7 +132,7 @@ class MemoryStateStorageTest extends \PHPUnit_Framework_TestCase implements Stat
      * @param MemoryStateStorage $storage
      * @return Document[]
      */
-    public function documentsProvider(int $count, MemoryStateStorage $storage) : array
+    public function documentsProvider(int $count, MemoryStateStorage $storage): array
     {
         $documents = [];
 
