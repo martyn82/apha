@@ -25,7 +25,7 @@ class LoggingEventBusTest extends \PHPUnit_Framework_TestCase
         $eventBus->expects(self::once())
             ->method('publish');
 
-        $logger->expects(self::exactly(2))
+        $logger->expects(self::atLeastOnce())
             ->method('info');
 
         $decoratedEventBus = new LoggingEventBus($eventBus, $logger);

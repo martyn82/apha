@@ -11,14 +11,15 @@ abstract class CommandBus
     /**
      * @param string $commandClass
      * @param CommandHandler $handler
-     * @throws CommandHandlerAlreadyExistsException
      * @return void
+     * @throws CommandHandlerAlreadyExistsException
      */
     abstract public function addHandler(string $commandClass, CommandHandler $handler);
 
     /**
      * @param Command $command
      * @return void
+     * @throws NoCommandHandlerException
      */
     abstract public function send(Command $command);
 }

@@ -41,6 +41,7 @@ class LoggingCommandBus extends CommandBus
     /**
      * @param Command $command
      * @return void
+     * @throws NoCommandHandlerException
      */
     public function send(Command $command)
     {
@@ -49,11 +50,20 @@ class LoggingCommandBus extends CommandBus
             'bus' => get_class($this->commandBus)
         ]);
 
-        $this->commandBus->send($command);
+        try {
+            $this->commandBus->send($command);
 
-        $this->logger->info('Command dispatched', [
-            'command' => get_class($command),
-            'bus' => get_class($this->commandBus)
-        ]);
+            $this->logger->info('Command dispatched', [
+                'command' => get_class($command),
+                'bus' => get_class($this->commandBus)
+            ]);
+        } catch (NoCommandHandlerException $e) {
+            $this->logger->info('Dead-letter message:command', [
+                'command' => get_class($command),
+                'bus' => get_class($this->commandBus)
+            ]);
+
+            throw $e;
+        }
     }
 }

@@ -32,18 +32,24 @@ class SimpleEventBus extends EventBus
 
     /**
      * @param Event $event
+     * @return bool
      */
-    public function publish(Event $event)
+    public function publish(Event $event) : bool
     {
         $eventClassName = get_class($event);
 
         if (!array_key_exists($eventClassName, $this->eventHandlerMap)) {
-            return;
+            return false;
         }
+
+        $handled = false;
 
         foreach ($this->eventHandlerMap[$eventClassName] as $handler) {
             /* @var $handler EventHandler */
             $handler->on($event);
+            $handled = true;
         }
+
+        return $handled;
     }
 }
