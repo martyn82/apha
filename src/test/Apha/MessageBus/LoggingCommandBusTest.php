@@ -25,7 +25,7 @@ class LoggingCommandBusTest extends \PHPUnit_Framework_TestCase
         $commandBus->expects(self::once())
             ->method('send');
 
-        $logger->expects(self::exactly(2))
+        $logger->expects(self::atLeastOnce())
             ->method('info');
 
         $decoratedCommandBus = new LoggingCommandBus($commandBus, $logger);

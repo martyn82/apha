@@ -50,11 +50,6 @@ class LoggingEventBus extends EventBus
         ]);
 
         if ($this->eventBus->publish($event)) {
-            $this->logger->info('Event dispatched', [
-                'event' => get_class($event),
-                'bus' => get_class($this->eventBus)
-            ]);
-
             return true;
         }
 
@@ -62,6 +57,7 @@ class LoggingEventBus extends EventBus
             'event' => get_class($event),
             'bus' => get_class($this->eventBus)
         ]);
+
         return false;
     }
 }

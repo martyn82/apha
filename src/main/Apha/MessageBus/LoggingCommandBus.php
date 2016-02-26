@@ -52,11 +52,6 @@ class LoggingCommandBus extends CommandBus
 
         try {
             $this->commandBus->send($command);
-
-            $this->logger->info('Command dispatched', [
-                'command' => get_class($command),
-                'bus' => get_class($this->commandBus)
-            ]);
         } catch (NoCommandHandlerException $e) {
             $this->logger->info('Dead-letter message:command', [
                 'command' => get_class($command),
