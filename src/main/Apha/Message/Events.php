@@ -53,4 +53,12 @@ class Events implements \IteratorAggregate
     {
         return new \ArrayIterator($this->events);
     }
+
+    /**
+     * @return array
+     */
+    public function getArrayCopy(): array
+    {
+        return (new \ArrayIterator($this->events))->getArrayCopy();
+    }
 }

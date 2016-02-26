@@ -46,6 +46,23 @@ class AggregateRootTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function loadFromHistoryKeepsLastEventVersion()
+    {
+        $events = new Events([
+            new AggregateRootTest_Event(0),
+            new AggregateRootTest_Event(1),
+            new AggregateRootTest_Event(2)
+        ]);
+
+        $aggregateRoot = AggregateRootTest_AggregateRoot::reconstruct($events);
+
+        self::assertCount(0, $aggregateRoot->getUncommittedChanges()->getIterator());
+        self::assertEquals(2, $aggregateRoot->getVersion());
+    }
+
+    /**
+     * @test
      * @expectedException \Apha\Domain\UnsupportedEventException
      */
     public function applyUnsupportedEventThrowsException()
@@ -63,6 +80,10 @@ class AggregateRootTest_UnsupportedEvent extends Event
 
 class AggregateRootTest_Event extends Event
 {
+    public function __construct(int $version = 0)
+    {
+        parent::setVersion($version);
+    }
 }
 
 class AggregateRootTest_AggregateRoot extends AggregateRoot

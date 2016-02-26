@@ -11,7 +11,7 @@ abstract class Event extends Message
      * @Serializer\Type("integer")
      * @var int
      */
-    private $version;
+    private $version = 0;
 
     /**
      * @return string

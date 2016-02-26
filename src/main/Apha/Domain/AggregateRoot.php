@@ -14,16 +14,41 @@ abstract class AggregateRoot
     private $changes;
 
     /**
+     * @var int
+     */
+    private $version;
+
+    /**
+     * @param Events $events
+     * @return AggregateRoot
+     */
+    public static function reconstruct(Events $events): self
+    {
+        $instance = new static();
+        $instance->loadFromHistory($events);
+        return $instance;
+    }
+
+    /**
      */
     protected function __construct()
     {
         $this->changes = new Events();
+        $this->version = -1;
     }
 
     /**
      * @return Identity
      */
     abstract public function getId(): Identity;
+
+    /**
+     * @return int
+     */
+    final public function getVersion(): int
+    {
+        return $this->version;
+    }
 
     /**
      * @return Events
@@ -48,6 +73,10 @@ abstract class AggregateRoot
         foreach ($history->getIterator() as $event) {
             $this->internalApplyChange($event, false);
         }
+
+        /* @var $lastEvent Event */
+        $lastEvent = end($history->getArrayCopy());
+        $this->version = $lastEvent->getVersion();
     }
 
     /**
