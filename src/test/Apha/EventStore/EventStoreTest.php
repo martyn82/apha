@@ -77,7 +77,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ->willReturn('{}');
 
         $eventStore = new EventStore($eventBus, $storage, $serializer, $eventMap);
-        $eventStore->save($aggregateId, $events, -1);
+        $eventStore->save($aggregateId, 'type', $events, -1);
     }
 
     /**
@@ -106,7 +106,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ->willReturn('{}');
 
         $eventStore = new EventStore($eventBus, $storage, $serializer, $eventMap);
-        $eventStore->save($aggregateId, $events, 0);
+        $eventStore->save($aggregateId, 'type', $events, 0);
     }
 
     /**
@@ -129,6 +129,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $descriptors = [
             EventDescriptor::reconstructFromArray([
                 'identity' => $aggregateId->getValue(),
+                'type' => 'aggregateType',
                 'event' => EventStoreTest_Event1::getName(),
                 'payload' => '{}',
                 'playHead' => 1,
@@ -149,7 +150,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ->willReturn('{}');
 
         $eventStore = new EventStore($eventBus, $storage, $serializer, $eventMap);
-        $eventStore->save($aggregateId, $events, 1);
+        $eventStore->save($aggregateId, 'type', $events, 1);
     }
 
     /**
@@ -167,6 +168,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
         $descriptors = [
             EventDescriptor::reconstructFromArray([
                 'identity' => $aggregateId->getValue(),
+                'type' => 'aggregateType',
                 'event' => EventStoreTest_Event1::getName(),
                 'payload' => '{}',
                 'playHead' => 1,
@@ -174,6 +176,7 @@ class EventStoreTest extends \PHPUnit_Framework_TestCase
             ]),
             EventDescriptor::reconstructFromArray([
                 'identity' => $aggregateId->getValue(),
+                'type' => 'aggregateType',
                 'event' => EventStoreTest_Event2::getName(),
                 'payload' => '{}',
                 'playHead' => 2,

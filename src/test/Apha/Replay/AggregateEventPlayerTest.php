@@ -106,12 +106,14 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
         $eventDescriptors = [
             EventDescriptor::record(
                 $aggregateId->getValue(),
+                get_class($aggregate),
                 $basicEvents[0]->getEventName(),
                 $serializer->serialize($basicEvents[0]),
                 1
             ),
             EventDescriptor::record(
                 $aggregateId->getValue(),
+                get_class($aggregate),
                 $basicEvents[0]->getEventName(),
                 $serializer->serialize($basicEvents[0]),
                 2
@@ -167,12 +169,14 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
         $eventDescriptors = [
             EventDescriptor::record(
                 $aggregateId->getValue(),
+                'aggregateType',
                 $basicEvents[0]->getEventName(),
                 $serializer->serialize($basicEvents[0]),
                 1
             ),
             EventDescriptor::record(
                 $aggregateId->getValue(),
+                'aggregateType',
                 $basicEvents[0]->getEventName(),
                 $serializer->serialize($basicEvents[0]),
                 2

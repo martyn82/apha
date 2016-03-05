@@ -203,6 +203,7 @@ $event->setVersion(1);
 $eventStorage->append(
     \Apha\EventStore\EventDescriptor::record(
         $identity->getValue(),
+        'aggregateType',
         $event->getEventName(),
         $serializer->serialize($event),
         $event->getVersion()
@@ -215,6 +216,7 @@ $event->setVersion(2);
 $eventStorage->append(
     \Apha\EventStore\EventDescriptor::record(
         $identity->getValue(),
+        'aggregateType',
         $event->getEventName(),
         $serializer->serialize($event),
         $event->getVersion()

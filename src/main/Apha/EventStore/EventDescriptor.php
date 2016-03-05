@@ -13,6 +13,11 @@ final class EventDescriptor
     /**
      * @var string
      */
+    private $type;
+
+    /**
+     * @var string
+     */
     private $event;
 
     /**
@@ -32,15 +37,17 @@ final class EventDescriptor
 
     /**
      * @param string $identity
+     * @param string $type
      * @param string $event
      * @param string $payload
      * @param int $playHead
      * @return EventDescriptor
      */
-    public static function record(string $identity, string $event, string $payload, int $playHead): self
+    public static function record(string $identity, string $type, string $event, string $payload, int $playHead): self
     {
         return new self(
             $identity,
+            $type,
             $event,
             $payload,
             date('r'),
@@ -56,6 +63,7 @@ final class EventDescriptor
     {
         return new self(
             $data['identity'],
+            $data['type'],
             $data['event'],
             $data['payload'],
             $data['recorded'],
@@ -65,14 +73,23 @@ final class EventDescriptor
 
     /**
      * @param string $identity
+     * @param string $type
      * @param string $event
      * @param string $payload
      * @param string $recorded
      * @param int $playHead
      */
-    private function __construct(string $identity, string $event, string $payload, string $recorded, int $playHead)
+    private function __construct(
+        string $identity,
+        string $type,
+        string $event,
+        string $payload,
+        string $recorded,
+        int $playHead
+    )
     {
         $this->identity = $identity;
+        $this->type = $type;
         $this->event = $event;
         $this->payload = $payload;
         $this->recorded = $recorded;
@@ -82,7 +99,7 @@ final class EventDescriptor
     /**
      * @return string
      */
-    public function getIdentity()
+    public function getIdentity(): string
     {
         return $this->identity;
     }
@@ -90,7 +107,15 @@ final class EventDescriptor
     /**
      * @return string
      */
-    public function getEvent()
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEvent(): string
     {
         return $this->event;
     }
@@ -98,7 +123,7 @@ final class EventDescriptor
     /**
      * @return string
      */
-    public function getPayload()
+    public function getPayload(): string
     {
         return $this->payload;
     }
@@ -106,7 +131,7 @@ final class EventDescriptor
     /**
      * @return int
      */
-    public function getPlayHead()
+    public function getPlayHead(): int
     {
         return $this->playHead;
     }
@@ -118,6 +143,7 @@ final class EventDescriptor
     {
         return [
             'identity' => $this->identity,
+            'type' => $this->type,
             'event' => $this->event,
             'payload' => $this->payload,
             'playHead' => $this->playHead,

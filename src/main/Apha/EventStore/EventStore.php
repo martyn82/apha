@@ -59,11 +59,12 @@ class EventStore
 
     /**
      * @param Identity $aggregateId
+     * @param string $aggregateType
      * @param Events $events
      * @param int $expectedPlayHead
      * @throws ConcurrencyException
      */
-    public function save(Identity $aggregateId, Events $events, int $expectedPlayHead)
+    public function save(Identity $aggregateId, string $aggregateType, Events $events, int $expectedPlayHead)
     {
         if (!$this->isValidPlayHead($aggregateId, $expectedPlayHead)) {
             throw new ConcurrencyException($expectedPlayHead, $this->current[$aggregateId->getValue()]);
@@ -76,7 +77,7 @@ class EventStore
             $playHead++;
             $event->setVersion($playHead);
 
-            $this->saveEvent($aggregateId, $event);
+            $this->saveEvent($aggregateId, $aggregateType, $event);
             $this->eventBus->publish($event);
         }
     }
@@ -105,12 +106,14 @@ class EventStore
 
     /**
      * @param Identity $aggregateId
+     * @param string $aggregateType
      * @param Event $event
      */
-    private function saveEvent(Identity $aggregateId, Event $event)
+    private function saveEvent(Identity $aggregateId, string $aggregateType, Event $event)
     {
         $eventData = EventDescriptor::record(
             $aggregateId->getValue(),
+            $aggregateType,
             $event->getEventName(),
             $this->serializer->serialize($event),
             $event->getVersion()

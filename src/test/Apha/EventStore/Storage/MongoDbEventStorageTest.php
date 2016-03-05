@@ -105,6 +105,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -127,6 +128,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
         $identity = 'someidentity';
         $event = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -148,6 +150,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event1 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -155,6 +158,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event2 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             2
@@ -192,6 +196,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event1 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent1',
             '{}',
             1
@@ -199,6 +204,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event2 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent2',
             '{}',
             2
@@ -228,6 +234,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event1 = EventDescriptor::record(
             $identity1,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -235,6 +242,7 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
         $event2 = EventDescriptor::record(
             $identity2,
+            'aggregateType',
             'someevent',
             '{}',
             1

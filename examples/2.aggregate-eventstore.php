@@ -183,6 +183,7 @@ class Repository
     {
         $this->eventStore->save(
             $aggregateRoot->getId(),
+            get_class($aggregateRoot),
             $aggregateRoot->getUncommittedChanges(),
             $expectedPlayHead
         );

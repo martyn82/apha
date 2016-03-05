@@ -25,6 +25,7 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
         $identity = 'existing';
         $event = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -44,6 +45,7 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
         $identity = 'someidentity';
         $event = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -62,6 +64,7 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
 
         $event1 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             1
@@ -69,6 +72,7 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
 
         $event2 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent',
             '{}',
             2
@@ -97,12 +101,14 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
         $identity = 'someidentity';
         $event1 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent1',
             '{}',
             1
         );
         $event2 = EventDescriptor::record(
             $identity,
+            'aggregateType',
             'someevent2',
             '{}',
             2
@@ -129,12 +135,14 @@ class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements Even
 
         $event1 = EventDescriptor::record(
             $identity1,
+            'aggregateType',
             'someevent',
             '{}',
             1
         );
         $event2 = EventDescriptor::record(
             $identity2,
+            'aggregateType',
             'someevent',
             '{}',
             1
