@@ -6,7 +6,7 @@ namespace Apha\CommandHandling\Interceptor;
 use Apha\Message\Command;
 use Psr\Log\LoggerInterface;
 
-class LogCommandDispatchInterceptor implements CommandDispatchInterceptor
+class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
 {
     /**
      * @var LoggerInterface

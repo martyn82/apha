@@ -266,7 +266,7 @@ $commandBus = new \Apha\CommandHandling\SimpleCommandBus([
     CreateUser::class => new CreateUserHandler($repository, $logger)
 ]);
 
-$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LogCommandDispatchInterceptor($logger);
+$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor($logger);
 $commandGateway = new \Apha\CommandHandling\Gateway\DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
 // Send the command

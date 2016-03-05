@@ -101,7 +101,7 @@ $eventBus = new \Apha\EventHandling\SimpleEventBus([
     Demonstrated::class => [new DemonstratedHandler($logger)]
 ]);
 
-$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LogCommandDispatchInterceptor($logger);
+$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor($logger);
 
 $commandGateway = new \Apha\CommandHandling\Gateway\DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 $loggingEventBus = new \Apha\EventHandling\LoggingEventBus($eventBus, $logger);
