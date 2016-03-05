@@ -6,8 +6,8 @@ namespace Apha\EventStore;
 use Apha\Message\Event;
 use Apha\Message\Events;
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventBus;
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\EventBus;
 use Apha\Serializer\Serializer;
 
 class EventStore

@@ -92,17 +92,17 @@ class DemonstratedHandler implements \Apha\MessageHandler\EventHandler
 $logger = new \Monolog\Logger('default');
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\MessageBus\SimpleCommandBus([
+$commandBus = new \Apha\CommandHandling\SimpleCommandBus([
     Demonstrate::class => new DemonstrateHandler($logger)
 ]);
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\SimpleEventBus([
+$eventBus = new \Apha\EventHandling\SimpleEventBus([
     Demonstrated::class => [new DemonstratedHandler($logger)]
 ]);
 
-$loggingCommandBus = new \Apha\MessageBus\LoggingCommandBus($commandBus, $logger);
-$loggingEventBus = new \Apha\MessageBus\LoggingEventBus($eventBus, $logger);
+$loggingCommandBus = new \Apha\CommandHandling\LoggingCommandBus($commandBus, $logger);
+$loggingEventBus = new \Apha\EventHandling\LoggingEventBus($eventBus, $logger);
 
 // Send the command
 $loggingCommandBus->send(new Demonstrate());

@@ -5,13 +5,13 @@ namespace Apha\Replay;
 
 use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventDescriptor;
 use Apha\EventStore\EventStore;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\Message\Event;
 use Apha\Message\Events;
-use Apha\MessageBus\EventBus;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
 

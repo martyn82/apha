@@ -1,10 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\MessageBus;
+namespace Apha\CommandHandling;
 
 use Apha\Message\Command;
-use Apha\MessageHandler\CommandHandler;
 
 class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +33,7 @@ class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Apha\MessageBus\NoCommandHandlerException
+     * @expectedException \Apha\CommandHandling\NoCommandHandlerException
      */
     public function sendThrowsExceptionIfNoHandlerForCommand()
     {
@@ -68,7 +67,7 @@ class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Apha\MessageBus\CommandHandlerAlreadyExistsException
+     * @expectedException \Apha\CommandHandling\CommandHandlerAlreadyExistsException
      */
     public function addHandlerThrowsExceptionIfCommandAlreadyHasAHandler()
     {

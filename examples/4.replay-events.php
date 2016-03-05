@@ -175,8 +175,8 @@ $eventStorage = new \Apha\EventStore\Storage\MemoryEventStorage();
 $stateStorage = new \Apha\StateStore\Storage\MemoryStateStorage();
 
 // An event bus with an event handler bound to the DemonstratedEvent
-$eventBus = new \Apha\MessageBus\LoggingEventBus(
-    new \Apha\MessageBus\SimpleEventBus([
+$eventBus = new \Apha\EventHandling\LoggingEventBus(
+    new \Apha\EventHandling\SimpleEventBus([
         CreatedEvent::class => [new DemonstratedEventHandler($stateStorage)],
         DemonstratedEvent::class => [new DemonstratedEventHandler($stateStorage)]
     ]),

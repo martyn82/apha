@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Apha\Replay;
 
+use Apha\EventHandling\EventBus;
 use Apha\Message\Events;
-use Apha\MessageBus\EventBus;
 
 class EventPlayer
 {

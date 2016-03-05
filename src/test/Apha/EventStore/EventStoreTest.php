@@ -7,8 +7,8 @@ use Apha\Message\{
     Event, Events
 };
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventBus;
 use Apha\EventStore\Storage\EventStorage;
-use Apha\MessageBus\EventBus;
 use Apha\Serializer\Serializer;
 
 class EventStoreTest extends \PHPUnit_Framework_TestCase

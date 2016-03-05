@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace Apha\Replay;
 
+use Apha\EventHandling\EventBus;
 use Apha\Message\Event;
 use Apha\Message\Events;
-use Apha\MessageBus\EventBus;
 
 class EventPlayerTest extends \PHPUnit_Framework_TestCase
 {

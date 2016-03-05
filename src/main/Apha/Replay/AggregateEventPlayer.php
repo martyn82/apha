@@ -5,8 +5,8 @@ namespace Apha\Replay;
 
 use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventBus;
 use Apha\EventStore\EventStore;
-use Apha\MessageBus\EventBus;
 
 class AggregateEventPlayer
 {

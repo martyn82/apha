@@ -309,8 +309,8 @@ $logger = new \Monolog\Logger('default');
 $readStorage = new \Apha\StateStore\Storage\MemoryStateStorage();
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\LoggingEventBus(
-    new \Apha\MessageBus\SimpleEventBus([
+$eventBus = new \Apha\EventHandling\LoggingEventBus(
+    new \Apha\EventHandling\SimpleEventBus([
         UserCreated::class => [new UserCreatedHandler($readStorage, $logger)]
     ]),
     $logger
@@ -330,8 +330,8 @@ $eventStore = new \Apha\EventStore\EventStore(
 $repository = new Repository($eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\MessageBus\LoggingCommandBus(
-    new \Apha\MessageBus\SimpleCommandBus([
+$commandBus = new \Apha\CommandHandling\LoggingCommandBus(
+    new \Apha\CommandHandling\SimpleCommandBus([
         CreateUser::class => new CreateUserHandler($repository, $logger)
     ]),
     $logger

@@ -1,10 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\MessageBus;
+namespace Apha\EventHandling;
 
 use Apha\Message\Event;
-use Apha\MessageHandler\EventHandler;
 
 class SimpleEventBus extends EventBus
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\MessageHandler;
+namespace Apha\EventHandling;
 
 use Apha\Message\Event;
 

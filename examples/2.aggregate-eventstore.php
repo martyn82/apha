@@ -242,11 +242,11 @@ $logger = new \Monolog\Logger('default');
 $eventStorage = new \Apha\EventStore\Storage\MemoryEventStorage();
 
 // A new event bus with a mapping to specify what handlers to call for what event.
-$eventBus = new \Apha\MessageBus\SimpleEventBus([
+$eventBus = new \Apha\EventHandling\SimpleEventBus([
     UserCreated::class => [new UserCreatedHandler($eventStorage, $logger)]
 ]);
 
-$loggingEventBus = new \Apha\MessageBus\LoggingEventBus($eventBus, $logger);
+$loggingEventBus = new \Apha\EventHandling\LoggingEventBus($eventBus, $logger);
 
 // An event store to store events
 $eventStore = new \Apha\EventStore\EventStore(
@@ -262,11 +262,11 @@ $eventStore = new \Apha\EventStore\EventStore(
 $repository = new Repository($eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\MessageBus\SimpleCommandBus([
+$commandBus = new \Apha\CommandHandling\SimpleCommandBus([
     CreateUser::class => new CreateUserHandler($repository, $logger)
 ]);
 
-$loggingCommandBus = new \Apha\MessageBus\LoggingCommandBus($commandBus, $logger);
+$loggingCommandBus = new \Apha\CommandHandling\LoggingCommandBus($commandBus, $logger);
 
 // Send the command
 $loggingCommandBus->send(new CreateUser(\Apha\Domain\Identity::createNew()));

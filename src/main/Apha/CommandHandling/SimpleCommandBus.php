@@ -1,10 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace Apha\MessageBus;
+namespace Apha\CommandHandling;
 
 use Apha\Message\Command;
-use Apha\MessageHandler\CommandHandler;
 
 class SimpleCommandBus extends CommandBus
 {
