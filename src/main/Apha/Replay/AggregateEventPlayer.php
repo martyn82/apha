@@ -8,8 +8,13 @@ use Apha\Domain\Identity;
 use Apha\EventStore\EventStore;
 use Apha\MessageBus\EventBus;
 
-class AggregateEventPlayer extends EventPlayer
+class AggregateEventPlayer
 {
+    /**
+     * @var EventPlayer
+     */
+    private $eventPlayer;
+
     /**
      * @var EventStore
      */
@@ -22,7 +27,7 @@ class AggregateEventPlayer extends EventPlayer
     public function __construct(EventBus $eventBus, EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
-        parent::__construct($eventBus);
+        $this->eventPlayer = new EventPlayer($eventBus);
     }
 
     /**
@@ -39,6 +44,6 @@ class AggregateEventPlayer extends EventPlayer
     public function replayEventsByAggregateId(Identity $aggregateId)
     {
         $events = $this->eventStore->getEventsForAggregate($aggregateId);
-        $this->play($events);
+        $this->eventPlayer->play($events);
     }
 }
