@@ -137,17 +137,25 @@ final class EventDescriptor
     }
 
     /**
+     * @return string
+     */
+    public function getRecorded(): string
+    {
+        return $this->recorded;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
     {
         return [
-            'identity' => $this->identity,
-            'type' => $this->type,
-            'event' => $this->event,
-            'payload' => $this->payload,
-            'playHead' => $this->playHead,
-            'recorded' => $this->recorded
+            'identity' => $this->getIdentity(),
+            'type' => $this->getType(),
+            'event' => $this->getEvent(),
+            'payload' => $this->getPayload(),
+            'playHead' => $this->getPlayHead(),
+            'recorded' => $this->getRecorded()
         ];
     }
 }
