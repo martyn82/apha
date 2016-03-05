@@ -30,7 +30,7 @@ final class Demonstrated extends \Apha\Message\Event
 /**
  * Handler for Demonstrate command.
  */
-class DemonstrateHandler implements \Apha\MessageHandler\CommandHandler
+class DemonstrateHandler implements \Apha\CommandHandling\CommandHandler
 {
     /**
      * @var \Psr\Log\LoggerInterface
@@ -61,7 +61,7 @@ class DemonstrateHandler implements \Apha\MessageHandler\CommandHandler
 /**
  * Handler for Demonstrated event.
  */
-class DemonstratedHandler implements \Apha\MessageHandler\EventHandler
+class DemonstratedHandler implements \Apha\EventHandling\EventHandler
 {
     /**
      * @var \Psr\Log\LoggerInterface
@@ -101,11 +101,13 @@ $eventBus = new \Apha\EventHandling\SimpleEventBus([
     Demonstrated::class => [new DemonstratedHandler($logger)]
 ]);
 
-$loggingCommandBus = new \Apha\CommandHandling\LoggingCommandBus($commandBus, $logger);
+$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LogCommandDispatchInterceptor($logger);
+
+$commandGateway = new \Apha\CommandHandling\Gateway\DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 $loggingEventBus = new \Apha\EventHandling\LoggingEventBus($eventBus, $logger);
 
 // Send the command
-$loggingCommandBus->send(new Demonstrate());
+$commandGateway->send(new Demonstrate());
 
 // Publish the event (the lack of an exception means success)
 $loggingEventBus->publish(new Demonstrated());

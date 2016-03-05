@@ -80,7 +80,7 @@ final class UserCreated extends \Apha\Message\Event
 /**
  * Handler for CreateUser command.
  */
-class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
+class CreateUserHandler implements \Apha\CommandHandling\CommandHandler
 {
     /**
      * @var Repository
@@ -121,7 +121,7 @@ class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
 /**
  * Handler for UserCreated event.
  */
-class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
+class UserCreatedHandler implements \Apha\EventHandling\EventHandler
 {
     /**
      * @var \Apha\EventStore\Storage\EventStorage
@@ -266,7 +266,8 @@ $commandBus = new \Apha\CommandHandling\SimpleCommandBus([
     CreateUser::class => new CreateUserHandler($repository, $logger)
 ]);
 
-$loggingCommandBus = new \Apha\CommandHandling\LoggingCommandBus($commandBus, $logger);
+$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LogCommandDispatchInterceptor($logger);
+$commandGateway = new \Apha\CommandHandling\Gateway\DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
 // Send the command
-$loggingCommandBus->send(new CreateUser(\Apha\Domain\Identity::createNew()));
+$commandGateway->send(new CreateUser(\Apha\Domain\Identity::createNew()));

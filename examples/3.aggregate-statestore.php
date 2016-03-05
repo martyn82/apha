@@ -73,7 +73,7 @@ final class UserCreated extends \Apha\Message\Event
 /**
  * Handler for CreateUser command.
  */
-class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
+class CreateUserHandler implements \Apha\CommandHandling\CommandHandler
 {
     /**
      * @var Repository
@@ -114,7 +114,7 @@ class CreateUserHandler implements \Apha\MessageHandler\CommandHandler
 /**
  * Handler for UserCreated event.
  */
-class UserCreatedHandler implements \Apha\MessageHandler\EventHandler
+class UserCreatedHandler implements \Apha\EventHandling\EventHandler
 {
     /**
      * @var \Apha\StateStore\Storage\MemoryStateStorage
@@ -330,12 +330,11 @@ $eventStore = new \Apha\EventStore\EventStore(
 $repository = new Repository($eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
-$commandBus = new \Apha\CommandHandling\LoggingCommandBus(
-    new \Apha\CommandHandling\SimpleCommandBus([
-        CreateUser::class => new CreateUserHandler($repository, $logger)
-    ]),
-    $logger
-);
+$commandBus = new \Apha\CommandHandling\SimpleCommandBus([
+    CreateUser::class => new CreateUserHandler($repository, $logger)
+]);
+$loggingCommandInterceptor = new \Apha\CommandHandling\Interceptor\LogCommandDispatchInterceptor($logger);
+$commandGateway = new \Apha\CommandHandling\Gateway\DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
 // Send the command
-$commandBus->send(new CreateUser(\Apha\Domain\Identity::createNew()));
+$commandGateway->send(new CreateUser(\Apha\Domain\Identity::createNew()));

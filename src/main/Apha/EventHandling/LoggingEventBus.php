@@ -52,7 +52,7 @@ class LoggingEventBus extends EventBus
             return true;
         }
 
-        $this->logger->warning('Dead-letter message:event', [
+        $this->logger->warning('Dead-letter event', [
             'event' => get_class($event),
             'bus' => get_class($this->eventBus)
         ]);

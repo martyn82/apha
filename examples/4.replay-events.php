@@ -129,7 +129,7 @@ final class DemonstratedEvent extends \Apha\Message\Event
     }
 }
 
-class DemonstratedEventHandler implements \Apha\MessageHandler\EventHandler
+class DemonstratedEventHandler implements \Apha\EventHandling\EventHandler
 {
     /**
      * @var Apha\StateStore\Storage\StateStorage
