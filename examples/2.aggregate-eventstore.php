@@ -187,6 +187,7 @@ class Repository
             $aggregateRoot->getUncommittedChanges(),
             $expectedPlayHead
         );
+        $aggregateRoot->markChangesCommitted();
     }
 }
 
