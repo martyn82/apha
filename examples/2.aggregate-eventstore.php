@@ -83,7 +83,7 @@ final class UserCreated extends \Apha\Message\Event
 class CreateUserHandler implements \Apha\CommandHandling\CommandHandler
 {
     /**
-     * @var Repository
+     * @var \Apha\Repository\Repository
      */
     private $repository;
 
@@ -93,10 +93,10 @@ class CreateUserHandler implements \Apha\CommandHandling\CommandHandler
     private $logger;
 
     /**
-     * @param Repository $repository
+     * @param \Apha\Repository\Repository $repository
      * @param \Psr\Log\LoggerInterface
      */
-    public function __construct(Repository $repository, \Psr\Log\LoggerInterface $logger)
+    public function __construct(\Apha\Repository\Repository $repository, \Psr\Log\LoggerInterface $logger)
     {
         $this->repository = $repository;
         $this->logger = $logger;
@@ -156,38 +156,6 @@ class UserCreatedHandler implements \Apha\EventHandling\EventHandler
 
         $events = $this->storage->find($event->getId()->getValue());
         var_dump($events);
-    }
-}
-
-class Repository
-{
-    /**
-     * @var \Apha\EventStore\EventStore
-     */
-    private $eventStore;
-
-    /**
-     * @param \Apha\EventStore\EventStore $eventStore
-     */
-    public function __construct(\Apha\EventStore\EventStore $eventStore)
-    {
-        $this->eventStore = $eventStore;
-    }
-
-    /**
-     * @param \Apha\Domain\AggregateRoot $aggregateRoot
-     * @param int $expectedPlayHead
-     * @throws \Apha\EventStore\ConcurrencyException
-     */
-    public function store(\Apha\Domain\AggregateRoot $aggregateRoot, int $expectedPlayHead = -1)
-    {
-        $this->eventStore->save(
-            $aggregateRoot->getId(),
-            get_class($aggregateRoot),
-            $aggregateRoot->getUncommittedChanges(),
-            $expectedPlayHead
-        );
-        $aggregateRoot->markChangesCommitted();
     }
 }
 
@@ -261,7 +229,7 @@ $eventStore = new \Apha\EventStore\EventStore(
 );
 
 // A repository for objects of type Aggregate
-$repository = new Repository($eventStore);
+$repository = new \Apha\Repository\EventSourcingRepository(User::class, $eventStore);
 
 // A new command bus with a mapping to specify what handler to call for what command.
 $commandBus = new \Apha\CommandHandling\SimpleCommandBus([
