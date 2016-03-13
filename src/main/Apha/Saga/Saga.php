@@ -15,7 +15,7 @@ abstract class Saga
     private $identity;
 
     /**
-     * @var array
+     * @var AssociationValues
      */
     private $associationValues;
 
@@ -26,12 +26,17 @@ abstract class Saga
 
     /**
      * @param Identity $identity
-     * @param array $associationValues
+     * @param AssociationValues $associationValues
      */
-    public function __construct(Identity $identity, array $associationValues = [])
+    public function __construct(Identity $identity, AssociationValues $associationValues = null)
     {
+        if ($associationValues != null) {
+            $this->associationValues = $associationValues;
+        } else {
+            $this->associationValues = new AssociationValues([]);
+        }
+
         $this->identity = $identity;
-        $this->associationValues = $associationValues;
         $this->changes = new Events();
     }
 
@@ -44,9 +49,9 @@ abstract class Saga
     }
 
     /**
-     * @return array
+     * @return AssociationValues
      */
-    final public function getAssociationValues(): array
+    final public function getAssociationValues(): AssociationValues
     {
         return $this->associationValues;
     }

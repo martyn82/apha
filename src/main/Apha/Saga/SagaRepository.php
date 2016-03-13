@@ -41,7 +41,13 @@ class SagaRepository
             return;
         }
 
-        $this->storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $associationValues = $this->associationValuesToArray($saga->getAssociationValues());
+
+        $this->storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $associationValues
+        );
     }
 
     /**
@@ -68,10 +74,12 @@ class SagaRepository
             $saga->getUncommittedChanges()->getArrayCopy()
         );
 
+        $associationValues = $this->associationValuesToArray($saga->getAssociationValues());
+
         $this->storage->update(
             get_class($saga),
             $saga->getId()->getValue(),
-            $saga->getAssociationValues(),
+            $associationValues,
             $events
         );
 
@@ -79,17 +87,33 @@ class SagaRepository
     }
 
     /**
+     * @param AssociationValues $associationValues
+     * @return array
+     */
+    private function associationValuesToArray(AssociationValues $associationValues): array
+    {
+        return array_reduce(
+            $associationValues->getArrayCopy(),
+            function (array $accumulator, AssociationValue $item): array {
+                $accumulator[$item->getKey()] = $item->getValue();
+                return $accumulator;
+            },
+            []
+        );
+    }
+
+    /**
      * @param string $sagaType
-     * @param array $associationValue
+     * @param AssociationValue $associationValue
      * @return Identity[]
      */
-    public function find(string $sagaType, array $associationValue): array
+    public function find(string $sagaType, AssociationValue $associationValue): array
     {
         return array_map(
             function (array $sagaData): Identity {
                 return Identity::fromString($sagaData['identity']);
             },
-            $this->storage->find($sagaType, $associationValue)
+            $this->storage->find($sagaType, [$associationValue->getKey() => $associationValue->getValue()])
         );
     }
 
@@ -108,7 +132,12 @@ class SagaRepository
         $sagaType = $sagaData['type'];
         $identity = Identity::fromString($sagaData['identity']);
 
-        /* @var $saga Saga */
-        return new $sagaType($identity, $sagaData['associations']);
+        $associationValues = new AssociationValues([]);
+
+        foreach ($sagaData['associations'] as $field => $value) {
+            $associationValues->add(new AssociationValue($field, $value));
+        }
+
+        return new $sagaType($identity, $associationValues);
     }
 }

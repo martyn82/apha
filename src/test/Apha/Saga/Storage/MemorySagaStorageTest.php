@@ -5,10 +5,28 @@ namespace Apha\Saga\Storage;
 
 use Apha\Domain\Identity;
 use Apha\EventStore\EventDescriptor;
+use Apha\Saga\AssociationValue;
+use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
 
 class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @param AssociationValues $associationValues
+     * @return array
+     */
+    private function associationValuesToArray(AssociationValues $associationValues): array
+    {
+        return array_reduce(
+            $associationValues->getArrayCopy(),
+            function (array $accumulator, AssociationValue $item): array {
+                $accumulator[$item->getKey()] = $item->getValue();
+                return $accumulator;
+            },
+            []
+        );
+    }
+
     /**
      * @test
      */
@@ -18,11 +36,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $associationValues = ['foo' => 'bar'];
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, $associationValues])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
 
@@ -38,11 +60,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, []])
+            ->setConstructorArgs([$sagaIdentity])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $foundSagas = $storage->find(get_class($saga), []);
 
@@ -59,11 +85,21 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $associationValues = ['foo' => 'bar', 'bar' => 'baz'];
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, $associationValues])
+            ->setConstructorArgs([
+                $sagaIdentity,
+                new AssociationValues([
+                    new AssociationValue('foo', 'bar'),
+                    new AssociationValue('bar', 'baz')
+                ])
+            ])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
 
@@ -80,11 +116,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $associationValues = ['foo' => 'bar', 'bar' => 'baz'];
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, []])
+            ->setConstructorArgs([$sagaIdentity])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
         self::assertEmpty($foundSagas);
@@ -98,11 +138,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, []])
+            ->setConstructorArgs([$sagaIdentity])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
         self::assertEquals($saga->getId()->getValue(), $foundSaga['identity']);
@@ -128,11 +172,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, []])
+            ->setConstructorArgs([$sagaIdentity])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
 
         $events = [
             EventDescriptor::record($sagaIdentity->getValue(), get_class($saga), 'SomethingHappened', '{}', 1)
@@ -145,7 +193,12 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
             $events
         );
 
-        $storage->update(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues(), $events);
+        $storage->update(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $events
+        );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
         self::assertEquals($sagaIdentity->getValue(), $foundSaga['identity']);
@@ -160,11 +213,16 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, []])
+            ->setConstructorArgs([$sagaIdentity])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->update(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues(), []);
+        $storage->update(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            []
+        );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
         self::assertEquals($sagaIdentity->getValue(), $foundSaga['identity']);
@@ -178,11 +236,15 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, ['foo' => 'bar']])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
-        $storage->insert(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+        $storage->insert(
+            get_class($saga),
+            $saga->getId()->getValue(),
+            $this->associationValuesToArray($saga->getAssociationValues())
+        );
         $storage->delete($sagaIdentity->getValue());
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());

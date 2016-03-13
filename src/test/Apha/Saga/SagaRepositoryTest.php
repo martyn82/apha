@@ -31,6 +31,22 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param AssociationValues $associationValues
+     * @return array
+     */
+    private function associationValuesToArray(AssociationValues $associationValues): array
+    {
+        return array_reduce(
+            $associationValues->getArrayCopy(),
+            function (array $accumulator, AssociationValue $item): array {
+                $accumulator[$item->getKey()] = $item->getValue();
+                return $accumulator;
+            },
+            []
+        );
+    }
+
+    /**
      * @test
      */
     public function addWillInsertSagaIntoStorage()
@@ -48,7 +64,11 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $storage->expects(self::once())
             ->method('insert')
-            ->with(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues());
+            ->with(
+                get_class($saga),
+                $saga->getId()->getValue(),
+                $this->associationValuesToArray($saga->getAssociationValues())
+            );
 
         $repository = new SagaRepository($storage, $serializer);
         $repository->add($saga);
@@ -116,7 +136,12 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $storage->expects(self::once())
             ->method('update')
-            ->with(get_class($saga), $saga->getId()->getValue(), $saga->getAssociationValues(), $eventDescriptors);
+            ->with(
+                get_class($saga),
+                $saga->getId()->getValue(),
+                $this->associationValuesToArray($saga->getAssociationValues()),
+                $eventDescriptors
+            );
 
         $repository = new SagaRepository($storage, $serializer);
         $repository->commit($saga);
@@ -157,15 +182,17 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->createSerializer();
 
         $sagaIdentity = Identity::createNew();
-        $associationValues = ['foo' => 'bar'];
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, $associationValues])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
             ->getMock();
 
         $storage->expects(self::once())
             ->method('find')
-            ->with(get_class($saga), $saga->getAssociationValues())
+            ->with(
+                get_class($saga),
+                $this->associationValuesToArray($saga->getAssociationValues())
+            )
             ->willReturn([
                 [
                     'type' => get_class($saga),
@@ -176,7 +203,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
             ]);
 
         $repository = new SagaRepository($storage, $serializer);
-        $identities = $repository->find(get_class($saga), $associationValues);
+        $identities = $repository->find(get_class($saga), new AssociationValue('foo', 'bar'));
 
         self::assertCount(1, $identities);
         self::assertEquals($sagaIdentity->getValue(), $identities[0]);
@@ -191,7 +218,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->createSerializer();
 
         $sagaIdentity = Identity::createNew();
-        $saga = new SagaRepositoryTest_Saga($sagaIdentity);
+        $saga = new SagaRepositoryTest_Saga($sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')]));
 
         $storage->expects(self::once())
             ->method('findById')
@@ -199,7 +226,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
             ->willReturn([
                 'type' => get_class($saga),
                 'identity' => $sagaIdentity->getValue(),
-                'associations' => [],
+                'associations' => $this->associationValuesToArray($saga->getAssociationValues()),
                 'events' => []
             ]);
 
@@ -207,6 +234,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $actual = $repository->load($sagaIdentity);
         self::assertEquals($saga->getId()->getValue(), $actual->getId()->getValue());
+        self::assertEquals($saga->getAssociationValues(), $actual->getAssociationValues());
     }
 
     /**
