@@ -8,11 +8,6 @@ use Apha\Message\Event;
 interface EventScheduler
 {
     /**
-     * @return void
-     */
-    public function onTick();
-
-    /**
      * @param ScheduleToken $token
      * @return void
      */
