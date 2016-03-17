@@ -4,6 +4,9 @@ declare(strict_types = 1);
 namespace Apha\EventHandling;
 
 use Apha\Message\Event;
+use Apha\Serializer\ArrayConverter;
+use Apha\Serializer\JsonSerializer;
+use Apha\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
 class LoggingEventBus extends EventBus
@@ -19,6 +22,11 @@ class LoggingEventBus extends EventBus
     private $logger;
 
     /**
+     * @var ArrayConverter
+     */
+    private $converter;
+
+    /**
      * @param EventBus $eventBus
      * @param LoggerInterface $logger
      */
@@ -26,6 +34,7 @@ class LoggingEventBus extends EventBus
     {
         $this->eventBus = $eventBus;
         $this->logger = $logger;
+        $this->converter = new ArrayConverter();
     }
 
     /**
@@ -44,7 +53,8 @@ class LoggingEventBus extends EventBus
     public function publish(Event $event): bool
     {
         $this->logger->info('Dispatch event', [
-            'event' => get_class($event),
+            'type' => get_class($event),
+            'event' => $this->converter->objectToArray($event),
             'bus' => get_class($this->eventBus)
         ]);
 
@@ -53,7 +63,8 @@ class LoggingEventBus extends EventBus
         }
 
         $this->logger->warning('Dead-letter event', [
-            'event' => get_class($event),
+            'type' => get_class($event),
+            'event' => $this->converter->objectToArray($event),
             'bus' => get_class($this->eventBus)
         ]);
 

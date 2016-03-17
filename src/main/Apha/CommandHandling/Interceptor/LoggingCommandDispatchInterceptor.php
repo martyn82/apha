@@ -4,6 +4,9 @@ declare(strict_types = 1);
 namespace Apha\CommandHandling\Interceptor;
 
 use Apha\Message\Command;
+use Apha\Serializer\ArrayConverter;
+use Apha\Serializer\JsonSerializer;
+use Apha\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
 class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
@@ -14,11 +17,17 @@ class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
     private $logger;
 
     /**
+     * @var ArrayConverter
+     */
+    private $converter;
+
+    /**
      * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->converter = new ArrayConverter();
     }
 
     /**
@@ -28,7 +37,8 @@ class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
     public function onBeforeDispatch(Command $command)
     {
         $this->logger->info('Dispatch command', [
-            'command' => get_class($command)
+            'type' => get_class($command),
+            'command' => $this->converter->objectToArray($command)
         ]);
     }
 
@@ -48,7 +58,8 @@ class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
     public function onDispatchFailed(Command $command, \Exception $exception)
     {
         $this->logger->error('Dead letter message', [
-            'command' => get_class($command)
+            'type' => get_class($command),
+            'command' => $this->converter->objectToArray($command)
         ]);
     }
 }
