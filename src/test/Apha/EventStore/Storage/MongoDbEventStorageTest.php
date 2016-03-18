@@ -57,6 +57,10 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
 
     protected function setUp()
     {
+        if (!class_exists('MongoDB\\Collection')) {
+            self::markTestSkipped("MongoDB library not found.");
+        }
+
         try {
             self::$manager->selectServer(self::$manager->getReadPreference());
         } catch (\Exception $e) {

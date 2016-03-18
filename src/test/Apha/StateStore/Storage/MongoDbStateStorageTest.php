@@ -64,6 +64,10 @@ class MongoDbStateStorageTest extends \PHPUnit_Framework_TestCase implements Sta
 
     protected function setUp()
     {
+        if (!class_exists('MongoDB\\Collection')) {
+            self::markTestSkipped("MongoDB library not found.");
+        }
+
         try {
             self::$manager->selectServer(self::$manager->getReadPreference());
         } catch (\Exception $e) {

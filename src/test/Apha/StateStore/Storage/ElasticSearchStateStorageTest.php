@@ -32,6 +32,10 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
      */
     public static function setUpBeforeClass()
     {
+        if (!class_exists('Elasticsearch\\Client')) {
+            self::markTestSkipped("ElasticSearch library not found.");
+        }
+
         self::$index = uniqid('test_');
         self::$type = uniqid();
 
