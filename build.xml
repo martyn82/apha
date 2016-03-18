@@ -31,7 +31,7 @@
         <phingcall target="test:unit" />
     </target>
 
-    <target name="lint" description="Lint for syntax errors and code style.">
+    <target name="lint" description="Check for syntax errors and code style.">
         <phplint haltonfailure="true">
             <fileset refid="sources" />
             <fileset refid="testsources" />
