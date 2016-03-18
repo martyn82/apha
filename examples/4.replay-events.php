@@ -82,50 +82,22 @@ class DemoDocument implements \Apha\StateStore\Document
 final class CreatedEvent extends \Apha\Message\Event
 {
     /**
-     * @Serializer\Type("Apha\Domain\Identity")
-     * @var \Apha\Domain\Identity
-     */
-    private $id;
-
-    /**
      * @param \Apha\Domain\Identity $id
      */
     public function __construct(\Apha\Domain\Identity $id)
     {
-        $this->id = $id;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getId() : \Apha\Domain\Identity
-    {
-        return $this->id;
+        $this->setIdentity($id);
     }
 }
 
 final class DemonstratedEvent extends \Apha\Message\Event
 {
     /**
-     * @Serializer\Type("Apha\Domain\Identity")
-     * @var \Apha\Domain\Identity
-     */
-    private $id;
-
-    /**
      * @param \Apha\Domain\Identity $id
      */
     public function __construct(\Apha\Domain\Identity $id)
     {
-        $this->id = $id;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getId() : \Apha\Domain\Identity
-    {
-        return $this->id;
+        $this->setIdentity($id);
     }
 }
 
@@ -150,13 +122,13 @@ class DemonstratedEventHandler implements \Apha\EventHandling\EventHandler
     public function on(\Apha\Message\Event $event)
     {
         try {
-            $document = $this->readStorage->find($event->getId()->getValue());
+            $document = $this->readStorage->find($event->getIdentity()->getValue());
         } catch (\Apha\StateStore\Storage\DocumentNotFoundException $e) {
-            $document = new DemoDocument($event->getId()->getValue(), $event->getVersion());
+            $document = new DemoDocument($event->getIdentity()->getValue(), $event->getVersion());
         }
 
         $document->apply($event);
-        $this->readStorage->upsert($event->getId()->getValue(), $document);
+        $this->readStorage->upsert($event->getIdentity()->getValue(), $document);
 
         echo "Stored state version: {$event->getVersion()}\n";
     }

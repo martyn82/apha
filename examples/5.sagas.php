@@ -157,12 +157,6 @@ final class CreateToDoItem extends \Apha\Message\Command
 final class ToDoItemCreated extends \Apha\Message\Event
 {
     /**
-     * @Serializer\Type("Apha\Domain\Identity")
-     * @var \Apha\Domain\Identity
-     */
-    private $identity;
-
-    /**
      * @Serializer\Type("string")
      * @var string
      */
@@ -181,17 +175,9 @@ final class ToDoItemCreated extends \Apha\Message\Event
      */
     public function __construct(\Apha\Domain\Identity $identity, string $description, int $expireSeconds)
     {
-        $this->identity = $identity;
+        $this->setIdentity($identity);
         $this->description = $description;
         $this->expireSeconds = $expireSeconds;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getIdentity(): \Apha\Domain\Identity
-    {
-        return $this->identity;
     }
 
     /**
@@ -238,50 +224,22 @@ final class MarkItemDone extends \Apha\Message\Command
 final class ToDoItemDone extends \Apha\Message\Event
 {
     /**
-     * @Serializer\Type("Apha\Domain\Identity")
-     * @var \Apha\Domain\Identity
-     */
-    private $identity;
-
-    /**
      * @param \Apha\Domain\Identity $identity
      */
     public function __construct(\Apha\Domain\Identity $identity)
     {
-        $this->identity = $identity;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getIdentity()
-    {
-        return $this->identity;
+        $this->setIdentity($identity);
     }
 }
 
 final class DeadlineExpired extends \Apha\Message\Event
 {
     /**
-     * @Serializer\Type("Apha\Domain\Identity")
-     * @var \Apha\Domain\Identity
-     */
-    private $identity;
-
-    /**
      * @param \Apha\Domain\Identity $identity
      */
     public function __construct(\Apha\Domain\Identity $identity)
     {
-        $this->identity = $identity;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getIdentity()
-    {
-        return $this->identity;
+        $this->setIdentity($identity);
     }
 }
 

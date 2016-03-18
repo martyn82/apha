@@ -49,24 +49,11 @@ final class CreateUser extends \Apha\Message\Command
 final class UserCreated extends \Apha\Message\Event
 {
     /**
-     * @var \Apha\Domain\Identity
-     */
-    private $id;
-
-    /**
      * @param \Apha\Domain\Identity $id
      */
     public function __construct(\Apha\Domain\Identity $id)
     {
-        $this->id = $id;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getId() : \Apha\Domain\Identity
-    {
-        return $this->id;
+        $this->setIdentity($id);
     }
 }
 
@@ -148,15 +135,15 @@ class UserCreatedHandler implements \Apha\EventHandling\EventHandler
         ]);
 
         try {
-            $document = $this->storage->find($event->getId()->getValue());
+            $document = $this->storage->find($event->getIdentity()->getValue());
             $document->apply($event);
         } catch (\Apha\StateStore\Storage\DocumentNotFoundException $e) {
-            $document = new UserDocument($event->getId()->getValue(), $event->getVersion());
+            $document = new UserDocument($event->getIdentity()->getValue(), $event->getVersion());
         }
 
-        $this->storage->upsert($event->getId()->getValue(), $document);
+        $this->storage->upsert($event->getIdentity()->getValue(), $document);
 
-        var_dump($this->storage->find($event->getId()->getValue()));
+        var_dump($this->storage->find($event->getIdentity()->getValue()));
     }
 }
 

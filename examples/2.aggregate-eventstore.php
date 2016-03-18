@@ -31,14 +31,14 @@ final class CreateUser extends \Apha\Message\Command
     /**
      * @var \Apha\Domain\Identity
      */
-    private $id;
+    private $identity;
 
     /**
-     * @param \Apha\Domain\Identity $id
+     * @param \Apha\Domain\Identity $identity
      */
-    public function __construct(\Apha\Domain\Identity $id)
+    public function __construct(\Apha\Domain\Identity $identity)
     {
-        $this->id = $id;
+        $this->identity = $identity;
     }
 
     /**
@@ -46,7 +46,7 @@ final class CreateUser extends \Apha\Message\Command
      */
     public function getId() : \Apha\Domain\Identity
     {
-        return $this->id;
+        return $this->identity;
     }
 }
 
@@ -56,24 +56,11 @@ final class CreateUser extends \Apha\Message\Command
 final class UserCreated extends \Apha\Message\Event
 {
     /**
-     * @var \Apha\Domain\Identity
-     */
-    private $id;
-
-    /**
      * @param \Apha\Domain\Identity $id
      */
     public function __construct(\Apha\Domain\Identity $id)
     {
-        $this->id = $id;
-    }
-
-    /**
-     * @return \Apha\Domain\Identity
-     */
-    public function getId() : \Apha\Domain\Identity
-    {
-        return $this->id;
+        $this->setIdentity($id);
     }
 }
 
@@ -154,7 +141,7 @@ class UserCreatedHandler implements \Apha\EventHandling\EventHandler
             'handler' => get_class($this)
         ]);
 
-        $events = $this->storage->find($event->getId()->getValue());
+        $events = $this->storage->find($event->getIdentity()->getValue());
         var_dump($events);
     }
 }

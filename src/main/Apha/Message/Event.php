@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Apha\Message;
 
+use Apha\Domain\Identity;
 use JMS\Serializer\Annotation as Serializer;
 
 abstract class Event
@@ -12,6 +13,12 @@ abstract class Event
      * @var int
      */
     private $version = 0;
+
+    /**
+     * @Serializer\Type("Apha\Domain\Identity")
+     * @var Identity
+     */
+    private $identity;
 
     /**
      * @return string
@@ -25,9 +32,25 @@ abstract class Event
     /**
      * @return string
      */
-    public function getEventName(): string
+    final public function getEventName(): string
     {
         return static::getName();
+    }
+
+    /**
+     * @param Identity $identity
+     */
+    protected function setIdentity(Identity $identity)
+    {
+        $this->identity = $identity;
+    }
+
+    /**
+     * @return Identity
+     */
+    public function getIdentity(): Identity
+    {
+        return $this->identity;
     }
 
     /**
