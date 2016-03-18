@@ -2,7 +2,9 @@
 declare(strict_types = 1);
 
 namespace Apha\Repository;
+use Apha\Domain\AggregateFactory;
 use Apha\Domain\AggregateRoot;
+use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
 use Apha\EventStore\EventStore;
 use Apha\Message\Event;
@@ -18,6 +20,15 @@ class EventSourcingRepositoryTest extends \PHPUnit_Framework_TestCase
         return $this->getMockBuilder(EventStore::class)
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    /**
+     * @param string $type
+     * @return AggregateFactory
+     */
+    private function createAggregateFactory(string $type): AggregateFactory
+    {
+        return new GenericAggregateFactory($type);
     }
 
     /**
@@ -47,13 +58,15 @@ class EventSourcingRepositoryTest extends \PHPUnit_Framework_TestCase
             ->willReturn($identity);
 
         $aggregateType = get_class($aggregate);
+
+        $factory = $this->createAggregateFactory($aggregateType);
         $eventStore = $this->createEventStore();
 
         $eventStore->expects(self::once())
             ->method('save')
             ->with($identity, $aggregateType, $events, -1);
 
-        $repository = new EventSourcingRepository($aggregateType, $eventStore);
+        $repository = new EventSourcingRepository($factory, $eventStore);
         $repository->store($aggregate);
     }
 
@@ -63,8 +76,9 @@ class EventSourcingRepositoryTest extends \PHPUnit_Framework_TestCase
     public function findByIdRetrievesAggregateByIdentity()
     {
         $aggregate = new EventSourcingRepositoryTest_AggregateRoot();
-
         $aggregateType = get_class($aggregate);
+        $factory = $this->createAggregateFactory($aggregateType);
+
         $identity = Identity::createNew();
 
         $events = new Events([
@@ -78,7 +92,7 @@ class EventSourcingRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with($identity)
             ->willReturn($events);
 
-        $repository = new EventSourcingRepository($aggregateType, $eventStore);
+        $repository = new EventSourcingRepository($factory, $eventStore);
         $repository->findById($identity);
     }
 }

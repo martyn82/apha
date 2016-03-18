@@ -3,31 +3,33 @@ declare(strict_types = 1);
 
 namespace Apha\Repository;
 
+use Apha\Domain\AggregateFactory;
 use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
 use Apha\EventStore\ConcurrencyException;
 use Apha\EventStore\EventStore;
+use Apha\Message\Events;
 
 class EventSourcingRepository implements Repository
 {
-    /**
-     * @var string
-     */
-    private $aggregateType;
-
     /**
      * @var EventStore
      */
     private $eventStore;
 
     /**
-     * @param string $aggregateType
+     * @var AggregateFactory
+     */
+    private $factory;
+
+    /**
+     * @param AggregateFactory $factory
      * @param EventStore $eventStore
      */
-    public function __construct(string $aggregateType, EventStore $eventStore)
+    public function __construct(AggregateFactory $factory, EventStore $eventStore)
     {
-        $this->aggregateType = $aggregateType;
         $this->eventStore = $eventStore;
+        $this->factory = $factory;
     }
 
     /**
@@ -40,7 +42,7 @@ class EventSourcingRepository implements Repository
     {
         $this->eventStore->save(
             $aggregateRoot->getId(),
-            $this->aggregateType,
+            $this->factory->getAggregateType(),
             $aggregateRoot->getUncommittedChanges(),
             $expectedPlayHead
         );
@@ -55,8 +57,6 @@ class EventSourcingRepository implements Repository
     public function findById(Identity $aggregateIdentity): AggregateRoot
     {
         $events = $this->eventStore->getEventsForAggregate($aggregateIdentity);
-
-        $aggregateType = $this->aggregateType;
-        return $aggregateType::reconstruct($events);
+        return $this->factory->createAggregate($aggregateIdentity, $events);
     }
 }
