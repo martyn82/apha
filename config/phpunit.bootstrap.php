@@ -1,11 +1,10 @@
 <?php
 declare(strict_types = 1);
 
+/* @var $loader \Composer\Autoload\ClassLoader */
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-require_once __DIR__ . '/../src/test/Apha/StateStore/Storage/StateStorageTest.php';
-require_once __DIR__ . '/../src/test/Apha/Serializer/SerializerTest.php';
-
+// register serializer annotations
 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
     'JMS\Serializer\Annotation', __DIR__ . '/../vendor/jms/serializer/src'
 );

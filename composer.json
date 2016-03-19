@@ -2,6 +2,30 @@
   "name": "martyn82/apha",
   "description": "Apha CQRS/ES library for PHP",
   "license": "MIT",
+  "type": "library",
+  "homepage": "https://github.com/martyn82/apha",
+  "authors": [
+    {
+      "name": "Martijn Endenburg",
+      "email": "martijn.endenburg@gmail.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/martyn82/apha/issues"
+  },
+  "keywords": [
+    "cqrs",
+    "event-sourcing",
+    "eventsourcing",
+    "eventstore",
+    "commands",
+    "events",
+    "commandbus",
+    "eventbus",
+    "messaging",
+    "saga",
+    "repository"
+  ],
   "require": {
     "php": ">=7.0",
     "ramsey/uuid": "~3.1",
@@ -21,6 +45,11 @@
   "autoload": {
     "psr-4": {
       "Apha\\": "src/main/Apha/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Apha\\": "src/test/Apha/"
     }
   },
   "config": {
