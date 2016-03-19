@@ -38,9 +38,9 @@
     "phing/phing": "~2.13"
   },
   "suggest": {
-    "ext-mongodb": "^1.1",
-    "elasticsearch/elasticsearch": "~2.1",
-    "mongodb/mongodb": "~1.0"
+    "ext-mongodb": "Enabling the MongoDB extension will allow you to use MongoDB as data store.",
+    "elasticsearch/elasticsearch": "Installing the ElasticSearch library will allow you to use it as read store.",
+    "mongodb/mongodb": "Installing the MongoDB library will allow you to use MongoDB as read and/or write store."
   },
   "autoload": {
     "psr-4": {
