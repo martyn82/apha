@@ -33,6 +33,10 @@ class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements Eve
      */
     public static function setUpBeforeClass()
     {
+        if (!class_exists('MongoDB\\Driver\\Manager')) {
+            self::markTestSkipped("MongoDB library not found.");
+        }
+
         self::$testDb = uniqid('test_');
         self::$testCollection = uniqid('test_');
 
