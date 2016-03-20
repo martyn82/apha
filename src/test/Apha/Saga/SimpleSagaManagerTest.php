@@ -7,9 +7,6 @@ use Apha\Domain\Identity;
 use Apha\EventHandling\EventBus;
 use Apha\Message\Event;
 
-/**
- * @group wip
- */
 class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
