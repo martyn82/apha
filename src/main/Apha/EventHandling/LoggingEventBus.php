@@ -47,6 +47,15 @@ class LoggingEventBus extends EventBus
     }
 
     /**
+     * @param string $eventClass
+     * @param EventHandler $handler
+     */
+    public function removeHandler(string $eventClass, EventHandler $handler)
+    {
+        $this->eventBus->removeHandler($eventClass, $handler);
+    }
+
+    /**
      * @param Event $event
      * @return bool
      */

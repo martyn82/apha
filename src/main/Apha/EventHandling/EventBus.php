@@ -15,6 +15,13 @@ abstract class EventBus
     abstract public function addHandler(string $eventClass, EventHandler $handler);
 
     /**
+     * @param string $eventClass
+     * @param EventHandler $handler
+     * @return void
+     */
+    abstract public function removeHandler(string $eventClass, EventHandler $handler);
+
+    /**
      * @param Event $event
      * @return bool
      */

@@ -51,6 +51,27 @@ class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function handleAllEventsByRegisteringToBaseEvent()
+    {
+        $event = $this->getMockBuilder(SimpleEventBusTest_Event::class)
+            ->getMock();
+
+        $handler = $this->getMockBuilder(EventHandler::class)
+            ->getMockForAbstractClass();
+
+        $handler->expects(self::once())
+            ->method('on')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([
+            Event::class => [$handler]
+        ]);
+        $eventBus->publish($event);
+    }
+
+    /**
+     * @test
+     */
     public function addHandlerRegistersHandlerForEvent()
     {
         $event = $this->getMockBuilder(Event::class)
@@ -68,4 +89,30 @@ class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
 
         $eventBus->publish($event);
     }
+
+    /**
+     * @test
+     */
+    public function removeHandlerUnregistersHandlerForEvent()
+    {
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $handler = $this->getMockBuilder(EventHandler::class)
+            ->getMockForAbstractClass();
+
+        $handler->expects(self::never())
+            ->method('on')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([]);
+        $eventBus->addHandler(get_class($event), $handler);
+        $eventBus->removeHandler(get_class($event), $handler);
+
+        $eventBus->publish($event);
+    }
+}
+
+class SimpleEventBusTest_Event extends Event
+{
 }
