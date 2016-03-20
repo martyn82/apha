@@ -14,7 +14,6 @@ class SimpleSagaManager extends SagaManager
      */
     protected function extractAssociationValue(string $sagaType, Event $event): AssociationValue
     {
-        // go naive
         return new AssociationValue('identity', $event->getIdentity()->getValue());
     }
 }
