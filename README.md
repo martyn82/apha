@@ -6,6 +6,8 @@
 Apha
 ====
 
+[![Build Status](https://travis-ci.org/martyn82/apha.svg?branch=master)](https://travis-ci.org/martyn82/apha)
+
 Apha is a CQRS/ES library for PHP. It contains all the building blocks
 you need to build an application that implements Command-Query Responsibility
 Segregation either with or without Event Sourcing.
