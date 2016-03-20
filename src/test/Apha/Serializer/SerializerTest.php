@@ -22,12 +22,3 @@ abstract class SerializerTest extends \PHPUnit_Framework_TestCase
      */
     abstract public function deserializeReconstructsValue($serialized, string $type, $expected);
 }
-
-class SerializerTest_Serializable
-{
-    /**
-     * @Serializer\Type("string")
-     * @var string
-     */
-    private $foo = 'bar';
-}

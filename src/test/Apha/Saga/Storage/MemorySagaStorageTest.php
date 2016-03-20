@@ -60,7 +60,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
@@ -116,7 +116,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $associationValues = ['foo' => 'bar', 'bar' => 'baz'];
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
@@ -138,7 +138,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
@@ -172,7 +172,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $storage = new MemorySagaStorage();
@@ -213,7 +213,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $storage = new MemorySagaStorage();

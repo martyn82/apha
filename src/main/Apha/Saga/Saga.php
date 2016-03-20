@@ -28,15 +28,10 @@ abstract class Saga
      * @param Identity $identity
      * @param AssociationValues $associationValues
      */
-    public function __construct(Identity $identity, AssociationValues $associationValues = null)
+    public function __construct(Identity $identity, AssociationValues $associationValues)
     {
-        if ($associationValues != null) {
-            $this->associationValues = $associationValues;
-        } else {
-            $this->associationValues = new AssociationValues([]);
-        }
-
         $this->identity = $identity;
+        $this->associationValues = $associationValues;
         $this->changes = new Events();
     }
 

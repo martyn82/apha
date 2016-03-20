@@ -55,7 +55,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->createSerializer();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([Identity::createNew()])
+            ->setConstructorArgs([Identity::createNew(), new AssociationValues([])])
             ->getMock();
 
         $saga->expects(self::any())
@@ -108,7 +108,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $event = new SagaRepositoryTest_Event();
@@ -158,7 +158,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity])
+            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
         $saga->expects(self::any())
@@ -182,9 +182,10 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->createSerializer();
 
         $sagaIdentity = Identity::createNew();
+        $associationValues = new AssociationValues([new AssociationValue('foo', 'bar')]);
 
         $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
+            ->setConstructorArgs([$sagaIdentity, $associationValues])
             ->getMock();
 
         $storage->expects(self::once())

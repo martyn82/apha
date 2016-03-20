@@ -40,7 +40,7 @@ class ArrayConverterTest extends \PHPUnit_Framework_TestCase
     public function serializableProvider(): array
     {
         return [
-            [new SerializerTest_Serializable(), ["foo" => "bar"]],
+            [new Serializable(), ["foo" => "bar"]],
             [['foo' => 'bar'], ["foo" => "bar"]],
             [[], []],
             [
@@ -66,7 +66,7 @@ class ArrayConverterTest extends \PHPUnit_Framework_TestCase
 
         return [
             [["foo" => "bar"], null, $object1],
-            [["foo" => "bar"], SerializerTest_Serializable::class, new SerializerTest_Serializable()],
+            [["foo" => "bar"], Serializable::class, new Serializable()],
             [[], null, new \stdClass()],
             [
                 ["int" => 123, "bool-true" => true, "bool-false" => false, "str" => "string"],
