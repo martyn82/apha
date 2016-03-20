@@ -74,8 +74,10 @@ abstract class AggregateRoot
             $this->internalApplyChange($event, false);
         }
 
+        $historyCopy = $history->getArrayCopy();
+
         /* @var $lastEvent Event */
-        $lastEvent = end($history->getArrayCopy());
+        $lastEvent = end($historyCopy);
         $this->version = $lastEvent->getVersion();
     }
 
