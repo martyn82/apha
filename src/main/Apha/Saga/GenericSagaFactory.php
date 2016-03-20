@@ -12,10 +12,15 @@ class GenericSagaFactory implements SagaFactory
      * @param Identity $identity
      * @param AssociationValues $associationValues
      * @return Saga
+     * @throws \InvalidArgumentException
      */
-    public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues = null): Saga
+    public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues): Saga
     {
-        return new $sagaType();
+        if (!$this->supports($sagaType)) {
+            throw new \InvalidArgumentException("Unsupported Saga type: {$sagaType}.");
+        }
+
+        return new $sagaType($identity, $associationValues);
     }
 
     /**

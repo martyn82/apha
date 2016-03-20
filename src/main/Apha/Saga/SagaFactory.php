@@ -13,7 +13,7 @@ interface SagaFactory
      * @param AssociationValues $associationValues
      * @return Saga
      */
-    public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues = null): Saga;
+    public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues): Saga;
 
     /**
      * @param string $sagaType
