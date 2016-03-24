@@ -107,32 +107,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $sagaIdentity = Identity::createNew();
 
-        $saga = $this->getMockBuilder(Saga::class)
-            ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
-            ->getMock();
-
-        $event = new SagaRepositoryTest_Event();
-        $events = new Events([
-            $event
-        ]);
-
-        $eventDescriptors = [
-            EventDescriptor::record(
-                $sagaIdentity->getValue(),
-                get_class($saga),
-                $event->getName(),
-                $serializer->serialize($event),
-                $event->getVersion()
-            )
-        ];
-
-        $saga->expects(self::any())
-            ->method('isActive')
-            ->willReturn(true);
-
-        $saga->expects(self::any())
-            ->method('getUncommittedChanges')
-            ->willReturn($events);
+        $saga = new SagaRepositoryTest_Saga($sagaIdentity, new AssociationValues([]));
 
         $storage->expects(self::once())
             ->method('update')
@@ -140,7 +115,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
                 get_class($saga),
                 $saga->getId()->getValue(),
                 $this->associationValuesToArray($saga->getAssociationValues()),
-                $eventDescriptors
+                $serializer->serialize($saga)
             );
 
         $repository = new SagaRepository($storage, $serializer);
@@ -228,7 +203,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
                 'type' => get_class($saga),
                 'identity' => $sagaIdentity->getValue(),
                 'associations' => $this->associationValuesToArray($saga->getAssociationValues()),
-                'events' => []
+                'serialized' => $serializer->serialize($saga)
             ]);
 
         $repository = new SagaRepository($storage, $serializer);

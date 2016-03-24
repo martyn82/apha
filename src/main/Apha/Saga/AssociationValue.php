@@ -3,14 +3,18 @@ declare(strict_types = 1);
 
 namespace Apha\Saga;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class AssociationValue
 {
     /**
+     * @Serializer\Type("string")
      * @var string
      */
     private $key;
 
     /**
+     * @Serializer\Type("string")
      * @var string
      */
     private $value;

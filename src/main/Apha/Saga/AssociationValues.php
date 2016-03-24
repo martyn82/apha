@@ -3,9 +3,12 @@ declare(strict_types = 1);
 
 namespace Apha\Saga;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class AssociationValues implements \IteratorAggregate
 {
     /**
+     * @Serializer\Type("array<Apha\Saga\AssociationValue>")
      * @var AssociationValue[]
      */
     private $items;

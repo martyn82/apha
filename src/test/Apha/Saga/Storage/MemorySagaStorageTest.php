@@ -8,6 +8,7 @@ use Apha\EventStore\EventDescriptor;
 use Apha\Saga\AssociationValue;
 use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
+use Apha\Serializer\JsonSerializer;
 
 class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,6 +35,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
     {
         $sagaIdentity = Identity::createNew();
         $associationValues = ['foo' => 'bar'];
+        $serializer = new JsonSerializer();
 
         $saga = $this->getMockBuilder(Saga::class)
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
@@ -43,7 +45,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
@@ -58,6 +61,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
     public function findRetrievesSagaByType()
     {
         $sagaIdentity = Identity::createNew();
+        $serializer = new JsonSerializer();
 
         $saga = $this->getMockBuilder(Saga::class)
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
@@ -67,7 +71,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
         $foundSagas = $storage->find(get_class($saga), []);
@@ -81,6 +86,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function findRetrievesSagaByAssociationValues()
     {
+        $serializer = new JsonSerializer();
         $sagaIdentity = Identity::createNew();
         $associationValues = ['foo' => 'bar', 'bar' => 'baz'];
 
@@ -98,7 +104,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
@@ -112,6 +119,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function findReturnsEmptyIfNoAssociationsAreFound()
     {
+        $serializer = new JsonSerializer();
         $sagaIdentity = Identity::createNew();
         $associationValues = ['foo' => 'bar', 'bar' => 'baz'];
 
@@ -123,7 +131,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
         $foundSagas = $storage->find(get_class($saga), $associationValues);
@@ -135,6 +144,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function findByIdRetrievesSagaById()
     {
+        $serializer = new JsonSerializer();
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
@@ -145,7 +155,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
@@ -167,8 +178,9 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function updateUpdatesSagaWithEvents()
+    public function updateUpdatesSaga()
     {
+        $serializer = new JsonSerializer();
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
@@ -179,30 +191,21 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
 
-        $events = [
-            EventDescriptor::record($sagaIdentity->getValue(), get_class($saga), 'SomethingHappened', '{}', 1)
-        ];
-
-        $expectedEvents = array_map(
-            function (EventDescriptor $event) {
-                return $event->toArray();
-            },
-            $events
-        );
+        $serializer = new JsonSerializer();
 
         $storage->update(
             get_class($saga),
             $saga->getId()->getValue(),
             $this->associationValuesToArray($saga->getAssociationValues()),
-            $events
+            $serializer->serialize($saga)
         );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
         self::assertEquals($sagaIdentity->getValue(), $foundSaga['identity']);
-        self::assertEquals($expectedEvents, $foundSaga['events']);
     }
 
     /**
@@ -216,12 +219,14 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
+        $serializer = new JsonSerializer();
+
         $storage = new MemorySagaStorage();
         $storage->update(
             get_class($saga),
             $saga->getId()->getValue(),
             $this->associationValuesToArray($saga->getAssociationValues()),
-            []
+            $serializer->serialize($saga)
         );
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
@@ -233,6 +238,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function deleteRemovesSaga()
     {
+        $serializer = new JsonSerializer();
         $sagaIdentity = Identity::createNew();
 
         $saga = $this->getMockBuilder(Saga::class)
@@ -243,7 +249,8 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $this->associationValuesToArray($saga->getAssociationValues())
+            $this->associationValuesToArray($saga->getAssociationValues()),
+            $serializer->serialize($saga)
         );
         $storage->delete($sagaIdentity->getValue());
 

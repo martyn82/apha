@@ -6,23 +6,21 @@ namespace Apha\Saga;
 use Apha\Domain\Identity;
 use Apha\Message\Event;
 use Apha\Message\Events;
+use JMS\Serializer\Annotation as Serializer;
 
 abstract class Saga
 {
     /**
+     * @Serializer\Type("Apha\Domain\Identity")
      * @var Identity
      */
     private $identity;
 
     /**
+     * @Serializer\Type("Apha\Saga\AssociationValues")
      * @var AssociationValues
      */
     private $associationValues;
-
-    /**
-     * @var Events
-     */
-    private $changes;
 
     /**
      * @param Identity $identity
@@ -49,22 +47,6 @@ abstract class Saga
     final public function getAssociationValues(): AssociationValues
     {
         return $this->associationValues;
-    }
-
-    /**
-     * @return Events
-     */
-    public function getUncommittedChanges(): Events
-    {
-        return $this->changes;
-    }
-
-    /**
-     * @return void
-     */
-    public function markChangesCommitted()
-    {
-        $this->changes->clear();
     }
 
     /**

@@ -28,12 +28,22 @@ class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return AssociationValueResolver
+     */
+    private function createAssociationValueResolver(): AssociationValueResolver
+    {
+        return $this->getMockBuilder(AssociationValueResolver::class)
+            ->getMock();
+    }
+
+    /**
      * @test
      */
     public function onEventDelegatesEventToSagas()
     {
         $repository = $this->createRepository();
         $factory = $this->createFactory();
+        $resolver = $this->createAssociationValueResolver();
 
         $aggregateIdentity = Identity::createNew();
         $event = new SimpleSagaManagerTest_Event($aggregateIdentity);
@@ -48,6 +58,11 @@ class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $sagaTypes = [get_class($sagaInstance)];
+
+        $resolver->expects(self::once())
+            ->method('extractAssociationValues')
+            ->with($event)
+            ->willReturn($associationValues);
 
         $repository->expects(self::once())
             ->method('find')
@@ -67,7 +82,40 @@ class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
             ->method('on')
             ->with($event);
 
-        $manager = new SimpleSagaManager($repository, $factory, $sagaTypes);
+        $manager = new SimpleSagaManager($sagaTypes, $repository, $resolver, $factory);
+        $manager->on($event);
+    }
+
+    /**
+     * @test
+     */
+    public function createNewSagaIfNoneFound()
+    {
+        $identity = Identity::createNew();
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $event->expects(self::any())
+            ->method('getIdentity')
+            ->willreturn($identity);
+
+        $sagaTypes = [SimpleSagaManagerTest_Saga::class];
+
+        $repository = $this->createRepository();
+        $factory = $this->createFactory();
+        $resolver = $this->createAssociationValueResolver();
+
+        $resolver->expects(self::once())
+            ->method('extractAssociationValues')
+            ->willReturn(new AssociationValues([
+                new AssociationValue('identity', $identity->getValue())
+            ]));
+
+        $repository->expects(self::once())
+            ->method('find')
+            ->willReturn([]);
+
+        $manager = new SimpleSagaManager($sagaTypes, $repository, $resolver, $factory);
         $manager->on($event);
     }
 }

@@ -3,26 +3,25 @@ declare(strict_types = 1);
 
 namespace Apha\Saga\Storage;
 
-use Apha\EventStore\EventDescriptor;
-
 interface SagaStorage
 {
     /**
      * @param string $sagaType
      * @param string $identity
      * @param array $associationValues
+     * @param string $data
      * @return void
      */
-    public function insert(string $sagaType, string $identity, array $associationValues);
+    public function insert(string $sagaType, string $identity, array $associationValues, string $data);
 
     /**
      * @param string $sagaType
      * @param string $identity
      * @param array $associationValues
-     * @param EventDescriptor[] $events
+     * @param string $data
      * @return void
      */
-    public function update(string $sagaType, string $identity, array $associationValues, array $events);
+    public function update(string $sagaType, string $identity, array $associationValues, string $data);
 
     /**
      * @param string $identity

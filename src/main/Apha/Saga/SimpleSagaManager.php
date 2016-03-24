@@ -10,10 +10,20 @@ class SimpleSagaManager extends SagaManager
     /**
      * @param string $sagaType
      * @param Event $event
-     * @return AssociationValue
+     * @return AssociationValues
      */
-    protected function extractAssociationValue(string $sagaType, Event $event): AssociationValue
+    protected function extractAssociationValues(string $sagaType, Event $event): AssociationValues
     {
-        return new AssociationValue('identity', $event->getIdentity()->getValue());
+        return $this->getAssociationValueResolver()->extractAssociationValues($event);
+    }
+
+    /**
+     * @param string $sagaType
+     * @param Event $event
+     * @return int
+     */
+    protected function getSagaCreationPolicy(string $sagaType, Event $event): int
+    {
+        return SagaCreationPolicy::IF_NONE_FOUND;
     }
 }

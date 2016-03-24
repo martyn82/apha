@@ -29,15 +29,16 @@ class MemorySagaStorage implements SagaStorage
      * @param string $sagaType
      * @param string $identity
      * @param array $associationValues
+     * @param string $data
      * @return void
      */
-    public function insert(string $sagaType, string $identity, array $associationValues)
+    public function insert(string $sagaType, string $identity, array $associationValues, string $data)
     {
         $this->sagas[$identity] = [
             'type' => $sagaType,
             'identity' => $identity,
             'associations' => $associationValues,
-            'events' => []
+            'serialized' => $data
         ];
 
         foreach ($associationValues as $field => $value) {
@@ -55,18 +56,15 @@ class MemorySagaStorage implements SagaStorage
      * @param string $sagaType
      * @param string $identity
      * @param array $associationValues
-     * @param EventDescriptor[] $events
+     * @param string $data
      * @return void
      */
-    public function update(string $sagaType, string $identity, array $associationValues, array $events)
+    public function update(string $sagaType, string $identity, array $associationValues, string $data)
     {
         if (!array_key_exists($identity, $this->sagas)) {
-            $this->insert($sagaType, $identity, $associationValues);
-        }
-
-        foreach ($events as $event) {
-            /* @var $event EventDescriptor */
-            $this->sagas[$identity]['events'][] = $event->toArray();
+            $this->insert($sagaType, $identity, $associationValues, $data);
+        } else {
+            $this->sagas[$identity]['serialized'] = $data;
         }
     }
 

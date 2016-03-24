@@ -20,20 +20,32 @@ abstract class SagaManager implements EventHandler
     private $factory;
 
     /**
+     * @var AssociationValueResolver
+     */
+    private $associationValueResolver;
+
+    /**
      * @var string[]
      */
     private $sagaTypes;
 
     /**
-     * @param SagaRepository $repository
-     * @param SagaFactory $factory
      * @param string[] $sagaTypes
+     * @param SagaRepository $repository
+     * @param AssociationValueResolver $associationValueResolver
+     * @param SagaFactory $factory
      */
-    public function __construct(SagaRepository $repository, SagaFactory $factory, array $sagaTypes)
+    public function __construct(
+        array $sagaTypes,
+        SagaRepository $repository,
+        AssociationValueResolver $associationValueResolver,
+        SagaFactory $factory
+    )
     {
-        $this->repository = $repository;
-        $this->factory = $factory;
         $this->sagaTypes = $sagaTypes;
+        $this->repository = $repository;
+        $this->associationValueResolver = $associationValueResolver;
+        $this->factory = $factory;
     }
 
     /**
@@ -41,16 +53,30 @@ abstract class SagaManager implements EventHandler
      */
     public function on(Event $event)
     {
+        /* @var $sagaType string */
         foreach ($this->sagaTypes as $sagaType) {
-            /* @var $sagaType string */
-            $associationValue = $this->extractAssociationValue($sagaType, $event);
+            $associationValues = $this->extractAssociationValues($sagaType, $event);
+            $sagaIdentities = [];
 
-            /* @var $sagaIdentities Identity[] */
-            $sagaIdentities = $this->repository->find($sagaType, $associationValue);
+            /* @var $associationValue AssociationValue */
+            foreach ($associationValues->getIterator() as $associationValue) {
+                $sagaIdentities = $this->repository->find($sagaType, $associationValue);
 
-            foreach ($sagaIdentities as $identity) {
                 /* @var $identity Identity */
-                $saga = $this->repository->load($identity);
+                foreach ($sagaIdentities as $identity) {
+                    $saga = $this->repository->load($identity);
+                    $saga->on($event);
+                    $this->commit($saga);
+                }
+            }
+
+            if (
+                $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::ALWAYS || (
+                    empty($sagaIdentities) &&
+                    $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::IF_NONE_FOUND
+                )
+            ) {
+                $saga = $this->factory->createSaga($sagaType, Identity::createNew(), $associationValues);
                 $saga->on($event);
                 $this->commit($saga);
             }
@@ -58,11 +84,26 @@ abstract class SagaManager implements EventHandler
     }
 
     /**
+     * @return AssociationValueResolver
+     */
+    protected function getAssociationValueResolver(): AssociationValueResolver
+    {
+        return $this->associationValueResolver;
+    }
+
+    /**
      * @param string $sagaType
      * @param Event $event
-     * @return AssociationValue
+     * @return AssociationValues
      */
-    abstract protected function extractAssociationValue(string $sagaType, Event $event): AssociationValue;
+    abstract protected function extractAssociationValues(string $sagaType, Event $event): AssociationValues;
+
+    /**
+     * @param string $sagaType
+     * @param Event $event
+     * @return int
+     */
+    abstract protected function getSagaCreationPolicy(string $sagaType, Event $event): int;
 
     /**
      * @param Saga $saga

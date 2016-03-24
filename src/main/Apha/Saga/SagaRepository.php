@@ -4,8 +4,6 @@ declare(strict_types = 1);
 namespace Apha\Saga;
 
 use Apha\Domain\Identity;
-use Apha\EventStore\EventDescriptor;
-use Apha\Message\Event;
 use Apha\Saga\Storage\SagaStorage;
 use Apha\Serializer\Serializer;
 
@@ -46,7 +44,8 @@ class SagaRepository
         $this->storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
-            $associationValues
+            $associationValues,
+            $this->serializer->serialize($saga)
         );
     }
 
@@ -61,29 +60,14 @@ class SagaRepository
             return;
         }
 
-        $events = array_map(
-            function (Event $event) use ($saga): EventDescriptor {
-                return EventDescriptor::record(
-                    $saga->getId()->getValue(),
-                    get_class($saga),
-                    $event->getEventName(),
-                    $this->serializer->serialize($event),
-                    $event->getVersion()
-                );
-            },
-            $saga->getUncommittedChanges()->getArrayCopy()
-        );
-
         $associationValues = $this->associationValuesToArray($saga->getAssociationValues());
 
         $this->storage->update(
             get_class($saga),
             $saga->getId()->getValue(),
             $associationValues,
-            $events
+            $this->serializer->serialize($saga)
         );
-
-        $saga->markChangesCommitted();
     }
 
     /**
@@ -129,15 +113,6 @@ class SagaRepository
             return null;
         }
 
-        $sagaType = $sagaData['type'];
-        $identity = Identity::fromString($sagaData['identity']);
-
-        $associationValues = new AssociationValues([]);
-
-        foreach ($sagaData['associations'] as $field => $value) {
-            $associationValues->add(new AssociationValue($field, $value));
-        }
-
-        return new $sagaType($identity, $associationValues);
+        return $this->serializer->deserialize($sagaData['serialized'], $sagaData['type']);
     }
 }
