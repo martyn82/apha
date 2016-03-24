@@ -4,17 +4,11 @@ declare(strict_types = 1);
 namespace Apha\Saga;
 
 use Apha\Domain\Identity;
-use Apha\EventHandling\EventBus;
 use Apha\EventHandling\EventHandler;
 use Apha\Message\Event;
 
 abstract class SagaManager implements EventHandler
 {
-    /**
-     * @var EventBus
-     */
-    private $eventBus;
-
     /**
      * @var SagaRepository
      */
@@ -31,40 +25,15 @@ abstract class SagaManager implements EventHandler
     private $sagaTypes;
 
     /**
-     * @param EventBus $eventBus
      * @param SagaRepository $repository
      * @param SagaFactory $factory
      * @param string[] $sagaTypes
      */
-    public function __construct(EventBus $eventBus, SagaRepository $repository, SagaFactory $factory, array $sagaTypes)
+    public function __construct(SagaRepository $repository, SagaFactory $factory, array $sagaTypes)
     {
-        $this->eventBus = $eventBus;
         $this->repository = $repository;
         $this->factory = $factory;
         $this->sagaTypes = $sagaTypes;
-
-        $this->subscribe();
-    }
-
-    /**
-     */
-    public function __destruct()
-    {
-        $this->unsubscribe();
-    }
-
-    /**
-     */
-    public function subscribe()
-    {
-        $this->eventBus->addHandler(Event::class, $this);
-    }
-
-    /**
-     */
-    public function unsubscribe()
-    {
-        $this->eventBus->removeHandler(Event::class, $this);
     }
 
     /**

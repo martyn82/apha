@@ -4,20 +4,10 @@ declare(strict_types = 1);
 namespace Apha\Saga;
 
 use Apha\Domain\Identity;
-use Apha\EventHandling\EventBus;
 use Apha\Message\Event;
 
 class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @return EventBus
-     */
-    private function createEventBus(): EventBus
-    {
-        return $this->getMockBuilder(EventBus::class)
-            ->getMock();
-    }
-
     /**
      * @return SagaRepository
      */
@@ -40,25 +30,8 @@ class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function sagaManagerSubscribesToEventsOnConstruction()
-    {
-        $eventBus = $this->createEventBus();
-        $repository = $this->createRepository();
-        $factory = $this->createFactory();
-        $sagaTypes = [SimpleSagaManagerTest_Saga::class];
-
-        $eventBus->expects(self::once())
-            ->method('addHandler');
-
-        new SimpleSagaManager($eventBus, $repository, $factory, $sagaTypes);
-    }
-
-    /**
-     * @test
-     */
     public function onEventDelegatesEventToSagas()
     {
-        $eventBus = $this->createEventBus();
         $repository = $this->createRepository();
         $factory = $this->createFactory();
 
@@ -94,7 +67,7 @@ class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
             ->method('on')
             ->with($event);
 
-        $manager = new SimpleSagaManager($eventBus, $repository, $factory, $sagaTypes);
+        $manager = new SimpleSagaManager($repository, $factory, $sagaTypes);
         $manager->on($event);
     }
 }
