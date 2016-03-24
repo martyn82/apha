@@ -69,7 +69,7 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder(EventStore::class)
             ->setConstructorArgs([$eventBus, $eventStorage, $serializer, $eventClassMap])
-            ->getMockForAbstractClass();
+            ->getMock();
     }
 
     /**
@@ -124,20 +124,10 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->willReturn($aggregateId);
 
-        $eventStore->expects(self::any())
+        $eventStore->expects(self::once())
             ->method('getEventsForAggregate')
             ->with($aggregateId)
             ->willReturn($events);
-
-        $eventStorage->expects(self::any())
-            ->method('contains')
-            ->with($aggregateId)
-            ->willReturn(true);
-
-        $eventStorage->expects(self::once())
-            ->method('find')
-            ->with($aggregateId)
-            ->willReturn($eventDescriptors);
 
         $eventBus->expects(self::exactly($events->size()))
             ->method('publish');
@@ -187,16 +177,6 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
             ->method('getEventsForAggregate')
             ->with($aggregateId)
             ->willReturn($events);
-
-        $eventStorage->expects(self::any())
-            ->method('contains')
-            ->with($aggregateId)
-            ->willReturn(true);
-
-        $eventStorage->expects(self::once())
-            ->method('find')
-            ->with($aggregateId)
-            ->willReturn($eventDescriptors);
 
         $eventBus->expects(self::exactly($events->size()))
             ->method('publish');
