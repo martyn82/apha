@@ -16,6 +16,7 @@ use Apha\Examples\Domain\Demo\CreatedEvent;
 use Apha\Examples\Domain\Demo\DemonstratedEvent;
 use Apha\Examples\Domain\Demo\DemonstratedEventHandler;
 use Apha\Replay\AggregateEventPlayer;
+use Apha\Serializer\ArrayConverter;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
 use Apha\StateStore\Storage\MemoryStateStorage;
@@ -85,8 +86,10 @@ class ReplayRunner extends Runner
         $eventPlayer->replayEventsByAggregateId($identity);
 
         // Inspect the current aggregate state
-        var_dump(
-            $stateStorage->find($identity->getValue())
+        $logger->debug(
+            'Current aggregate state', [
+                'aggregate' => (new ArrayConverter())->objectToArray($stateStorage->find($identity->getValue()))
+            ]
         );
     }
 
