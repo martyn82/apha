@@ -15,7 +15,7 @@ class SimpleEventBus extends EventBus
     /**
      * @param array $eventHandlerMap
      */
-    public function __construct(array $eventHandlerMap)
+    public function __construct(array $eventHandlerMap = [])
     {
         $this->eventHandlerMap = $eventHandlerMap;
     }
@@ -26,6 +26,10 @@ class SimpleEventBus extends EventBus
      */
     public function addHandler(string $eventClass, EventHandler $handler)
     {
+        if (!array_key_exists($eventClass, $this->eventHandlerMap)) {
+            $this->eventHandlerMap[$eventClass] = [];
+        }
+
         $this->eventHandlerMap[$eventClass][] = $handler;
     }
 
@@ -69,7 +73,7 @@ class SimpleEventBus extends EventBus
         $eventClassName = get_class($event);
 
         if (!array_key_exists($eventClassName, $this->eventHandlerMap)) {
-            return false;
+            return $handled;
         }
 
         foreach ($this->eventHandlerMap[$eventClassName] as $handler) {
