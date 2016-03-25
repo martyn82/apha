@@ -103,9 +103,10 @@ class SagaRepository
 
     /**
      * @param Identity $sagaIdentity
+     * @param string $sagaType
      * @return Saga
      */
-    public function load(Identity $sagaIdentity)
+    public function load(Identity $sagaIdentity, string $sagaType)
     {
         $sagaData = $this->storage->findById($sagaIdentity->getValue());
 
@@ -113,6 +114,6 @@ class SagaRepository
             return null;
         }
 
-        return $this->serializer->deserialize($sagaData['serialized'], $sagaData['type']);
+        return $this->serializer->deserialize($sagaData, $sagaType);
     }
 }

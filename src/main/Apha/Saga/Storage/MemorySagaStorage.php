@@ -102,21 +102,21 @@ class MemorySagaStorage implements SagaStorage
 
     /**
      * @param string $identity
-     * @return array
+     * @return string
      */
-    public function findById(string $identity): array
+    public function findById(string $identity): string
     {
         if (!array_key_exists($identity, $this->sagas)) {
-            return [];
+            return '';
         }
 
-        return $this->sagas[$identity];
+        return $this->sagas[$identity]['serialized'];
     }
 
     /**
      * @param string $sagaType
      * @param array $associationValue
-     * @return array
+     * @return string[]
      */
     public function find(string $sagaType, array $associationValue): array
     {
@@ -142,12 +142,17 @@ class MemorySagaStorage implements SagaStorage
 
         $foundIdentities = array_unique($foundIdentities);
 
-        return array_filter(
-            array_values($this->sagas),
-            function (array $sagaData) use ($foundIdentities, $sagaType) {
-                return (empty($foundIdentities) || in_array($sagaData['identity'], $foundIdentities))
-                    && $sagaData['type'] == $sagaType;
-            }
+        return array_map(
+            function (array $sagaData): string {
+                return $sagaData['identity'];
+            },
+            array_filter(
+                array_values($this->sagas),
+                function (array $sagaData) use ($foundIdentities, $sagaType) {
+                    return (empty($foundIdentities) || in_array($sagaData['identity'], $foundIdentities))
+                        && $sagaData['type'] == $sagaType;
+                }
+            )
         );
     }
 }

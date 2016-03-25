@@ -31,9 +31,9 @@ interface SagaStorage
 
     /**
      * @param string $identity
-     * @return array
+     * @return string
      */
-    public function findById(string $identity): array;
+    public function findById(string $identity): string;
 
     /**
      * @param string $sagaType

@@ -4,9 +4,7 @@ declare(strict_types = 1);
 namespace Apha\Saga;
 
 use Apha\Domain\Identity;
-use Apha\EventStore\EventDescriptor;
 use Apha\Message\Event;
-use Apha\Message\Events;
 use Apha\Saga\Storage\SagaStorage;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
@@ -199,16 +197,11 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $storage->expects(self::once())
             ->method('findById')
             ->with($saga->getId()->getValue())
-            ->willReturn([
-                'type' => get_class($saga),
-                'identity' => $sagaIdentity->getValue(),
-                'associations' => $this->associationValuesToArray($saga->getAssociationValues()),
-                'serialized' => $serializer->serialize($saga)
-            ]);
+            ->willReturn($serializer->serialize($saga));
 
         $repository = new SagaRepository($storage, $serializer);
 
-        $actual = $repository->load($sagaIdentity);
+        $actual = $repository->load($sagaIdentity, get_class($saga));
         self::assertEquals($saga->getId()->getValue(), $actual->getId()->getValue());
         self::assertEquals($saga->getAssociationValues(), $actual->getAssociationValues());
     }
@@ -226,11 +219,11 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
         $storage->expects(self::once())
             ->method('findById')
             ->with($sagaIdentity->getValue())
-            ->willReturn([]);
+            ->willReturn('');
 
         $repository = new SagaRepository($storage, $serializer);
 
-        $actual = $repository->load($sagaIdentity);
+        $actual = $repository->load($sagaIdentity, '');
         self::assertNull($actual);
     }
 }

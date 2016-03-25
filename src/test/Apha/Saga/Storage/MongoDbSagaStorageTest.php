@@ -8,9 +8,81 @@ use Apha\Saga\AssociationValue;
 use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
 use Apha\Serializer\JsonSerializer;
+use MongoDB\Collection;
+use MongoDB\Driver\Manager;
 
-class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaStorageTest
+class MongoDbSagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaStorageTest
 {
+    /**
+     * @var Manager
+     */
+    private static $manager;
+
+    /**
+     * @var Collection
+     */
+    private static $collection;
+
+    /**
+     * @var string
+     */
+    private static $testDb;
+
+    /**
+     * @var string
+     */
+    private static $testCollection;
+
+    /**
+     */
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('MongoDB\\Driver\\Manager')) {
+            self::markTestSkipped("MongoDB library not found.");
+        }
+
+        self::$testDb = uniqid('test_');
+        self::$testCollection = uniqid('test_');
+
+        self::$manager = new Manager(
+            'mongodb://localhost:27017'
+        );
+    }
+
+    /**
+     */
+    public static function tearDownAfterClass()
+    {
+        if (self::$collection == null) {
+            return;
+        }
+
+        try {
+            self::$collection->drop(['dropDatabase' => 1]);
+        } catch (\Exception $e) {
+        }
+    }
+
+    protected function setUp()
+    {
+        if (!class_exists('MongoDB\\Collection')) {
+            self::markTestSkipped("MongoDB library not found.");
+        }
+
+        try {
+            self::$manager->selectServer(self::$manager->getReadPreference());
+        } catch (\Exception $e) {
+            self::markTestSkipped($e->getMessage());
+        }
+
+        self::$collection = new Collection(self::$manager, self::$testDb, self::$testCollection);
+    }
+
+    protected function tearDown()
+    {
+        self::$collection->drop();
+    }
+
     /**
      * @param AssociationValues $associationValues
      * @return array
@@ -40,7 +112,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -66,7 +138,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -99,7 +171,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -126,7 +198,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -150,7 +222,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -168,7 +240,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
     public function findByIdRetrievesEmptyResultIfSagaDoesNotExist()
     {
         $sagaIdentity = Identity::createNew();
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
 
         $foundSaga = $storage->findById($sagaIdentity->getValue());
         self::assertEmpty($foundSaga);
@@ -186,7 +258,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -220,7 +292,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
 
         $serializer = new JsonSerializer();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->update(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -244,7 +316,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
             ->setConstructorArgs([$sagaIdentity, new AssociationValues([new AssociationValue('foo', 'bar')])])
             ->getMock();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->insert(
             get_class($saga),
             $saga->getId()->getValue(),
@@ -264,7 +336,7 @@ class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaS
     {
         $sagaIdentity = Identity::createNew();
 
-        $storage = new MemorySagaStorage();
+        $storage = new MongoDbSagaStorage(self::$collection);
         $storage->delete($sagaIdentity->getValue());
     }
 }

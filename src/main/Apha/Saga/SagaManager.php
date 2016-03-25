@@ -64,7 +64,7 @@ abstract class SagaManager implements EventHandler
 
                 /* @var $identity Identity */
                 foreach ($sagaIdentities as $identity) {
-                    $saga = $this->repository->load($identity);
+                    $saga = $this->repository->load($identity, $sagaType);
                     $saga->on($event);
                     $this->commit($saga);
                 }
