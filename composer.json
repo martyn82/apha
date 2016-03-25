@@ -34,6 +34,9 @@
     "monolog/monolog": "~1.17"
   },
   "require-dev": {
+    "ext-mongodb": "^1.1",
+    "elasticsearch/elasticsearch": "~2.1",
+    "mongodb/mongodb": "~1.0",
     "phpunit/phpunit": "~5.1",
     "phing/phing": "~2.13"
   },
