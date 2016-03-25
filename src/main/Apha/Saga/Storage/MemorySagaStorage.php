@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace Apha\Saga\Storage;
 
-use Apha\EventStore\EventDescriptor;
-
 class MemorySagaStorage implements SagaStorage
 {
     /**
