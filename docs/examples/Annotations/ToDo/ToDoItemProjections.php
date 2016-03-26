@@ -55,8 +55,6 @@ class ToDoItemProjections implements EventHandler
      */
     public function onDeadlineExpired(DeadlineExpired $event)
     {
-        $document = $this->stateStorage->find($event->getIdentity()->getValue());
-        $document->apply($event);
         $this->stateStorage->delete($event->getIdentity()->getValue());
     }
 }

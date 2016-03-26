@@ -29,11 +29,6 @@ class ToDoItemDocument implements Document
     private $isDone;
 
     /**
-     * @var bool
-     */
-    private $isExpired;
-
-    /**
      * @param string $identity
      * @param int $version
      */
@@ -66,7 +61,6 @@ class ToDoItemDocument implements Document
     {
         $this->identity = $event->getIdentity();
         $this->isDone = false;
-        $this->isExpired = false;
     }
 
     /**
@@ -75,13 +69,5 @@ class ToDoItemDocument implements Document
     public function applyToDoItemDone(ToDoItemDone $event)
     {
         $this->isDone = true;
-    }
-
-    /**
-     * @param DeadlineExpired $event
-     */
-    public function applyDeadlineExpired(DeadlineExpired $event)
-    {
-        $this->isExpired = true;
     }
 }
