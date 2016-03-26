@@ -32,7 +32,8 @@
     "jms/serializer": "~1.1",
     "phpcollection/phpcollection": "~0.4",
     "monolog/monolog": "~1.17",
-    "doctrine/annotations": "~1.2"
+    "doctrine/annotations": "~1.2",
+    "doctrine/cache": "~1.6"
   },
   "require-dev": {
     "ext-mongodb": "^1.1",
