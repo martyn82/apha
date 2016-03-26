@@ -21,9 +21,8 @@ trait AnnotatedCommandHandler
         /* @var $this CommandHandler|AnnotatedCommandHandler */
         $reader = new CommandHandlerAnnotationReader($this);
 
+        /* @var $annotation \Apha\Annotations\Annotation\CommandHandler */
         foreach ($reader->readAll() as $annotation) {
-            /* @var $annotation \Apha\Annotations\Annotation\CommandHandler */
-
             if (!empty($this->annotatedCommandHandlers[$annotation->commandType])) {
                 throw new CommandHandlerAlreadyExistsException($annotation->commandType);
             }

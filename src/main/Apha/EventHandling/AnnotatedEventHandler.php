@@ -20,8 +20,8 @@ trait AnnotatedEventHandler
         /* @var $this EventHandler|AnnotatedEventHandler */
         $reader = new EventHandlerAnnotationReader($this);
 
+        /* @var $annotation \Apha\Annotations\Annotation\EventHandler */
         foreach ($reader->readAll() as $annotation) {
-            /* @var $annotation \Apha\Annotations\Annotation\EventHandler */
             if (empty($this->annotatedEventHandlers[$annotation->eventType])) {
                 $this->annotatedEventHandlers[$annotation->eventType] = [];
             }

@@ -21,8 +21,9 @@ class EventHandlerAnnotationReader extends AnnotationReader
      * @param \Doctrine\Common\Annotations\Annotation[] $annotations
      * @param \ReflectionMethod $reflectionMethod
      * @return Annotation[]
+     * @throws AnnotationReaderException
      */
-    protected function processAnnotations(array $annotations, \ReflectionMethod $reflectionMethod): array
+    protected function processMethodAnnotations(array $annotations, \ReflectionMethod $reflectionMethod): array
     {
         return array_reduce(
             $annotations,
@@ -36,6 +37,20 @@ class EventHandlerAnnotationReader extends AnnotationReader
             },
             []
         );
+    }
+
+    /**
+     * @param \Doctrine\Common\Annotations\Annotation[] $annotations
+     * @param \ReflectionProperty $reflectionProperty
+     * @return Annotation[]
+     * @throws AnnotationReaderException
+     */
+    protected function processPropertyAnnotations(
+        array $annotations,
+        \ReflectionProperty $reflectionProperty
+    ): array
+    {
+        return [];
     }
 
     /**
