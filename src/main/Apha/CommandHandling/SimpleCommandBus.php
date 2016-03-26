@@ -15,7 +15,7 @@ class SimpleCommandBus extends CommandBus
     /**
      * @param array $commandHandlerMap
      */
-    public function __construct(array $commandHandlerMap)
+    public function __construct(array $commandHandlerMap = [])
     {
         foreach ($commandHandlerMap as $commandClass => $handler) {
             $this->addHandler($commandClass, $handler);
