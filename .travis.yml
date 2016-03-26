@@ -6,6 +6,13 @@ install:
   - composer self-update
   - composer install
 
+services:
+  - elasticsearch
+  - mongodb
+
+before_script:
+  - sleep 10
+
 branches:
   only:
     - master
