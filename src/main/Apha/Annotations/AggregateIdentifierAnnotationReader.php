@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Apha\Annotations;
 
 use Apha\Annotations\Annotation\Annotation;
-use Apha\Domain\AggregateRoot;
+use Apha\Domain\Annotation\AnnotatedAggregateRoot;
 
 class AggregateIdentifierAnnotationReader extends AnnotationReader
 {
@@ -17,9 +17,9 @@ class AggregateIdentifierAnnotationReader extends AnnotationReader
     ];
 
     /**
-     * @param AggregateRoot $aggregateRoot
+     * @param AnnotatedAggregateRoot $aggregateRoot
      */
-    public function __construct(AggregateRoot $aggregateRoot)
+    public function __construct(AnnotatedAggregateRoot $aggregateRoot)
     {
         $reader = new \Doctrine\Common\Annotations\AnnotationReader();
         parent::__construct(get_class($aggregateRoot), $reader, [AnnotationType::ANNOTATED_PROPERTY]);

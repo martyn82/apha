@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Apha\Annotations;
 
 use Apha\Annotations\Annotation\AggregateIdentifier;
-use Apha\Domain\AggregateRoot;
+use Apha\Domain\Annotation\AnnotatedAggregateRoot;
 use Apha\Domain\Identity;
 use Apha\Message\Events;
 
@@ -47,51 +47,29 @@ class AggregateIdentifierAnnotationReaderTest extends \PHPUnit_Framework_TestCas
     }
 }
 
-class AggregateIdentifierAnnotationReaderTest_AggregateRoot extends AggregateRoot
+class AggregateIdentifierAnnotationReaderTest_AggregateRoot extends AnnotatedAggregateRoot
 {
     /**
      * @AggregateIdentifier("Apha\Domain\Identity")
      * @var Identity
      */
     protected $identity;
-
-    /**
-     * @return Identity
-     */
-    public function getId(): Identity
-    {
-        return $this->identity;
-    }
 }
 
-class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidAccessibility extends AggregateRoot
+class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidAccessibility extends AnnotatedAggregateRoot
 {
     /**
      * @AggregateIdentifier("string")
      * @var string
      */
     private $identity;
-
-    /**
-     * @return Identity
-     */
-    public function getId(): Identity
-    {
-    }
 }
 
-class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidType extends AggregateRoot
+class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidType extends AnnotatedAggregateRoot
 {
     /**
      * @AggregateIdentifier("foo")
      * @var Identity
      */
     private $identity;
-
-    /**
-     * @return Identity
-     */
-    public function getId(): Identity
-    {
-    }
 }
