@@ -66,7 +66,12 @@ abstract class AnnotationReader
             $reflectionClass->getMethods(),
             function (array $accumulator, \ReflectionMethod $reflectionMethod) {
                 /* @var $annotations \Doctrine\Common\Annotations\Annotation[] */
-                $annotations = $this->reader->getMethodAnnotations($reflectionMethod);
+                $annotations = array_filter(
+                    $this->reader->getMethodAnnotations($reflectionMethod),
+                    function ($annotation): bool {
+                        return $annotation instanceof Annotation;
+                    }
+                );
 
                 if (empty($annotations)) {
                     return $accumulator;
@@ -89,7 +94,12 @@ abstract class AnnotationReader
             $reflectionClass->getProperties(),
             function (array $accumulator, \ReflectionProperty $reflectionProperty) {
                 /* @var $annotations \Doctrine\Common\Annotations\Annotation[] */
-                $annotations = $this->reader->getPropertyAnnotations($reflectionProperty);
+                $annotations = array_filter(
+                    $this->reader->getPropertyAnnotations($reflectionProperty),
+                    function ($annotation): bool {
+                        return $annotation instanceof Annotation;
+                    }
+                );
 
                 if (empty($annotations)) {
                     return $accumulator;
