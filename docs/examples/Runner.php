@@ -4,12 +4,14 @@ declare(strict_types = 1);
 namespace Apha\Examples;
 
 /* @var $loader \Composer\Autoload\ClassLoader */
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 $loader = require_once __DIR__ . '/../../vendor/autoload.php';
 $loader->addPsr4("Apha\\Examples\\", __DIR__ . "/");
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-    'JMS\Serializer\Annotation', __DIR__ . '/../../vendor/jms/serializer/src'
-);
+AnnotationRegistry::registerLoader(function (string $className) use ($loader) {
+    return $loader->loadClass($className);
+});
 
 abstract class Runner
 {
