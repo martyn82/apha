@@ -12,6 +12,7 @@ interface SagaFactory
      * @param Identity $identity
      * @param AssociationValues $associationValues
      * @return Saga
+     * @throws \InvalidArgumentException
      */
     public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues): Saga;
 
