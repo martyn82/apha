@@ -1,10 +1,11 @@
 <?php
 declare(strict_types = 1);
 
+error_reporting(E_ALL);
+
 /* @var $loader \Composer\Autoload\ClassLoader */
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-// register serializer annotations
-\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-    'JMS\Serializer\Annotation', __DIR__ . '/../vendor/jms/serializer/src'
-);
+\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(function (string $className) use ($loader) {
+    return $loader->loadClass($className);
+});
