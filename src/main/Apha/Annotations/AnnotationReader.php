@@ -48,6 +48,10 @@ abstract class AnnotationReader
             $annotations = array_merge($annotations, $this->readMethodAnnotations($reflectedClass));
         }
 
+        if (in_array(AnnotationType::ANNOTATED_PROPERTY, $this->annotationTypes)) {
+            $annotations = array_merge($annotations, $this->readPropertyAnnotations($reflectedClass));
+        }
+
         return $annotations;
     }
 
@@ -68,8 +72,30 @@ abstract class AnnotationReader
                     return $accumulator;
                 }
 
-                $accumulator = array_merge($accumulator, $this->processAnnotations($annotations, $reflectionMethod));
-                return $accumulator;
+                return array_merge($accumulator, $this->processMethodAnnotations($annotations, $reflectionMethod));
+            },
+            []
+        );
+    }
+
+    /**
+     * @param \ReflectionClass $reflectionClass
+     * @return Annotation[]
+     * @throws AnnotationReaderException
+     */
+    private function readPropertyAnnotations(\ReflectionClass $reflectionClass): array
+    {
+        return array_reduce(
+            $reflectionClass->getProperties(),
+            function (array $accumulator, \ReflectionProperty $reflectionProperty) {
+                /* @var $annotations \Doctrine\Common\Annotations\Annotation[] */
+                $annotations = $this->reader->getPropertyAnnotations($reflectionProperty);
+
+                if (empty($annotations)) {
+                    return $accumulator;
+                }
+
+                return array_merge($accumulator, $this->processPropertyAnnotations($annotations, $reflectionProperty));
             },
             []
         );
@@ -79,6 +105,21 @@ abstract class AnnotationReader
      * @param \Doctrine\Common\Annotations\Annotation[] $annotations
      * @param \ReflectionMethod $reflectionMethod
      * @return Annotation[]
+     * @throws AnnotationReaderException
      */
-    abstract protected function processAnnotations(array $annotations, \ReflectionMethod $reflectionMethod): array;
+    abstract protected function processMethodAnnotations(
+        array $annotations,
+        \ReflectionMethod $reflectionMethod
+    ): array;
+
+    /**
+     * @param \Doctrine\Common\Annotations\Annotation[] $annotations
+     * @param \ReflectionProperty $reflectionProperty
+     * @return Annotation[]
+     * @throws AnnotationReaderException
+     */
+    abstract protected function processPropertyAnnotations(
+        array $annotations,
+        \ReflectionProperty $reflectionProperty
+    ): array;
 }

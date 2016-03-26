@@ -12,71 +12,23 @@ final class AggregateIdentifier extends Annotation
     /**
      * @var string
      */
-    private $className;
+    public $propertyName;
 
     /**
      * @var string
      */
-    private $propertyName;
-
-    /**
-     * @var string
-     */
-    private $type;
+    public $type;
 
     /**
      * @param array $parameters
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $parameters)
     {
-        $this->type = $parameters['value'];
-    }
+        if (!array_key_exists('value', $parameters)) {
+            throw new \InvalidArgumentException("Type is required.");
+        }
 
-    /**
-     * @return string
-     */
-    public function getClassName(): string
-    {
-        return $this->className;
-    }
-
-    /**
-     * @param string $className
-     */
-    public function setClassName(string $className)
-    {
-        $this->className = $className;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPropertyName(): string
-    {
-        return $this->propertyName;
-    }
-
-    /**
-     * @param string $propertyName
-     */
-    public function setPropertyName(string $propertyName)
-    {
-        $this->propertyName = $propertyName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
+        $this->type = (string)$parameters['value'];
     }
 }
