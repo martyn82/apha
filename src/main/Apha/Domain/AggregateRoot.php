@@ -70,6 +70,10 @@ abstract class AggregateRoot
      */
     public function loadFromHistory(Events $history)
     {
+        if ($history->size() == 0) {
+            return;
+        }
+
         foreach ($history->getIterator() as $event) {
             $this->internalApplyChange($event, false);
         }
