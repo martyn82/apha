@@ -3,6 +3,9 @@ language: php
 php:
   - 7.0
 
+env:
+  - RUN_ELASTICSEARCH_TESTS=false
+
 branches:
   only:
     - master

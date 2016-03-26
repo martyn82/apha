@@ -29,10 +29,18 @@ class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implemen
     private static $type;
 
     /**
+     * @return bool
+     */
+    private static function skipTest(): bool
+    {
+        return isset($_ENV['RUN_ELASTICSEARCH_TESTS']) && (bool)$_ENV['RUN_ELASTICSEARCH_TESTS'];
+    }
+
+    /**
      */
     public static function setUpBeforeClass()
     {
-        if (!class_exists('Elasticsearch\\Client')) {
+        if (!class_exists('Elasticsearch\\Client') || self::skipTest()) {
             self::markTestSkipped("ElasticSearch library not found.");
         }
 
