@@ -11,6 +11,7 @@ services:
   - mongodb
 
 before_script:
+  - phpenv config-add config/travis.php.ini
   - sleep 10
 
 branches:
