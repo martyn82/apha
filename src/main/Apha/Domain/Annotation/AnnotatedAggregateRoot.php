@@ -5,7 +5,6 @@ namespace Apha\Domain\Annotation;
 
 use Apha\Annotations\AggregateIdentifierAnnotationReader;
 use Apha\Annotations\Annotation\AggregateIdentifier;
-use Apha\CommandHandling\AnnotatedCommandHandler;
 use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
 
