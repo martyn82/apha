@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="apha" default="build">
     <property file="${project.basedir}/config/build.properties" />
+    <property environment="env" />
 
     <fileset dir="${sources.dir}" id="sources">
         <include name="**/*.php" />
