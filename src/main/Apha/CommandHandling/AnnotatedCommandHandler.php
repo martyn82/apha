@@ -23,11 +23,11 @@ trait AnnotatedCommandHandler
 
         /* @var $annotation \Apha\Annotations\Annotation\CommandHandler */
         foreach ($reader->readAll() as $annotation) {
-            if (!empty($this->annotatedCommandHandlers[$annotation->commandType])) {
-                throw new CommandHandlerAlreadyExistsException($annotation->commandType);
+            if (!empty($this->annotatedCommandHandlers[$annotation->getCommandType()])) {
+                throw new CommandHandlerAlreadyExistsException($annotation->getCommandType());
             }
 
-            $this->annotatedCommandHandlers[$annotation->commandType] = $annotation->methodName;
+            $this->annotatedCommandHandlers[$annotation->getCommandType()] = $annotation->getMethodName();
         }
     }
 

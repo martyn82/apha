@@ -12,5 +12,21 @@ final class StartSaga extends Annotation
     /**
      * @var string
      */
-    public $methodName;
+    private $methodName;
+
+    /**
+     * @return string
+     */
+    public function getMethodName(): string
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * @param string $methodName
+     */
+    public function setMethodName(string $methodName)
+    {
+        $this->methodName = $methodName;
+    }
 }

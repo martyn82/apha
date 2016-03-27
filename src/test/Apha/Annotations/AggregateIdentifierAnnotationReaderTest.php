@@ -45,6 +45,17 @@ class AggregateIdentifierAnnotationReaderTest extends \PHPUnit_Framework_TestCas
         $reader = new AggregateIdentifierAnnotationReader($aggregate);
         $reader->readAll();
     }
+
+    /**
+     * @test
+     * @expectedException \Doctrine\Common\Annotations\AnnotationException
+     */
+    public function readAllThrowsExceptionIfAggregateIdentifierTypeIsMissing()
+    {
+        $aggregate = AggregateIdentifierAnnotationReaderTest_AggregateRootWithoutType::reconstruct(new Events());
+        $reader = new AggregateIdentifierAnnotationReader($aggregate);
+        $reader->readAll();
+    }
 }
 
 class AggregateIdentifierAnnotationReaderTest_AggregateRoot extends AnnotatedAggregateRoot
@@ -71,5 +82,14 @@ class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidType extends A
      * @AggregateIdentifier(type = "foo")
      * @var Identity
      */
-    private $identity;
+    protected $identity;
+}
+
+class AggregateIdentifierAnnotationReaderTest_AggregateRootWithoutType extends AnnotatedAggregateRoot
+{
+    /**
+     * @AggregateIdentifier()
+     * @var Identity
+     */
+    protected $identity;
 }

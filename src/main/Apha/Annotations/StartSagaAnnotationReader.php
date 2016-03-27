@@ -54,7 +54,7 @@ class StartSagaAnnotationReader extends AnnotationReader
         \ReflectionMethod $reflectionMethod
     ): \Apha\Annotations\Annotation\StartSaga
     {
-        $annotation->methodName = $reflectionMethod->getName();
+        $annotation->setMethodName($reflectionMethod->getName());
         return $annotation;
     }
 

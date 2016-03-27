@@ -44,6 +44,6 @@ abstract class AnnotatedAggregateRoot extends AggregateRoot
             $this->readAnnotatedAggregateIdentifier();
         }
 
-        return $this->{$this->aggregateIdentifier->propertyName};
+        return $this->{$this->aggregateIdentifier->getPropertyName()};
     }
 }

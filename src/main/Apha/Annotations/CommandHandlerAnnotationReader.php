@@ -70,8 +70,8 @@ class CommandHandlerAnnotationReader extends AnnotationReader
             throw new AnnotationReaderException("CommandHandler needs a parameter that accepts a Command.");
         }
 
-        $annotation->methodName = $reflectionMethod->getName();
-        $annotation->commandType = $parameters[0]->getType()->__toString();
+        $annotation->setMethodName($reflectionMethod->getName());
+        $annotation->setCommandType($parameters[0]->getType()->__toString());
 
         return $annotation;
     }

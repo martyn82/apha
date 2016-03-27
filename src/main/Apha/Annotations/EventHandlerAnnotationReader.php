@@ -70,8 +70,8 @@ class EventHandlerAnnotationReader extends AnnotationReader
             throw new AnnotationReaderException("EventHandler needs a parameter that accepts an Event.");
         }
 
-        $annotation->methodName = $reflectionMethod->getName();
-        $annotation->eventType = $parameters[0]->getType()->__toString();
+        $annotation->setMethodName($reflectionMethod->getName());
+        $annotation->setEventType($parameters[0]->getType()->__toString());
 
         return $annotation;
     }

@@ -22,11 +22,11 @@ trait AnnotatedEventHandler
 
         /* @var $annotation \Apha\Annotations\Annotation\EventHandler */
         foreach ($reader->readAll() as $annotation) {
-            if (empty($this->annotatedEventHandlers[$annotation->eventType])) {
-                $this->annotatedEventHandlers[$annotation->eventType] = [];
+            if (empty($this->annotatedEventHandlers[$annotation->getEventType()])) {
+                $this->annotatedEventHandlers[$annotation->getEventType()] = [];
             }
 
-            $this->annotatedEventHandlers[$annotation->eventType][] = $annotation->methodName;
+            $this->annotatedEventHandlers[$annotation->getEventType()][] = $annotation->getMethodName();
         }
     }
 

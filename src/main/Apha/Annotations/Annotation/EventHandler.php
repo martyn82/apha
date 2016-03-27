@@ -12,10 +12,42 @@ final class EventHandler extends Annotation
     /**
      * @var string
      */
-    public $methodName;
+    private $methodName;
 
     /**
      * @var string
      */
-    public $eventType;
+    private $eventType;
+
+    /**
+     * @return string
+     */
+    public function getEventType(): string
+    {
+        return $this->eventType;
+    }
+
+    /**
+     * @param string $eventType
+     */
+    public function setEventType(string $eventType)
+    {
+        $this->eventType = $eventType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethodName(): string
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * @param string $methodName
+     */
+    public function setMethodName(string $methodName)
+    {
+        $this->methodName = $methodName;
+    }
 }

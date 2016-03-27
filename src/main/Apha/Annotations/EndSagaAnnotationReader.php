@@ -54,7 +54,7 @@ class EndSagaAnnotationReader extends AnnotationReader
         \ReflectionMethod $reflectionMethod
     ): \Apha\Annotations\Annotation\EndSaga
     {
-        $annotation->methodName = $reflectionMethod->getName();
+        $annotation->setMethodName($reflectionMethod->getName());
         return $annotation;
     }
 

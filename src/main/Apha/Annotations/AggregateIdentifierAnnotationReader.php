@@ -72,22 +72,20 @@ class AggregateIdentifierAnnotationReader extends AnnotationReader
         \ReflectionProperty $reflectionProperty
     ): \Apha\Annotations\Annotation\AggregateIdentifier
     {
-        if (empty($annotation->type)) {
-            throw new AnnotationReaderException("Type is required.");
-        }
-
         if (
-            !in_array($annotation->type, $this->validScalarTypes)
-            && !class_exists($annotation->type, true)
+            !in_array($annotation->getType(), $this->validScalarTypes)
+            && !class_exists($annotation->getType(), true)
         ) {
-            throw new AnnotationReaderException("Type '{$annotation->type}' is not a valid AggregateIdentifier type.");
+            throw new AnnotationReaderException(
+                "Type '{$annotation->getType()}' is not a valid AggregateIdentifier type."
+            );
         }
 
         if ($reflectionProperty->isPrivate()) {
             throw new AnnotationReaderException("Property must not be private.");
         }
 
-        $annotation->propertyName = $reflectionProperty->getName();
+        $annotation->setPropertyName($reflectionProperty->getName());
         return $annotation;
     }
 }
