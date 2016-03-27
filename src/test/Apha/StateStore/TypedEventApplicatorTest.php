@@ -5,6 +5,9 @@ namespace Apha\StateStore;
 
 use Apha\Message\Event;
 
+/**
+ * @group statestore
+ */
 class TypedEventApplicatorTest extends \PHPUnit_Framework_TestCase
 {
     /**

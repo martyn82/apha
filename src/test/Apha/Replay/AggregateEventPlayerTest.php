@@ -15,6 +15,9 @@ use Apha\Message\Events;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
 
+/**
+ * @group replay
+ */
 class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
 {
     /**

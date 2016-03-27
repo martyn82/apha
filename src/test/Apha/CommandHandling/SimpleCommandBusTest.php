@@ -5,6 +5,9 @@ namespace Apha\CommandHandling;
 
 use Apha\Message\Command;
 
+/**
+ * @group commandhandling
+ */
 class SimpleCommandBusTest extends \PHPUnit_Framework_TestCase
 {
     /**

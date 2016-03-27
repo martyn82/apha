@@ -6,6 +6,9 @@ namespace Apha\StateStore\Storage;
 use Apha\Domain\Identity;
 use Apha\StateStore\Document;
 
+/**
+ * @group statestore
+ */
 class MemoryStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**

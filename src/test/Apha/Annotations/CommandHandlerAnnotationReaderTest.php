@@ -8,6 +8,9 @@ use Apha\Annotations\Annotation\EventHandler;
 use Apha\Message\Command;
 use Apha\Message\Event;
 
+/**
+ * @group annotations
+ */
 class CommandHandlerAnnotationReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**

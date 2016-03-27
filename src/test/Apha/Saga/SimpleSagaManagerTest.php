@@ -6,6 +6,9 @@ namespace Apha\Saga;
 use Apha\Domain\Identity;
 use Apha\Message\Event;
 
+/**
+ * @group saga
+ */
 class SimpleSagaManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**

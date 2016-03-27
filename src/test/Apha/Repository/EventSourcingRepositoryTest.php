@@ -10,6 +10,9 @@ use Apha\EventStore\EventStore;
 use Apha\Message\Event;
 use Apha\Message\Events;
 
+/**
+ * @group repository
+ */
 class EventSourcingRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /**

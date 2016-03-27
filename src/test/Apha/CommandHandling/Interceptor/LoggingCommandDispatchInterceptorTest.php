@@ -6,6 +6,9 @@ namespace Apha\CommandHandling\Interceptor;
 use Apha\Message\Command;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @group commandhandling
+ */
 class LoggingCommandDispatchInterceptorTest extends \PHPUnit_Framework_TestCase
 {
     /**

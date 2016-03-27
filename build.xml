@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="apha" default="build">
     <property file="${project.basedir}/config/build.properties" />
-    <property environment="env" />
 
     <fileset dir="${sources.dir}" id="sources">
         <include name="**/*.php" />
@@ -29,7 +28,13 @@
     <target name="build" description="Build library.">
         <phingcall target="clean" />
         <phingcall target="lint" />
-        <phingcall target="test:unit" />
+        <phingcall target="test" />
+    </target>
+
+    <target name="build:ci" description="Build library in CI.">
+        <phingcall target="clean" />
+        <phingcall target="lint" />
+        <phingcall target="test:ci" />
     </target>
 
     <target name="lint" description="Check for syntax errors and code style.">
@@ -43,9 +48,23 @@
         <phingcall target="test:unit" />
     </target>
 
+    <target name="test:ci" description="Run all tests in CI mode.">
+        <phingcall target="test:unit:ci" />
+    </target>
+
     <target name="test:unit" description="Run unit tests.">
         <exec
             command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.xml"
+            passthru="true"
+            checkreturn="true"
+        />
+        <exec command="cat ${project.basedir}/target/reports/test/testdox.txt" passthru="true" />
+        <echo message="Test report at: file://${project.basedir}/target/reports/test/index.html" />
+    </target>
+
+    <target name="test:unit:ci" description="Run unit tests in CI mode.">
+        <exec
+            command="${project.basedir}/bin/phpunit -c ${project.basedir}/config/phpunit.travis.xml"
             passthru="true"
             checkreturn="true"
         />

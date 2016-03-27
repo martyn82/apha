@@ -9,6 +9,9 @@ use Apha\Saga\Storage\SagaStorage;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
 
+/**
+ * @group saga
+ */
 class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /**

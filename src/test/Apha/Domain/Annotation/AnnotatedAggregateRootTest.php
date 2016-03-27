@@ -7,6 +7,10 @@ use Apha\Annotations\Annotation\AggregateIdentifier;
 use Apha\Domain\Identity;
 use Apha\Message\Events;
 
+/**
+ * @group aggregateroot
+ * @group annotations
+ */
 class AnnotatedAggregateRootTest extends \PHPUnit_Framework_TestCase
 {
     /**

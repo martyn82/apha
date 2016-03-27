@@ -5,6 +5,9 @@ namespace Apha\EventHandling;
 
 use Apha\Message\Event;
 
+/**
+ * @group annotations
+ */
 class TypedEventHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**

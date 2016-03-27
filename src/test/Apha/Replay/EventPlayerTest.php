@@ -7,6 +7,9 @@ use Apha\EventHandling\EventBus;
 use Apha\Message\Event;
 use Apha\Message\Events;
 
+/**
+ * @group replay
+ */
 class EventPlayerTest extends \PHPUnit_Framework_TestCase
 {
     /**

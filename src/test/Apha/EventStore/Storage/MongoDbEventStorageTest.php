@@ -7,6 +7,10 @@ use Apha\EventStore\EventDescriptor;
 use MongoDB\Collection;
 use MongoDB\Driver\Manager;
 
+/**
+ * @group eventstore
+ * @group mongodb
+ */
 class MongoDbEventStorageTest extends \PHPUnit_Framework_TestCase implements EventStorageTest
 {
     /**

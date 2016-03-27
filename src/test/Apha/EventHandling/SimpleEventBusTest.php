@@ -5,6 +5,9 @@ namespace Apha\EventHandling;
 
 use Apha\Message\Event;
 
+/**
+ * @group annotations
+ */
 class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
 {
     /**

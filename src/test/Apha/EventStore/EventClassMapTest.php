@@ -5,6 +5,9 @@ namespace Apha\EventStore;
 
 use Apha\Message\Event;
 
+/**
+ * @group eventstore
+ */
 class EventClassMapTest extends \PHPUnit_Framework_TestCase
 {
     /**

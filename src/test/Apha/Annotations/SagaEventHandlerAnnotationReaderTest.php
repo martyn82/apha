@@ -8,6 +8,9 @@ use Apha\Domain\Identity;
 use Apha\Message\Event;
 use Apha\Saga\Annotation\AnnotatedSaga;
 
+/**
+ * @group annotations
+ */
 class SagaEventHandlerAnnotationReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**

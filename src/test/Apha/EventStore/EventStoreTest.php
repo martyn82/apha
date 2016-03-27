@@ -3,14 +3,16 @@ declare(strict_types = 1);
 
 namespace Apha\EventStore;
 
-use Apha\Message\{
-    Event, Events
-};
+use Apha\Message\Event;
+use Apha\Message\Events;
 use Apha\Domain\Identity;
 use Apha\EventHandling\EventBus;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\Serializer\Serializer;
 
+/**
+ * @group eventstore
+ */
 class EventStoreTest extends \PHPUnit_Framework_TestCase
 {
     /**

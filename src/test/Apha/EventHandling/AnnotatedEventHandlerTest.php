@@ -6,6 +6,10 @@ namespace Apha\EventHandling;
 use Apha\Annotations\Annotation as Apha;
 use Apha\Message\Event;
 
+/**
+ * @group annotations
+ * @group eventhandling
+ */
 class AnnotatedEventHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**

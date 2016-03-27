@@ -8,6 +8,9 @@ use Apha\Domain\Annotation\AnnotatedAggregateRoot;
 use Apha\Domain\Identity;
 use Apha\Message\Events;
 
+/**
+ * @group annotations
+ */
 class AggregateIdentifierAnnotationReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**

@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Apha\Domain;
 
+/**
+ * @group aggregateroot
+ */
 class IdentityTest extends \PHPUnit_Framework_TestCase
 {
     /**

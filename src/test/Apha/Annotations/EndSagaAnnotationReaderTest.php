@@ -9,6 +9,9 @@ use Apha\Message\Event;
 use Apha\Saga\Annotation\AnnotatedSaga;
 use Apha\Saga\AssociationValues;
 
+/**
+ * @group annotations
+ */
 class EndSagaAnnotationReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**

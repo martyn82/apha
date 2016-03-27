@@ -9,6 +9,9 @@ use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
 use Apha\Serializer\JsonSerializer;
 
+/**
+ * @group saga
+ */
 class MemorySagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaStorageTest
 {
     /**

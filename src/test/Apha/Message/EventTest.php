@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Apha\Message;
 
+/**
+ * @group message
+ */
 class EventTest extends \PHPUnit_Framework_TestCase
 {
     /**

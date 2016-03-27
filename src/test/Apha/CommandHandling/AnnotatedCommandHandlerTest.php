@@ -6,6 +6,10 @@ namespace Apha\CommandHandling;
 use Apha\Annotations\Annotation as Apha;
 use Apha\Message\Command;
 
+/**
+ * @group annotations
+ * @group commandhandling
+ */
 class AnnotatedCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**

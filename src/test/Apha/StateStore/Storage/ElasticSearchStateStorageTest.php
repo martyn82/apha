@@ -11,6 +11,10 @@ use Elasticsearch\ClientBuilder;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @group statestore
+ * @group elasticsearch
+ */
 class ElasticSearchStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**

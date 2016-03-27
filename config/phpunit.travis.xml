@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="./phpunit.bootstrap.php"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+    >
+
+    <testsuites>
+        <testsuite name="Library">
+            <directory>../src/test</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>../src/main</directory>
+        </whitelist>
+    </filter>
+
+    <groups>
+        <exclude>
+            <group>elasticsearch</group>
+        </exclude>
+    </groups>
+
+    <logging>
+        <log type="coverage-html" target="../target/reports/test" lowUpperBound="50" highLowerBound="90" />
+        <log type="coverage-clover" target="../target/reports/test/coverage.xml" />
+        <log type="junit" target="../target/reports/test/logfile.xml" />
+        <log type="testdox-html" target="../target/reports/test/testdox.html" />
+        <log type="testdox-text" target="../target/reports/test/testdox.txt" />
+    </logging>
+</phpunit>

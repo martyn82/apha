@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Apha\Serializer;
 
+/**
+ * @group serializer
+ */
 class ArrayConverterTest extends \PHPUnit_Framework_TestCase
 {
     /**

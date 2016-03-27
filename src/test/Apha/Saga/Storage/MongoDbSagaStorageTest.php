@@ -11,6 +11,10 @@ use Apha\Serializer\JsonSerializer;
 use MongoDB\Collection;
 use MongoDB\Driver\Manager;
 
+/**
+ * @group saga
+ * @group mongodb
+ */
 class MongoDbSagaStorageTest extends \PHPUnit_Framework_TestCase implements SagaStorageTest
 {
     /**

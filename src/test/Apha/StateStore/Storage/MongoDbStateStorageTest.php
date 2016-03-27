@@ -9,6 +9,10 @@ use MongoDB\Collection;
 use MongoDB\Driver\Manager;
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @group statestore
+ * @group mongodb
+ */
 class MongoDbStateStorageTest extends \PHPUnit_Framework_TestCase implements StateStorageTest
 {
     /**

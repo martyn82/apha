@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Apha\Saga;
 
+/**
+ * @group saga
+ */
 class AssociationValuesTest extends \PHPUnit_Framework_TestCase
 {
     /**

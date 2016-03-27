@@ -9,6 +9,9 @@ use Apha\Message\{
     Event, Events
 };
 
+/**
+ * @group aggregateroot
+ */
 class AggregateRootTest extends \PHPUnit_Framework_TestCase
 {
     /**

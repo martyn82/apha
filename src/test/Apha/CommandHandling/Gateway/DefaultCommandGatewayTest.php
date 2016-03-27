@@ -8,6 +8,9 @@ use Apha\CommandHandling\Interceptor\CommandDispatchInterceptor;
 use Apha\CommandHandling\NoCommandHandlerException;
 use Apha\Message\Command;
 
+/**
+ * @group commandhandling
+ */
 class DefaultCommandGatewayTest extends \PHPUnit_Framework_TestCase
 {
     /**

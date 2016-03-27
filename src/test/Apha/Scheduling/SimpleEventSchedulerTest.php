@@ -7,6 +7,9 @@ namespace Apha\Scheduling;
 use Apha\EventHandling\EventBus;
 use Apha\Message\Event;
 
+/**
+ * @group scheduling
+ */
 class SimpleEventSchedulerTest extends \PHPUnit_Framework_TestCase
 {
     /**

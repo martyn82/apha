@@ -5,6 +5,9 @@ namespace Apha\EventStore\Storage;
 
 use Apha\EventStore\EventDescriptor;
 
+/**
+ * @group eventstore
+ */
 class MemoryEventStorageTest extends \PHPUnit_Framework_TestCase implements EventStorageTest
 {
     /**
