@@ -4,11 +4,12 @@ declare(strict_types = 1);
 namespace Apha\Saga;
 
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventHandler;
 use Apha\Message\Event;
 use Apha\Message\Events;
 use JMS\Serializer\Annotation as Serializer;
 
-abstract class Saga
+abstract class Saga implements EventHandler
 {
     /**
      * @Serializer\Type("Apha\Domain\Identity")
@@ -20,7 +21,7 @@ abstract class Saga
      * @Serializer\Type("Apha\Saga\AssociationValues")
      * @var AssociationValues
      */
-    private $associationValues;
+    protected $associationValues;
 
     /**
      * @param Identity $identity
