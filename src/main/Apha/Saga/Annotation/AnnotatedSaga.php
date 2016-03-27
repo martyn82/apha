@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Apha\Saga\Annotation;
 
+use Apha\Annotations\Annotation\SagaEventHandler;
 use Apha\Annotations\SagaEventHandlerAnnotationReader;
 use Apha\Domain\Identity;
 use Apha\EventHandling\EventHandler;
@@ -58,9 +59,14 @@ abstract class AnnotatedSaga extends Saga
             throw new \InvalidArgumentException("Unable to handle event '{$event->getName()}'.");
         }
 
-        $handlerNames = $this->annotatedEventHandlers[$eventClass];
+        $handlers = $this->annotatedEventHandlers[$eventClass];
 
-        foreach ($handlerNames as $handlerName) {
+        /* @var $handler SagaEventHandler */
+        foreach ($handlers as $handler) {
+            $associationValue = (string)call_user_func([$event, 'get' . ucfirst($handler->getAssociationProperty())]);
+            $this->associateWith(new AssociationValue($handler->getAssociationProperty(), $associationValue));
+
+            $handlerName = $handler->getMethodName();
             $this->{$handlerName}($event);
         }
     }
@@ -78,16 +84,8 @@ abstract class AnnotatedSaga extends Saga
                 $this->annotatedEventHandlers[$annotation->getEventType()] = [];
             }
 
-            $this->annotatedEventHandlers[$annotation->getEventType()][] = $annotation->getMethodName();
+            $this->annotatedEventHandlers[$annotation->getEventType()][] = $annotation;
         }
-    }
-
-    /**
-     * @param string $propertyName
-     */
-    public function associateWithProperty(string $propertyName)
-    {
-        // TODO implement
     }
 
     /**
