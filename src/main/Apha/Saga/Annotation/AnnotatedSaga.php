@@ -3,8 +3,12 @@ declare(strict_types = 1);
 
 namespace Apha\Saga\Annotation;
 
+use Apha\Annotations\Annotation\EndSaga;
 use Apha\Annotations\Annotation\SagaEventHandler;
+use Apha\Annotations\Annotation\StartSaga;
+use Apha\Annotations\EndSagaAnnotationReader;
 use Apha\Annotations\SagaEventHandlerAnnotationReader;
+use Apha\Annotations\StartSagaAnnotationReader;
 use Apha\Domain\Identity;
 use Apha\EventHandling\EventHandler;
 use Apha\Message\Event;
@@ -18,13 +22,25 @@ abstract class AnnotatedSaga extends Saga
     /**
      * @var bool
      */
-    private $isActive;
+    private $isActive = false;
 
     /**
      * @Serializer\Exclude()
      * @var array
      */
     private $annotatedEventHandlers = [];
+
+    /**
+     * @Serializer\Exclude()
+     * @var array
+     */
+    private $annotatedSagaStarters = [];
+
+    /**
+     * @Serializer\Exclude()
+     * @var array
+     */
+    private $annotatedSagaEndings = [];
 
     /**
      * @param Identity $identity
@@ -42,6 +58,14 @@ abstract class AnnotatedSaga extends Saga
     {
         if (empty($this->annotatedEventHandlers)) {
             $this->readAnnotatedEventHandlers();
+        }
+
+        if (empty($this->annotatedSagaStarters)) {
+            $this->readAnnotatedStarters();
+        }
+
+        if (empty($this->annotatedSagaEndings)) {
+            $this->readAnnotatedEndings();
         }
 
         $this->handleByAnnotatedEventHandler($event);
@@ -67,7 +91,16 @@ abstract class AnnotatedSaga extends Saga
             $this->associateWith(new AssociationValue($handler->getAssociationProperty(), $associationValue));
 
             $handlerName = $handler->getMethodName();
+
+            if (in_array($handlerName, $this->annotatedSagaStarters)) {
+                $this->start();
+            }
+
             $this->{$handlerName}($event);
+
+            if (in_array($handlerName, $this->annotatedSagaEndings)) {
+                $this->end();
+            }
         }
     }
 
@@ -89,6 +122,43 @@ abstract class AnnotatedSaga extends Saga
     }
 
     /**
+     * @throws NoStartSagaHandlerException
+     */
+    private function readAnnotatedStarters()
+    {
+        /* @var $this EventHandler|AnnotatedSaga */
+        $reader = new StartSagaAnnotationReader($this);
+        $annotations = $reader->readAll();
+
+        if (empty($annotations)) {
+            throw new NoStartSagaHandlerException($this);
+        }
+
+        /* @var $annotation StartSaga */
+        foreach ($annotations as $annotation) {
+            $this->annotatedSagaStarters[] = $annotation->getMethodName();
+        }
+    }
+
+    /**
+     * @throws NoEndSagaHandlerException
+     */
+    private function readAnnotatedEndings()
+    {
+        $reader = new EndSagaAnnotationReader($this);
+        $annotations = $reader->readAll();
+
+        if (empty($annotations)) {
+            throw new NoEndSagaHandlerException($this);
+        }
+
+        /* @var $annotation EndSaga */
+        foreach ($annotations as $annotation) {
+            $this->annotatedSagaEndings[] = $annotation->getMethodName();
+        }
+    }
+
+    /**
      * @param AssociationValue $associationValue
      */
     public function associateWith(AssociationValue $associationValue)
@@ -101,19 +171,19 @@ abstract class AnnotatedSaga extends Saga
      */
     final public function isActive(): bool
     {
-        return true;
+        return $this->isActive;
     }
 
     /**
      */
-    public function start()
+    protected function start()
     {
         $this->isActive = true;
     }
 
     /**
      */
-    public function end()
+    protected function end()
     {
         $this->isActive = false;
     }
