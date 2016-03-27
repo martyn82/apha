@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 namespace Apha\Annotations\Annotation;
+use Apha\Annotations\ReadOnlyException;
 
 /**
  * @Annotation
@@ -29,9 +30,14 @@ final class CommandHandler extends Annotation
 
     /**
      * @param string $methodName
+     * @throws ReadOnlyException
      */
     public function setMethodName(string $methodName)
     {
+        if (!empty($this->methodName)) {
+            throw new ReadOnlyException('methodName');
+        }
+
         $this->methodName = $methodName;
     }
 
@@ -45,9 +51,14 @@ final class CommandHandler extends Annotation
 
     /**
      * @param string $commandType
+     * @throws ReadOnlyException
      */
     public function setCommandType(string $commandType)
     {
+        if (!empty($this->commandType)) {
+            throw new ReadOnlyException('commandType');
+        }
+
         $this->commandType = $commandType;
     }
 }

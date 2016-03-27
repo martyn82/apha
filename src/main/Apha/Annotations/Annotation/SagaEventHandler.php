@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Apha\Annotations\Annotation;
 
+use Apha\Annotations\ReadOnlyException;
 use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;
 
@@ -56,9 +57,14 @@ final class SagaEventHandler extends Annotation
 
     /**
      * @param string $methodName
+     * @throws ReadOnlyException
      */
     public function setMethodName(string $methodName)
     {
+        if (!empty($this->methodName)) {
+            throw new ReadOnlyException('methodName');
+        }
+
         $this->methodName = $methodName;
     }
 
@@ -72,9 +78,14 @@ final class SagaEventHandler extends Annotation
 
     /**
      * @param string $eventType
+     * @throws ReadOnlyException
      */
     public function setEventType(string $eventType)
     {
+        if (!empty($this->eventType)) {
+            throw new ReadOnlyException('eventType');
+        }
+
         $this->eventType = $eventType;
     }
 }

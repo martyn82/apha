@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Apha\Annotations\Annotation;
 
+use Apha\Annotations\ReadOnlyException;
 use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;
 
@@ -51,9 +52,14 @@ final class AggregateIdentifier extends Annotation
 
     /**
      * @param string $propertyName
+     * @throws ReadOnlyException
      */
     public function setPropertyName(string $propertyName)
     {
+        if (!empty($this->propertyName)) {
+            throw new ReadOnlyException('propertyName');
+        }
+
         $this->propertyName = $propertyName;
     }
 }

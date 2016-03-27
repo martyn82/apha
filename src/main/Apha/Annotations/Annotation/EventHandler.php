@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 namespace Apha\Annotations\Annotation;
+use Apha\Annotations\ReadOnlyException;
 
 /**
  * @Annotation
@@ -29,9 +30,14 @@ final class EventHandler extends Annotation
 
     /**
      * @param string $eventType
+     * @throws ReadOnlyException
      */
     public function setEventType(string $eventType)
     {
+        if (!empty($this->eventType)) {
+            throw new ReadOnlyException('eventType');
+        }
+
         $this->eventType = $eventType;
     }
 
@@ -45,9 +51,14 @@ final class EventHandler extends Annotation
 
     /**
      * @param string $methodName
+     * @throws ReadOnlyException
      */
     public function setMethodName(string $methodName)
     {
+        if (!empty($this->methodName)) {
+            throw new ReadOnlyException('methodName');
+        }
+
         $this->methodName = $methodName;
     }
 }
