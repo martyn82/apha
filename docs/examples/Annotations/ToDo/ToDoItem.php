@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation as Serializer;
 class ToDoItem extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier(type="Apha\Domain\Identity")
+     * @AggregateIdentifier(type = "Apha\Domain\Identity")
      * @Serializer\Type("Apha\Domain\Identity")
      * @var Identity
      */

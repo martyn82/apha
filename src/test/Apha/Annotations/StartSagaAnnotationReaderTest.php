@@ -35,6 +35,6 @@ class StartSagaAnnotationReaderTest_Saga extends AnnotatedSaga
     }
 }
 
-class ProcessStarted extends Event
+class StartSagaAnnotationReaderTest_ProcessStarted extends Event
 {
 }

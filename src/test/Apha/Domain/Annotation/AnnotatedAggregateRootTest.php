@@ -48,7 +48,7 @@ class AnnotatedAggregateRootTest extends \PHPUnit_Framework_TestCase
 class AnnotatedAggregateRootTest_Aggregate extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier(type="Apha\Domain\Identity")
+     * @AggregateIdentifier(type = "Apha\Domain\Identity")
      * @var Identity
      */
     protected $identity;
@@ -69,13 +69,13 @@ class AnnotatedAggregateRootTest_AggregateWithoutIdentifier extends AnnotatedAgg
 class AnnotatedAggregateRootTest_AggregateWithAmbiguousIdentifier extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier(type="string")
+     * @AggregateIdentifier(type = "string")
      * @var string
      */
     protected $id1;
 
     /**
-     * @AggregateIdentifier(type="string")
+     * @AggregateIdentifier(type = "string")
      * @var string
      */
     protected $id2;

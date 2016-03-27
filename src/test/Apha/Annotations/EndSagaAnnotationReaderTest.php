@@ -28,13 +28,13 @@ class EndSagaAnnotationReaderTest_Saga extends AnnotatedSaga
 {
     /**
      * @EndSaga()
-     * @param ProcessEnded $event
+     * @param EndSagaAnnotationReaderTest_ProcessEnded $event
      */
-    public function onProcessEnded(ProcessEnded $event)
+    public function onProcessEnded(EndSagaAnnotationReaderTest_ProcessEnded $event)
     {
     }
 }
 
-class ProcessEnded extends Event
+class EndSagaAnnotationReaderTest_ProcessEnded extends Event
 {
 }
