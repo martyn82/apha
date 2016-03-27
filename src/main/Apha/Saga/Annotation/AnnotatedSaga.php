@@ -3,10 +3,14 @@ declare(strict_types = 1);
 
 namespace Apha\Saga\Annotation;
 
+use Apha\Annotations\SagaEventHandlerAnnotationReader;
 use Apha\Domain\Identity;
+use Apha\EventHandling\EventHandler;
 use Apha\Message\Event;
+use Apha\Saga\AssociationValue;
 use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
+use JMS\Serializer\Annotation as Serializer;
 
 abstract class AnnotatedSaga extends Saga
 {
@@ -14,6 +18,12 @@ abstract class AnnotatedSaga extends Saga
      * @var bool
      */
     private $isActive;
+
+    /**
+     * @Serializer\Exclude()
+     * @var array
+     */
+    private $annotatedEventHandlers = [];
 
     /**
      * @param Identity $identity
@@ -29,6 +39,63 @@ abstract class AnnotatedSaga extends Saga
      */
     public function on(Event $event)
     {
+        if (empty($this->annotatedEventHandlers)) {
+            $this->readAnnotatedEventHandlers();
+        }
+
+        $this->handleByAnnotatedEventHandler($event);
+    }
+
+    /**
+     * @param Event $event
+     * @throws \InvalidArgumentException
+     */
+    private function handleByAnnotatedEventHandler(Event $event)
+    {
+        $eventClass = get_class($event);
+
+        if (!array_key_exists($eventClass, $this->annotatedEventHandlers)) {
+            throw new \InvalidArgumentException("Unable to handle event '{$event->getName()}'.");
+        }
+
+        $handlerNames = $this->annotatedEventHandlers[$eventClass];
+
+        foreach ($handlerNames as $handlerName) {
+            $this->{$handlerName}($event);
+        }
+    }
+
+    /**
+     */
+    private function readAnnotatedEventHandlers()
+    {
+        /* @var $this EventHandler|AnnotatedSaga */
+        $reader = new SagaEventHandlerAnnotationReader($this);
+
+        /* @var $annotation \Apha\Annotations\Annotation\EventHandler */
+        foreach ($reader->readAll() as $annotation) {
+            if (empty($this->annotatedEventHandlers[$annotation->getEventType()])) {
+                $this->annotatedEventHandlers[$annotation->getEventType()] = [];
+            }
+
+            $this->annotatedEventHandlers[$annotation->getEventType()][] = $annotation->getMethodName();
+        }
+    }
+
+    /**
+     * @param string $propertyName
+     */
+    public function associateWithProperty(string $propertyName)
+    {
+        // TODO implement
+    }
+
+    /**
+     * @param AssociationValue $associationValue
+     */
+    public function associateWith(AssociationValue $associationValue)
+    {
+        $this->associationValues->add($associationValue);
     }
 
     /**

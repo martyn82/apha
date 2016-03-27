@@ -22,13 +22,15 @@ use Apha\Examples\Domain\ToDo\MarkItemDone;
 use Apha\Examples\Domain\ToDo\ToDoItemCreated;
 use Apha\Examples\Domain\ToDo\ToDoItemDone;
 use Apha\Repository\EventSourcingRepository;
-use Apha\Serializer\ArrayConverter;
 use Apha\Serializer\JsonSerializer;
 use Apha\StateStore\Storage\MemoryStateStorage;
 use Monolog\Logger;
 
 require_once __DIR__ . "/Runner.php";
 
+/**
+ * This example demonstrates the use of annotations to reduce the boiler plating of setting up an event-sourced system.
+ */
 class AnnotatedAggregateRunner extends Runner
 {
     /**

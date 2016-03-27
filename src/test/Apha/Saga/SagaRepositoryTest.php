@@ -171,12 +171,7 @@ class SagaRepositoryTest extends \PHPUnit_Framework_TestCase
                 $this->associationValuesToArray($saga->getAssociationValues())
             )
             ->willReturn([
-                [
-                    'type' => get_class($saga),
-                    'identity' => $sagaIdentity->getValue(),
-                    'associations' => $associationValues,
-                    'events' => []
-                ]
+                $sagaIdentity->getValue()
             ]);
 
         $repository = new SagaRepository($storage, $serializer);

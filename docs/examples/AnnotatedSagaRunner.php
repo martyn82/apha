@@ -1,9 +1,11 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types = 1);
+declare(ticks = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\Gateway\CommandGateway;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
@@ -14,34 +16,32 @@ use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventStore;
 use Apha\EventStore\Storage\MemoryEventStorage;
+use Apha\Examples\Annotations\ToDo\ToDoCommandHandler;
+use Apha\Examples\Annotations\ToDo\ToDoItem;
+use Apha\Examples\Annotations\ToDo\ToDoSaga;
+use Apha\Examples\Annotations\ToDo\ToDoSagaFactory;
+use Apha\Examples\Annotations\ToDo\ToDoSagaSerializer;
 use Apha\Examples\Domain\ToDo\CreateToDoItem;
 use Apha\Examples\Domain\ToDo\DeadlineExpired;
 use Apha\Examples\Domain\ToDo\MarkItemDone;
-use Apha\Examples\Domain\ToDo\ToDoCommandHandler;
-use Apha\Examples\Domain\ToDo\ToDoItem;
 use Apha\Examples\Domain\ToDo\ToDoItemCreated;
 use Apha\Examples\Domain\ToDo\ToDoItemDone;
-use Apha\Examples\Domain\ToDo\ToDoSaga;
 use Apha\Message\Event;
 use Apha\Repository\EventSourcingRepository;
-use Apha\Saga\AssociationValue;
-use Apha\Saga\GenericSagaFactory;
 use Apha\Saga\SagaRepository;
 use Apha\Saga\SimpleAssociationValueResolver;
 use Apha\Saga\SimpleSagaManager;
 use Apha\Saga\Storage\MemorySagaStorage;
+use Apha\Scheduling\SimpleEventScheduler;
 use Apha\Serializer\JsonSerializer;
 use Monolog\Logger;
 
 require_once __DIR__ . "/Runner.php";
 
 /**
- * This example demonstrates the use of a SagaManager to manage your sagas.
- *
- * In this example the ToDoSaga is persisted after an event of interest has been processed and the Saga is removed when
- * the long running process has finished. To illustrate this, a debug message is logged at the end of the runner.
+ * This example demonstrates the use of annotated saga and saga manager to handle long running business processes.
  */
-class ManagedSagaRunner extends Runner
+class AnnotatedSagaRunner extends Runner
 {
     /**
      * @return void
@@ -50,20 +50,23 @@ class ManagedSagaRunner extends Runner
     {
         $logger = new Logger('default');
 
-        $sagaFactory = new GenericSagaFactory();
+        $eventBus = new LoggingEventBus(
+            new SimpleEventBus(),
+            $logger
+        );
+
+        $scheduler = new SimpleEventScheduler($eventBus);
+        $serializer = new ToDoSagaSerializer($scheduler);
+
+        $sagaFactory = new ToDoSagaFactory($scheduler);
         $sagaStorage = new MemorySagaStorage();
         $sagaRepository = new SagaRepository(
             $sagaStorage,
-            new JsonSerializer()
+            $serializer
         );
 
         $resolver = new SimpleAssociationValueResolver();
         $sagaManager = new SimpleSagaManager([ToDoSaga::class], $sagaRepository, $resolver, $sagaFactory);
-
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus([]),
-            $logger
-        );
 
         $eventBus->addHandler(Event::class, $sagaManager);
 
@@ -79,7 +82,6 @@ class ManagedSagaRunner extends Runner
         );
 
         $factory = new GenericAggregateFactory(ToDoItem::class);
-
         $repository = new EventSourcingRepository($factory, $eventStore);
         $commandHandler = new ToDoCommandHandler($repository);
 
@@ -91,23 +93,39 @@ class ManagedSagaRunner extends Runner
         $loggingCommandInterceptor = new LoggingCommandDispatchInterceptor($logger);
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
+        // Send commands to create two todoitems
+        $todoItemExpireSeconds = 3;
         $toCompleteId = Identity::createNew();
-        $commandGateway->send(new CreateToDoItem($toCompleteId, "Item to complete", PHP_INT_MAX));
+        $toExpireId = Identity::createNew();
 
-        $sagaIds = $sagaRepository->find(ToDoSaga::class, new AssociationValue('identity', $toCompleteId->getValue()));
-        $logger->debug("Active sagas found:", [
-            'count' => count($sagaIds),
-            'saga' => !empty($sagaIds) ? $sagaStorage->findById($sagaIds[0]->getValue()) : ''
-        ]);
+        $commandGateway->send(new CreateToDoItem($toCompleteId, "Item to complete", $todoItemExpireSeconds));
+        $commandGateway->send(new CreateToDoItem($toExpireId, "Item to expire", $todoItemExpireSeconds));
 
-        $commandGateway->send(new MarkItemDone($toCompleteId));
+        // Start an idling process for 5 seconds and wait for the ToDoItem to expire
+        $this->idle(5, $commandGateway, $toCompleteId);
+    }
 
-        $sagaIds = $sagaRepository->find(ToDoSaga::class, new AssociationValue('identity', $toCompleteId->getValue()));
-        $logger->debug("Active sagas found:", [
-            'count' => count($sagaIds),
-            'saga' => !empty($sagaIds) ? $sagaStorage->findById($sagaIds[0]->getValue())['serialized'] : ''
-        ]);
+    /**
+     * @param int $timeout
+     * @param CommandGateway $commandGateway
+     * @param Identity $toCompleteId
+     */
+    private function idle(int $timeout, CommandGateway $commandGateway, Identity $toCompleteId)
+    {
+        $timePassed = 0;
+        $startTime = time();
+
+        $itemDone = false;
+        while ($timePassed < $timeout) {
+            $timePassed = time() - $startTime;
+
+            // One todoitem will be completed after 1 second
+            if ($timePassed === 1 && !$itemDone) {
+                $itemDone = true;
+                $commandGateway->send(new MarkItemDone($toCompleteId));
+            }
+        }
     }
 }
 
-exit(ManagedSagaRunner::main());
+exit(AnnotatedSagaRunner::main());

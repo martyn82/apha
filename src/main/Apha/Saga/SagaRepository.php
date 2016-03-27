@@ -94,8 +94,8 @@ class SagaRepository
     public function find(string $sagaType, AssociationValue $associationValue): array
     {
         return array_map(
-            function (array $sagaData): Identity {
-                return Identity::fromString($sagaData['identity']);
+            function (string $sagaId): Identity {
+                return Identity::fromString($sagaId);
             },
             $this->storage->find($sagaType, [$associationValue->getKey() => $associationValue->getValue()])
         );
