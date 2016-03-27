@@ -72,6 +72,10 @@ class AggregateIdentifierAnnotationReader extends AnnotationReader
         \ReflectionProperty $reflectionProperty
     ): \Apha\Annotations\Annotation\AggregateIdentifier
     {
+        if (empty($annotation->type)) {
+            throw new AnnotationReaderException("Type is required.");
+        }
+
         if (
             !in_array($annotation->type, $this->validScalarTypes)
             && !class_exists($annotation->type, true)

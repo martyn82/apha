@@ -50,7 +50,7 @@ class AggregateIdentifierAnnotationReaderTest extends \PHPUnit_Framework_TestCas
 class AggregateIdentifierAnnotationReaderTest_AggregateRoot extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier("Apha\Domain\Identity")
+     * @AggregateIdentifier(type="Apha\Domain\Identity")
      * @var Identity
      */
     protected $identity;
@@ -59,7 +59,7 @@ class AggregateIdentifierAnnotationReaderTest_AggregateRoot extends AnnotatedAgg
 class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidAccessibility extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier("string")
+     * @AggregateIdentifier(type="string")
      * @var string
      */
     private $identity;
@@ -68,7 +68,7 @@ class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidAccessibility 
 class AggregateIdentifierAnnotationReaderTest_AggregateRootInvalidType extends AnnotatedAggregateRoot
 {
     /**
-     * @AggregateIdentifier("foo")
+     * @AggregateIdentifier(type="foo")
      * @var Identity
      */
     private $identity;
