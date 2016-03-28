@@ -8,7 +8,6 @@ use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
 use Apha\EventStore\ConcurrencyException;
 use Apha\EventStore\EventStore;
-use Apha\Message\Events;
 
 class EventSourcingRepository implements Repository
 {
