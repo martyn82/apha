@@ -53,10 +53,11 @@ abstract class SagaManager implements EventHandler
      */
     public function on(Event $event)
     {
+        $handled = false;
+
         /* @var $sagaType string */
         foreach ($this->sagaTypes as $sagaType) {
             $associationValues = $this->extractAssociationValues($sagaType, $event);
-            $sagaIdentities = [];
 
             /* @var $associationValue AssociationValue */
             foreach ($associationValues->getIterator() as $associationValue) {
@@ -67,14 +68,13 @@ abstract class SagaManager implements EventHandler
                     $saga = $this->repository->load($identity, $sagaType);
                     $saga->on($event);
                     $this->commit($saga);
+                    $handled = true;
                 }
             }
 
             if (
-                $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::ALWAYS || (
-                    empty($sagaIdentities) &&
-                    $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::IF_NONE_FOUND
-                )
+                $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::ALWAYS ||
+                (!$handled && $this->getSagaCreationPolicy($sagaType, $event) == SagaCreationPolicy::IF_NONE_FOUND)
             ) {
                 $saga = $this->factory->createSaga($sagaType, Identity::createNew(), $associationValues);
                 $saga->on($event);
