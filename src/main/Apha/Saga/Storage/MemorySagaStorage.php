@@ -41,7 +41,11 @@ class MemorySagaStorage implements SagaStorage
 
         foreach ($associationValues as $field => $value) {
             if (!array_key_exists($field, $this->associations)) {
-                $this->associations[$field] = [$value => []];
+                $this->associations[$field] = [];
+            }
+
+            if (!array_key_exists($value, $this->associations[$field])) {
+                $this->associations[$field][$value] = [];
             }
 
             if (!in_array($identity, $this->associations[$field][$value])) {
@@ -142,17 +146,16 @@ class MemorySagaStorage implements SagaStorage
 
         $foundIdentities = array_unique($foundIdentities);
 
-        return array_map(
-            function (array $sagaData): string {
-                return $sagaData['identity'];
-            },
-            array_filter(
-                array_values($this->sagas),
-                function (array $sagaData) use ($foundIdentities, $sagaType) {
-                    return (empty($foundIdentities) || in_array($sagaData['identity'], $foundIdentities))
-                        && $sagaData['type'] == $sagaType;
+        return array_reduce(
+            $this->sagas,
+            function (array $accumulator, array $sagaData) use ($foundIdentities, $sagaType) {
+                if (in_array($sagaData['identity'], $foundIdentities) && $sagaData['type'] == $sagaType) {
+                    $accumulator[] = $sagaData['identity'];
                 }
-            )
+
+                return $accumulator;
+            },
+            []
         );
     }
 }
