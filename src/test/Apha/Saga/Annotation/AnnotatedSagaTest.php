@@ -9,6 +9,10 @@ use Apha\Annotations\Annotation\StartSaga;
 use Apha\Domain\Identity;
 use Apha\Message\Event;
 
+/**
+ * @group saga
+ * @group annotations
+ */
 class AnnotatedSagaTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -50,13 +54,33 @@ class AnnotatedSagaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Apha\Saga\Annotation\NoStartSagaHandlerException
+     */
+    public function onThrowsExceptionIfSagaCannotBeStarted()
+    {
+        $saga = new AnnotatedSagaTest_SagaWithoutStart(Identity::createNew());
+        $saga->on(new AnnotatedSagaTest_StartSaga());
+    }
+
+    /**
+     * @test
      */
     public function endSagaAnnotationEndsTheSaga()
     {
-        $saga = new AnnotatedSagaTest_Saga(Identity::createNew());
+        $saga = new AnnotatedSagaTest_Saga();
         $saga->on(new AnnotatedSagaTest_EndSaga());
 
         self::assertFalse($saga->isActive());
+    }
+
+    /**
+     * @test
+     * @expectedException \Apha\Saga\Annotation\NoEndSagaHandlerException
+     */
+    public function onThrowsExceptionIfSagaCannotBeEnded()
+    {
+        $saga = new AnnotatedSagaTest_SagaWithoutEnd();
+        $saga->on(new AnnotatedSagaTest_EndSaga());
     }
 }
 
@@ -100,6 +124,29 @@ class AnnotatedSagaTest_Saga extends AnnotatedSaga
     public function isHandled(): bool
     {
         return $this->handled;
+    }
+}
+
+class AnnotatedSagaTest_SagaWithoutStart extends AnnotatedSaga
+{
+    /**
+     * @SagaEventHandler(associationProperty = "eventId")
+     * @param AnnotatedSagaTest_StartSaga $event
+     */
+    public function onStartSaga(AnnotatedSagaTest_StartSaga $event)
+    {
+    }
+}
+
+class AnnotatedSagaTest_SagaWithoutEnd extends AnnotatedSaga
+{
+    /**
+     * @StartSaga()
+     * @SagaEventHandler(associationProperty = "eventId")
+     * @param AnnotatedSagaTest_EndSaga $event
+     */
+    public function onEndSaga(AnnotatedSagaTest_EndSaga $event)
+    {
     }
 }
 

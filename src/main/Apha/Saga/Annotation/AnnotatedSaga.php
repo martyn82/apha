@@ -6,7 +6,9 @@ namespace Apha\Saga\Annotation;
 use Apha\Annotations\Annotation\EndSaga;
 use Apha\Annotations\Annotation\SagaEventHandler;
 use Apha\Annotations\Annotation\StartSaga;
+use Apha\Annotations\DefaultParameterResolver;
 use Apha\Annotations\EndSagaAnnotationReader;
+use Apha\Annotations\ParameterResolver;
 use Apha\Annotations\SagaEventHandlerAnnotationReader;
 use Apha\Annotations\StartSagaAnnotationReader;
 use Apha\Domain\Identity;
@@ -24,6 +26,12 @@ abstract class AnnotatedSaga extends Saga
      * @var bool
      */
     private $isActive = false;
+
+    /**
+     * @Serializer\Exclude()
+     * @var ParameterResolver
+     */
+    private $parameterResolver;
 
     /**
      * @Serializer\Exclude()
@@ -46,8 +54,13 @@ abstract class AnnotatedSaga extends Saga
     /**
      * @param Identity $identity
      */
-    public function __construct(Identity $identity)
+    public function __construct(Identity $identity = null)
     {
+        if ($identity == null) {
+            $identity = Identity::createNew();
+        }
+
+        $this->setParameterResolver(new DefaultParameterResolver());
         parent::__construct($identity, new AssociationValues([]));
     }
 
@@ -88,8 +101,11 @@ abstract class AnnotatedSaga extends Saga
 
         /* @var $handler SagaEventHandler */
         foreach ($handlers as $handler) {
-            $associationValue = (string)call_user_func([$event, 'get' . ucfirst($handler->getAssociationProperty())]);
-            $this->associateWith(new AssociationValue($handler->getAssociationProperty(), $associationValue));
+            $associatedValue = (string)$this->parameterResolver->resolveParameterValue(
+                $event,
+                $handler->getAssociationProperty()
+            );
+            $this->associateWith(new AssociationValue($handler->getAssociationProperty(), $associatedValue));
 
             $handlerName = $handler->getMethodName();
 
@@ -157,6 +173,14 @@ abstract class AnnotatedSaga extends Saga
         foreach ($annotations as $annotation) {
             $this->annotatedSagaEndings[] = $annotation->getMethodName();
         }
+    }
+
+    /**
+     * @param ParameterResolver $parameterResolver
+     */
+    public function setParameterResolver(ParameterResolver $parameterResolver)
+    {
+        $this->parameterResolver = $parameterResolver;
     }
 
     /**
