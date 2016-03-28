@@ -11,18 +11,18 @@ class AssociationValues implements \IteratorAggregate
      * @Serializer\Type("array<Apha\Saga\AssociationValue>")
      * @var AssociationValue[]
      */
-    private $items;
+    private $items = [];
 
     /**
      * @param array $associationValues
      */
     public function __construct(array $associationValues)
     {
-        $this->items = array_map(
-            function (AssociationValue $item): AssociationValue {
-                return $item;
-            },
-            $associationValues
+        array_walk(
+            $associationValues,
+            function (AssociationValue $item) {
+                $this->add($item);
+            }
         );
     }
 
@@ -31,6 +31,10 @@ class AssociationValues implements \IteratorAggregate
      */
     public function add(AssociationValue $item)
     {
+        if ($this->contains($item)) {
+            return;
+        }
+
         $this->items[] = $item;
     }
 
@@ -47,6 +51,22 @@ class AssociationValues implements \IteratorAggregate
     public function clear()
     {
         $this->items = [];
+    }
+
+    /**
+     * @param AssociationValue $associationValue
+     * @return bool
+     */
+    public function contains(AssociationValue $associationValue): bool
+    {
+        /* @var $item AssociationValue */
+        foreach ($this->items as $item) {
+            if ($item->getKey() === $associationValue->getKey()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
