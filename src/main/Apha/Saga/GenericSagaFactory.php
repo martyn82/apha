@@ -16,6 +16,10 @@ class GenericSagaFactory implements SagaFactory
      */
     public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues): Saga
     {
+        if (!$this->supports($sagaType)) {
+            throw new \InvalidArgumentException("This factory does not support Sagas of type '{$sagaType}'.");
+        }
+
         return new $sagaType($identity, $associationValues);
     }
 
@@ -25,7 +29,6 @@ class GenericSagaFactory implements SagaFactory
      */
     public function supports(string $sagaType): bool
     {
-        // the naive way
-        return true;
+        return is_subclass_of($sagaType, Saga::class, true);
     }
 }
