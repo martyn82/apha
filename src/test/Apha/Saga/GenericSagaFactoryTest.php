@@ -24,6 +24,16 @@ class GenericSagaFactoryTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals($identity, $saga->getId());
     }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function createSagaThrowsExceptionIfSagaUnsupported()
+    {
+        $factory = new GenericSagaFactory();
+        $factory->createSaga(\stdClass::class, Identity::createNew(), new AssociationValues([]));
+    }
 }
 
 class GenericSagaFactoryTest_Saga extends Saga
@@ -34,7 +44,6 @@ class GenericSagaFactoryTest_Saga extends Saga
      */
     public function on(Event $event)
     {
-        // TODO: Implement on() method.
     }
 
     /**
@@ -42,6 +51,5 @@ class GenericSagaFactoryTest_Saga extends Saga
      */
     public function isActive(): bool
     {
-        // TODO: Implement isActive() method.
     }
 }
