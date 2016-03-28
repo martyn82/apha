@@ -6,7 +6,7 @@ namespace Apha\Message;
 use Apha\Domain\Identity;
 use JMS\Serializer\Annotation as Serializer;
 
-abstract class Event
+abstract class Event extends Message
 {
     /**
      * @Serializer\Type("integer")
@@ -18,7 +18,7 @@ abstract class Event
      * @Serializer\Type("Apha\Domain\Identity")
      * @var Identity
      */
-    private $identity;
+    protected $identity;
 
     /**
      * @return string
