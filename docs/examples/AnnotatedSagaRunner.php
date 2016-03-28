@@ -5,6 +5,7 @@ declare(ticks = 1);
 
 namespace Apha\Examples;
 
+use Apha\Annotations\DefaultParameterResolver;
 use Apha\CommandHandling\Gateway\CommandGateway;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor;
@@ -56,17 +57,17 @@ class AnnotatedSagaRunner extends Runner
         );
 
         $scheduler = new SimpleEventScheduler($eventBus);
-        $serializer = new ToDoSagaSerializer($scheduler);
+        $parameterResolver = new DefaultParameterResolver();
 
-        $sagaFactory = new ToDoSagaFactory($scheduler);
-        $sagaStorage = new MemorySagaStorage();
-        $sagaRepository = new SagaRepository(
-            $sagaStorage,
-            $serializer
+        $sagaManager = new SimpleSagaManager(
+            [ToDoSaga::class],
+            new SagaRepository(
+                new MemorySagaStorage(),
+                new ToDoSagaSerializer($scheduler, $parameterResolver, $logger)
+            ),
+            new SimpleAssociationValueResolver(),
+            new ToDoSagaFactory($scheduler, $parameterResolver, $logger)
         );
-
-        $resolver = new SimpleAssociationValueResolver();
-        $sagaManager = new SimpleSagaManager([ToDoSaga::class], $sagaRepository, $resolver, $sagaFactory);
 
         $eventBus->addHandler(Event::class, $sagaManager);
 
@@ -81,25 +82,26 @@ class AnnotatedSagaRunner extends Runner
             ])
         );
 
-        $factory = new GenericAggregateFactory(ToDoItem::class);
-        $repository = new EventSourcingRepository($factory, $eventStore);
-        $commandHandler = new ToDoCommandHandler($repository);
+        $commandHandler = new ToDoCommandHandler(
+            new EventSourcingRepository(
+                new GenericAggregateFactory(ToDoItem::class),
+                $eventStore
+            )
+        );
 
         $commandBus = new SimpleCommandBus([
             CreateToDoItem::class => $commandHandler,
             MarkItemDone::class => $commandHandler
         ]);
 
-        $loggingCommandInterceptor = new LoggingCommandDispatchInterceptor($logger);
-        $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
+        $commandGateway = new DefaultCommandGateway($commandBus, [new LoggingCommandDispatchInterceptor($logger)]);
 
         // Send commands to create two todoitems
         $todoItemExpireSeconds = 3;
         $toCompleteId = Identity::createNew();
-        $toExpireId = Identity::createNew();
 
         $commandGateway->send(new CreateToDoItem($toCompleteId, "Item to complete", $todoItemExpireSeconds));
-        $commandGateway->send(new CreateToDoItem($toExpireId, "Item to expire", $todoItemExpireSeconds));
+        $commandGateway->send(new CreateToDoItem(Identity::createNew(), "Item to expire", $todoItemExpireSeconds));
 
         // Start an idling process for 5 seconds and wait for the ToDoItem to expire
         $this->idle(5, $commandGateway, $toCompleteId);

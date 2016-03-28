@@ -12,15 +12,17 @@ use Apha\Examples\Domain\ToDo\ToDoItemCreated;
 use Apha\Examples\Domain\ToDo\ToDoItemDone;
 use Apha\Saga\Annotation\AnnotatedSaga;
 use Apha\Scheduling\EventScheduler;
+use Apha\Scheduling\ScheduleToken;
 use JMS\Serializer\Annotation as Serializer;
+use Psr\Log\LoggerInterface;
 
 class ToDoSaga extends AnnotatedSaga
 {
     /**
-     * @Serializer\Type("array<string, Apha\Scheduling\ScheduleToken>")
-     * @var array
+     * @Serializer\Type("Apha\Scheduling\ScheduleToken")
+     * @var ScheduleToken
      */
-    private $openItems;
+    private $expireToken;
 
     /**
      * @Serializer\Exclude()
@@ -29,12 +31,25 @@ class ToDoSaga extends AnnotatedSaga
     private $scheduler;
 
     /**
+     * @Serializer\Exclude()
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param Identity $identity
      */
     public function __construct(Identity $identity)
     {
         parent::__construct($identity);
-        $this->openItems = [];
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -57,22 +72,18 @@ class ToDoSaga extends AnnotatedSaga
             new DeadlineExpired($event->getIdentity())
         );
 
-        $this->openItems[$event->getIdentity()->getValue()] = $token;
+        $this->expireToken = $token;
     }
 
     /**
+     * @EndSaga()
      * @SagaEventHandler(associationProperty = "identity")
      * @param ToDoItemDone $event
      */
     public function onToDoItemDone(ToDoItemDone $event)
     {
-        $token = $this->openItems[$event->getIdentity()->getValue()];
-
-        if ($token != null) {
-            $this->scheduler->cancelSchedule($token);
-        }
-
-        unset($this->openItems[$event->getIdentity()->getValue()]);
+        $this->scheduler->cancelSchedule($this->expireToken);
+        $this->expireToken = null;
     }
 
     /**
@@ -82,6 +93,26 @@ class ToDoSaga extends AnnotatedSaga
      */
     public function onDeadlineExpired(DeadlineExpired $event)
     {
-        unset($this->openItems[$event->getIdentity()->getValue()]);
+        $this->expireToken = null;
+    }
+
+    /**
+     */
+    protected function start()
+    {
+        parent::start();
+        $this->logger->debug("SAGA STARTED", [
+            'sagaIdentity' => $this->getId()->getValue()
+        ]);
+    }
+
+    /**
+     */
+    protected function end()
+    {
+        parent::end();
+        $this->logger->debug("SAGA STOPPED", [
+            'sagaIdentity' => $this->getId()->getValue()
+        ]);
     }
 }

@@ -3,14 +3,15 @@ declare(strict_types = 1);
 
 namespace Apha\Examples\Annotations\ToDo;
 
+use Apha\Annotations\ParameterResolver;
 use Apha\Domain\Identity;
-use Apha\Saga\AssociationValue;
+use Apha\Saga\Annotation\AnnotatedSagaFactory;
 use Apha\Saga\AssociationValues;
 use Apha\Saga\Saga;
-use Apha\Saga\SagaFactory;
 use Apha\Scheduling\EventScheduler;
+use Psr\Log\LoggerInterface;
 
-class ToDoSagaFactory implements SagaFactory
+class ToDoSagaFactory extends AnnotatedSagaFactory
 {
     /**
      * @var EventScheduler
@@ -18,11 +19,24 @@ class ToDoSagaFactory implements SagaFactory
     private $scheduler;
 
     /**
-     * @param EventScheduler $scheduler
+     * @var LoggerInterface
      */
-    public function __construct(EventScheduler $scheduler)
+    private $logger;
+    
+    /**
+     * @param EventScheduler $scheduler
+     * @param ParameterResolver $parameterResolver
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        EventScheduler $scheduler,
+        ParameterResolver $parameterResolver,
+        LoggerInterface $logger
+    )
     {
+        parent::__construct($parameterResolver);
         $this->scheduler = $scheduler;
+        $this->logger = $logger;
     }
 
     /**
@@ -34,19 +48,10 @@ class ToDoSagaFactory implements SagaFactory
      */
     public function createSaga(string $sagaType, Identity $identity, AssociationValues $associationValues): Saga
     {
-        if (!$this->supports($sagaType)) {
-            throw new \InvalidArgumentException("Unsupported saga type: '{$sagaType}'.'");
-        }
-        
         /* @var $saga ToDoSaga */
-        $saga = new $sagaType($identity);
+        $saga = parent::createSaga($sagaType, $identity, $associationValues);
+        $saga->setLogger($this->logger);
         $saga->setEventScheduler($this->scheduler);
-
-        /* @var $associationValue AssociationValue */
-        foreach ($associationValues->getIterator() as $associationValue) {
-            $saga->associateWith($associationValue);
-        }
-
         return $saga;
     }
 
