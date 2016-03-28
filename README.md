@@ -3,7 +3,7 @@
 [MongoDB]: (https://www.mongodb.org)
 [ElasticSearch]: (https://www.elastic.co/products/elasticsearch)
 
-Apha
+APHA
 ====
 
 [![Build Status](https://travis-ci.org/martyn82/apha.svg?branch=master)](https://travis-ci.org/martyn82/apha)
