@@ -31,7 +31,6 @@ abstract class Saga implements EventHandler
     {
         $this->identity = $identity;
         $this->associationValues = $associationValues;
-        $this->changes = new Events();
     }
 
     /**
