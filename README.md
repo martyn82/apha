@@ -8,19 +8,17 @@ APHA
 
 [![Build Status](https://travis-ci.org/martyn82/apha.svg?branch=master)](https://travis-ci.org/martyn82/apha)
 
-Apha is a CQRS/ES library for PHP. It contains all the building blocks
+APHA is a CQRS/ES library for PHP. It contains all the building blocks
 you need to build an application that implements Command-Query Responsibility
 Segregation either with or without Event Sourcing.
 
-Apha provides:
+APHA provides:
 * Typed command and event handling
 * Using MongoDB as event store and/or read store
 * Using ElasticSearch as read store
 * Replay of events
 * Sagas (experimental)
 * Event scheduling (experimental)
-
-The library is fully unit tested.
 
 ## Prerequisites
 
@@ -47,7 +45,7 @@ $ bin/phing test:unit
 
 ## Documentation
 
-Currently, there is no general documentation available. Coming soon!
+Currently, there is no API documentation available. Coming soon!
 
 ## Examples
 
