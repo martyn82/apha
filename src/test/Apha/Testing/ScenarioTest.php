@@ -20,6 +20,9 @@ use Apha\Repository\Repository;
 use Apha\Serializer\JsonSerializer;
 use Apha\StateStore\TypedEventApplicator;
 
+/**
+ * @group testing
+ */
 class ScenarioTest extends \PHPUnit_Framework_TestCase
 {
     /**
