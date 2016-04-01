@@ -6,7 +6,7 @@ namespace Apha\Examples;
 /* @var $loader \Composer\Autoload\ClassLoader */
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
-$loader = require_once __DIR__ . '/../../vendor/autoload.php';
+$loader = require_once __DIR__ . '/../vendor/autoload.php';
 $loader->addPsr4("Apha\\Examples\\", __DIR__ . "/");
 
 AnnotationRegistry::registerLoader(function (string $className) use ($loader) {

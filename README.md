@@ -49,11 +49,11 @@ Currently, there is no API documentation available. Coming soon!
 
 ## Examples
 
-Some quickstart examples are available in the `docs/examples` directory.
+Some quickstart examples are available in the `examples` directory.
 You can run them from the command-line by executing:
 
 ```
-$ php docs/examples/ ...
+$ php examples/ ...
 ```
 
 ## Licensing
