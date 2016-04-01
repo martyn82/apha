@@ -7,6 +7,7 @@ use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
 use Apha\EventHandling\EventBus;
 use Apha\EventStore\EventStore;
+use Apha\Message\Events;
 
 class AggregateEventPlayer
 {
@@ -45,5 +46,26 @@ class AggregateEventPlayer
     {
         $events = $this->eventStore->getEventsForAggregate($aggregateId);
         $this->eventPlayer->play($events);
+    }
+
+    /**
+     * @param Identity $aggregateId
+     * @param int $version
+     */
+    public function playToVersion(Identity $aggregateId, int $version)
+    {
+        $events = $this->eventStore->getEventsForAggregate($aggregateId);
+        $partialHistory = [];
+
+        /* @var $event \Apha\Message\Event */
+        foreach ($events->getIterator() as $event) {
+            if ($event->getVersion() > $version) {
+                break;
+            }
+
+            $partialHistory[] = $event;
+        }
+
+        $this->eventPlayer->play(new Events($partialHistory));
     }
 }

@@ -26,22 +26,8 @@ class EventPlayer
      */
     public function play(Events $events)
     {
-        $this->playToVersion($events, PHP_INT_MAX);
-    }
-
-    /**
-     * @param Events $events
-     * @param int $version
-     */
-    public function playToVersion(Events $events, int $version)
-    {
+        /* @var $event \Apha\Message\Event */
         foreach ($events->getIterator() as $event) {
-            /* @var $event \Apha\Message\Event */
-
-            if ($event->getVersion() > $version) {
-                return;
-            }
-
             $this->eventBus->publish($event);
         }
     }

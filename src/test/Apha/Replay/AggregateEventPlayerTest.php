@@ -7,7 +7,6 @@ use Apha\Domain\AggregateRoot;
 use Apha\Domain\Identity;
 use Apha\EventHandling\EventBus;
 use Apha\EventStore\EventClassMap;
-use Apha\EventStore\EventDescriptor;
 use Apha\EventStore\EventStore;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\Message\Event;
@@ -106,23 +105,6 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
 
         $events = new Events($basicEvents);
 
-        $eventDescriptors = [
-            EventDescriptor::record(
-                $aggregateId->getValue(),
-                get_class($aggregate),
-                $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0]),
-                1
-            ),
-            EventDescriptor::record(
-                $aggregateId->getValue(),
-                get_class($aggregate),
-                $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0]),
-                2
-            )
-        ];
-
         $aggregate->expects(self::any())
             ->method('getId')
             ->willReturn($aggregateId);
@@ -159,23 +141,6 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
 
         $events = new Events($basicEvents);
 
-        $eventDescriptors = [
-            EventDescriptor::record(
-                $aggregateId->getValue(),
-                'aggregateType',
-                $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0]),
-                1
-            ),
-            EventDescriptor::record(
-                $aggregateId->getValue(),
-                'aggregateType',
-                $basicEvents[0]->getEventName(),
-                $serializer->serialize($basicEvents[0]),
-                2
-            )
-        ];
-
         $eventStore->expects(self::any())
             ->method('getEventsForAggregate')
             ->with($aggregateId)
@@ -186,6 +151,40 @@ class AggregateEventPlayerTest extends \PHPUnit_Framework_TestCase
 
         $eventPlayer = new AggregateEventPlayer($eventBus, $eventStore);
         $eventPlayer->replayEventsByAggregateId($aggregateId);
+    }
+
+
+    /**
+     * @test
+     */
+    public function playToVersionPublishesEventsUpToAVersion()
+    {
+        $serializer = $this->getSerializer();
+        $eventClassMap = $this->getEventClassMap();
+        $eventStorage = $this->getEventStorage();
+        $eventBus = $this->getEventBus();
+        $eventStore = $this->getEventStore($eventBus, $eventStorage, $serializer, $eventClassMap);
+
+        $aggregateId = Identity::createNew();
+
+        $eventVersion1 = new AggregateEventPlayerTest_Event();
+        $eventVersion1->setVersion(1);
+
+        $eventVersion2 = new AggregateEventPlayerTest_Event();
+        $eventVersion2->setVersion(2);
+
+        $events = new Events([$eventVersion1, $eventVersion2]);
+
+        $eventStore->expects(self::any())
+            ->method('getEventsForAggregate')
+            ->with($aggregateId)
+            ->willReturn($events);
+
+        $eventBus->expects(self::once())
+            ->method('publish');
+
+        $eventPlayer = new AggregateEventPlayer($eventBus, $eventStore);
+        $eventPlayer->playToVersion($aggregateId, 1);
     }
 }
 
