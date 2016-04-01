@@ -8,6 +8,9 @@ use Apha\Message\Event;
 use Apha\Serializer\JsonSerializer;
 use Apha\Serializer\Serializer;
 
+/**
+ * @group saga
+ */
 class SagaSerializerTest extends \PHPUnit_Framework_TestCase
 {
     /**
