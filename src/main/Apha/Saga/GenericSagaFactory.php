@@ -31,4 +31,13 @@ class GenericSagaFactory implements SagaFactory
     {
         return is_subclass_of($sagaType, Saga::class, true);
     }
+
+    /**
+     * @param Saga $saga
+     * @throws \InvalidArgumentException
+     */
+    public function hydrate(Saga $saga)
+    {
+        // no-op
+    }
 }

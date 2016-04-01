@@ -21,4 +21,11 @@ interface SagaFactory
      * @return bool
      */
     public function supports(string $sagaType): bool;
+
+    /**
+     * @param Saga $saga
+     * @return void
+     * @throws \InvalidArgumentException
+     */
+    public function hydrate(Saga $saga);
 }

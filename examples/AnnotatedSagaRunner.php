@@ -21,7 +21,6 @@ use Apha\Examples\Annotations\ToDo\ToDoCommandHandler;
 use Apha\Examples\Annotations\ToDo\ToDoItem;
 use Apha\Examples\Annotations\ToDo\ToDoSaga;
 use Apha\Examples\Annotations\ToDo\ToDoSagaFactory;
-use Apha\Examples\Annotations\ToDo\ToDoSagaSerializer;
 use Apha\Examples\Domain\ToDo\CreateToDoItem;
 use Apha\Examples\Domain\ToDo\DeadlineExpired;
 use Apha\Examples\Domain\ToDo\MarkItemDone;
@@ -30,6 +29,7 @@ use Apha\Examples\Domain\ToDo\ToDoItemDone;
 use Apha\Message\Event;
 use Apha\Repository\EventSourcingRepository;
 use Apha\Saga\SagaRepository;
+use Apha\Saga\SagaSerializer;
 use Apha\Saga\SimpleAssociationValueResolver;
 use Apha\Saga\SimpleSagaManager;
 use Apha\Saga\Storage\MemorySagaStorage;
@@ -58,15 +58,17 @@ class AnnotatedSagaRunner extends Runner
 
         $scheduler = new SimpleEventScheduler($eventBus);
         $parameterResolver = new DefaultParameterResolver();
+        $factory = new ToDoSagaFactory($scheduler, $parameterResolver, $logger);
+        $serializer = new JsonSerializer();
 
         $sagaManager = new SimpleSagaManager(
             [ToDoSaga::class],
             new SagaRepository(
                 new MemorySagaStorage(),
-                new ToDoSagaSerializer($scheduler, $parameterResolver, $logger)
+                new SagaSerializer($serializer, $factory)
             ),
             new SimpleAssociationValueResolver(),
-            new ToDoSagaFactory($scheduler, $parameterResolver, $logger)
+            $factory
         );
 
         $eventBus->addHandler(Event::class, $sagaManager);
@@ -74,7 +76,7 @@ class AnnotatedSagaRunner extends Runner
         $eventStore = new EventStore(
             $eventBus,
             new MemoryEventStorage(),
-            new JsonSerializer(),
+            $serializer,
             new EventClassMap([
                 ToDoItemCreated::class,
                 ToDoItemDone::class,

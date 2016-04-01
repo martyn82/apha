@@ -63,4 +63,16 @@ class ToDoSagaFactory extends AnnotatedSagaFactory
     {
         return $sagaType == ToDoSaga::class;
     }
+
+    /**
+     * @param Saga $saga
+     * @throws \InvalidArgumentException
+     */
+    public function hydrate(Saga $saga)
+    {
+        /* @var $saga ToDoSaga */
+        parent::hydrate($saga);
+        $saga->setLogger($this->logger);
+        $saga->setEventScheduler($this->scheduler);
+    }
 }

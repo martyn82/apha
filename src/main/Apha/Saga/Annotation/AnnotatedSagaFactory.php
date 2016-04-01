@@ -58,4 +58,18 @@ class AnnotatedSagaFactory implements SagaFactory
     {
         return is_subclass_of($sagaType, AnnotatedSaga::class, true);
     }
+
+    /**
+     * @param Saga $saga
+     * @throws \InvalidArgumentException
+     */
+    public function hydrate(Saga $saga)
+    {
+        if (!$this->supports(get_class($saga))) {
+            throw new \InvalidArgumentException("This factory does not support Sagas of type '{$sagaType}'.");
+        }
+
+        /* @var $saga AnnotatedSaga */
+        $saga->setParameterResolver($this->parameterResolver);
+    }
 }
