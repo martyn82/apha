@@ -114,6 +114,80 @@ class SimpleEventBusTest extends \PHPUnit_Framework_TestCase
 
         $eventBus->publish($event);
     }
+
+    /**
+     * @test
+     */
+    public function removeUnknownHandlerIsIdempotent()
+    {
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $handler = $this->getMockBuilder(EventHandler::class)
+            ->getMockForAbstractClass();
+
+        $handler->expects(self::never())
+            ->method('on')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([]);
+        $eventBus->removeHandler(get_class($event), $handler);
+
+        $eventBus->publish($event);
+    }
+
+    /**
+     * @test
+     */
+    public function callLoggerForBeforeDispatchAndSuccessfulDispatch()
+    {
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $handler = $this->getMockBuilder(EventHandler::class)
+            ->getMockForAbstractClass();
+
+        $logger = $this->getMockBuilder(EventLogger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $logger->expects(self::once())
+            ->method('onBeforeDispatch')
+            ->with($event);
+
+        $logger->expects(self::once())
+            ->method('onDispatchSuccessful')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([
+            get_class($event) => [$handler]
+        ]);
+
+        $eventBus->setLogger($logger);
+        $eventBus->publish($event);
+    }
+
+    /**
+     * @test
+     */
+    public function callLoggerForFailedDispatch()
+    {
+        $event = $this->getMockBuilder(Event::class)
+            ->getMock();
+
+        $logger = $this->getMockBuilder(EventLogger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $logger->expects(self::once())
+            ->method('onDispatchFailed')
+            ->with($event);
+
+        $eventBus = new SimpleEventBus([]);
+
+        $eventBus->setLogger($logger);
+        $eventBus->publish($event);
+    }
 }
 
 class SimpleEventBusTest_Event extends Event
