@@ -3,30 +3,22 @@ declare(strict_types = 1);
 
 namespace Apha\CommandHandling\Interceptor;
 
-use Apha\CommandHandling\NoCommandHandlerException;
+use Apha\CommandHandling\CommandLogger;
 use Apha\Message\Command;
-use Apha\Serializer\ArrayConverter;
-use Psr\Log\LoggerInterface;
 
 class LoggingInterceptor implements CommandDispatchInterceptor
 {
     /**
-     * @var LoggerInterface
+     * @var CommandLogger
      */
     private $logger;
 
     /**
-     * @var ArrayConverter
+     * @param CommandLogger $logger
      */
-    private $converter;
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(CommandLogger $logger)
     {
         $this->logger = $logger;
-        $this->converter = new ArrayConverter();
     }
 
     /**
@@ -35,10 +27,7 @@ class LoggingInterceptor implements CommandDispatchInterceptor
      */
     public function onBeforeDispatch(Command $command)
     {
-        $this->logger->info('Dispatch command', [
-            'type' => get_class($command),
-            'command' => $this->converter->objectToArray($command)
-        ]);
+        $this->logger->onBeforeDispatch($command);
     }
 
     /**
@@ -47,6 +36,7 @@ class LoggingInterceptor implements CommandDispatchInterceptor
      */
     public function onDispatchSuccessful(Command $command)
     {
+        $this->logger->onDispatchSuccessful($command);
     }
 
     /**
@@ -56,16 +46,6 @@ class LoggingInterceptor implements CommandDispatchInterceptor
      */
     public function onDispatchFailed(Command $command, \Exception $exception)
     {
-        $message = 'Dispatch failed!';
-
-        if ($exception instanceOf NoCommandHandlerException) {
-            $message = 'Dead letter message encountered!';
-        }
-
-        $this->logger->error($message, [
-            'type' => get_class($command),
-            'command' => $this->converter->objectToArray($command),
-            'exception' => $exception->getMessage()
-        ]);
+        $this->logger->onDispatchFailed($command, $exception);
     }
 }

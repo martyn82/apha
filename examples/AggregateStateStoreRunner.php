@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventStore;
@@ -52,15 +53,14 @@ class AggregateStateStoreRunner extends Runner
         $eventStorage = new MemoryEventStorage();
 
         // A new event bus with a mapping to specify what handlers to call for what event.
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus([
-                UserCreated::class => [
-                    new UserCreatedHandler($eventStorage, $logger),
-                    new UserProjections($readStorage, $logger)
-                ]
-            ]),
-            $logger
-        );
+        $eventBus = new SimpleEventBus([
+            UserCreated::class => [
+                new UserCreatedHandler($eventStorage, $logger),
+                new UserProjections($readStorage, $logger)
+            ]
+        ]);
+
+        $eventBus->setLogger(new EventLogger($logger));
 
         // An event store to store events
         $eventStore = new EventStore(
@@ -81,7 +81,7 @@ class AggregateStateStoreRunner extends Runner
         $commandBus = new SimpleCommandBus([
             CreateUser::class => new CreateUserHandler($repository, $logger)
         ]);
-        $loggingCommandInterceptor = new LoggingInterceptor($logger);
+        $loggingCommandInterceptor = new LoggingInterceptor(new CommandLogger($logger));
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
         // Send the command

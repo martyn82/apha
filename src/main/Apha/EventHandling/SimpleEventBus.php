@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace Apha\EventHandling;
 
 use Apha\Message\Event;
+use Apha\Serializer\ArrayConverter;
+use Psr\Log\LoggerInterface;
 
 class SimpleEventBus extends EventBus
 {
@@ -13,11 +15,73 @@ class SimpleEventBus extends EventBus
     private $eventHandlerMap;
 
     /**
+     * @var EventLogger
+     */
+    private $logger;
+
+    /**
      * @param array $eventHandlerMap
      */
     public function __construct(array $eventHandlerMap = [])
     {
         $this->eventHandlerMap = $eventHandlerMap;
+    }
+
+    /**
+     * @param EventLogger $logger
+     */
+    public function setLogger(EventLogger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param Event $event
+     */
+    private function onBeforeDispatch(Event $event)
+    {
+        if ($this->logger == null) {
+            return;
+        }
+     
+        $this->logger->onBeforeDispatch($event);
+    }
+
+    /**
+     * @param Event $event
+     */
+    private function onDispatchSuccessful(Event $event)
+    {
+        if ($this->logger == null) {
+            return;
+        }
+        
+        $this->logger->onDispatchSuccessful($event);
+    }
+
+    /**
+     * @param Event $event
+     */
+    private function onDispatchFailed(Event $event)
+    {
+        if ($this->logger == null) {
+            return;
+        }
+
+        $this->logger->onDispatchFailed($event);
+    }
+
+    /**
+     * @param Event $event
+     * @param bool $handled
+     */
+    private function onAfterDispatch(Event $event, bool $handled)
+    {
+        if ($handled) {
+            $this->onDispatchSuccessful($event);
+        } else {
+            $this->onDispatchFailed($event);
+        }
     }
 
     /**
@@ -60,6 +124,8 @@ class SimpleEventBus extends EventBus
      */
     public function publish(Event $event): bool
     {
+        $this->onBeforeDispatch($event);
+        
         $handled = false;
 
         if (array_key_exists(Event::class, $this->eventHandlerMap)) {
@@ -73,6 +139,7 @@ class SimpleEventBus extends EventBus
         $eventClassName = get_class($event);
 
         if (!array_key_exists($eventClassName, $this->eventHandlerMap)) {
+            $this->onAfterDispatch($event, $handled);
             return $handled;
         }
 
@@ -82,6 +149,7 @@ class SimpleEventBus extends EventBus
             $handled = true;
         }
 
+        $this->onAfterDispatch($event, $handled);
         return $handled;
     }
 }

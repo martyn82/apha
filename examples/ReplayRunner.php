@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Apha\Examples;
 
 use Apha\Domain\Identity;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventDescriptor;
@@ -57,13 +57,11 @@ class ReplayRunner extends Runner
         $stateStorage = new MemoryStateStorage();
 
         // An event bus with an event handler bound to the DemonstratedEvent
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus([
-                CreatedEvent::class => [new DemonstratedEventHandler($stateStorage)],
-                DemonstratedEvent::class => [new DemonstratedEventHandler($stateStorage)]
-            ]),
-            $logger
-        );
+        $eventBus = new SimpleEventBus([
+            CreatedEvent::class => [new DemonstratedEventHandler($stateStorage)],
+            DemonstratedEvent::class => [new DemonstratedEventHandler($stateStorage)]
+        ]);
+        $eventBus->setLogger(new EventLogger($logger));
 
         // The event store
         $eventStore = new EventStore(

@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Apha\CommandHandling\Interceptor;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\Message\Command;
-use Psr\Log\LoggerInterface;
 
 /**
  * @group commandhandling
@@ -19,11 +19,12 @@ class LoggingInterceptorTest extends \PHPUnit_Framework_TestCase
         $command = $this->getMockBuilder(Command::class)
             ->getMock();
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
+        $logger = $this->getMockBuilder(CommandLogger::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $logger->expects(self::once())
-            ->method('info');
+            ->method('onBeforeDispatch');
 
         $interceptor = new LoggingInterceptor($logger);
         $interceptor->onBeforeDispatch($command);
@@ -37,11 +38,12 @@ class LoggingInterceptorTest extends \PHPUnit_Framework_TestCase
         $command = $this->getMockBuilder(Command::class)
             ->getMock();
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
+        $logger = $this->getMockBuilder(CommandLogger::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $logger->expects(self::never())
-            ->method(self::anything());
+        $logger->expects(self::once())
+            ->method('onDispatchSuccessful');
 
         $interceptor = new LoggingInterceptor($logger);
         $interceptor->onDispatchSuccessful($command);
@@ -55,11 +57,12 @@ class LoggingInterceptorTest extends \PHPUnit_Framework_TestCase
         $command = $this->getMockBuilder(Command::class)
             ->getMock();
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
+        $logger = $this->getMockBuilder(CommandLogger::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $logger->expects(self::once())
-            ->method('error');
+            ->method('onDispatchFailed');
 
         $interceptor = new LoggingInterceptor($logger);
         $interceptor->onDispatchFailed($command, new \Exception());

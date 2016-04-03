@@ -4,10 +4,11 @@ declare(strict_types = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\Examples\Domain\Demonstrate\Demonstrate;
 use Apha\Examples\Domain\Demonstrate\Demonstrated;
@@ -42,16 +43,16 @@ class CommandsEventsRunner extends Runner
             Demonstrated::class => [new DemonstratedHandler($logger)]
         ]);
 
-        $loggingCommandInterceptor = new LoggingInterceptor($logger);
+        $loggingCommandInterceptor = new LoggingInterceptor(new CommandLogger($logger));
 
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
-        $loggingEventBus = new LoggingEventBus($eventBus, $logger);
+        $eventBus->setLogger(new EventLogger($logger));
 
         // Send the command
         $commandGateway->send(new Demonstrate());
 
         // Publish the event
-        $loggingEventBus->publish(new Demonstrated());
+        $eventBus->publish(new Demonstrated());
     }
 }
 

@@ -5,13 +5,14 @@ declare(ticks = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\CommandGateway;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventStore;
@@ -52,14 +53,12 @@ class SagaRunner extends Runner
 
         $toDoSaga = new ToDoSaga($sagaId, new AssociationValues([]));
 
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus([
-                ToDoItemCreated::class => [$toDoSaga],
-                ToDoItemDone::class => [$toDoSaga],
-                DeadlineExpired::class => [$toDoSaga]
-            ]),
-            $logger
-        );
+        $eventBus = new SimpleEventBus([
+            ToDoItemCreated::class => [$toDoSaga],
+            ToDoItemDone::class => [$toDoSaga],
+            DeadlineExpired::class => [$toDoSaga]
+        ]);
+        $eventBus->setLogger(new EventLogger($logger));
 
         $scheduler = new SimpleEventScheduler($eventBus);
         $toDoSaga->setEventScheduler($scheduler);
@@ -85,7 +84,7 @@ class SagaRunner extends Runner
             MarkItemDone::class => $commandHandler
         ]);
 
-        $loggingCommandInterceptor = new LoggingInterceptor($logger);
+        $loggingCommandInterceptor = new LoggingInterceptor(new CommandLogger($logger));
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
         // Send commands to create two todoitems

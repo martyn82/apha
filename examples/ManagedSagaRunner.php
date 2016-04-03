@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventStore;
@@ -60,10 +61,8 @@ class ManagedSagaRunner extends Runner
         $resolver = new SimpleAssociationValueResolver();
         $sagaManager = new SimpleSagaManager([ToDoSaga::class], $sagaRepository, $resolver, $sagaFactory);
 
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus([]),
-            $logger
-        );
+        $eventBus = new SimpleEventBus([]);
+        $eventBus->setLogger(new EventLogger($logger));
 
         $eventBus->addHandler(Event::class, $sagaManager);
 
@@ -88,7 +87,7 @@ class ManagedSagaRunner extends Runner
             MarkItemDone::class => $commandHandler
         ]);
 
-        $loggingCommandInterceptor = new LoggingInterceptor($logger);
+        $loggingCommandInterceptor = new LoggingInterceptor(new CommandLogger($logger));
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
         $toCompleteId = Identity::createNew();

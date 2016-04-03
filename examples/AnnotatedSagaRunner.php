@@ -6,13 +6,14 @@ declare(ticks = 1);
 namespace Apha\Examples;
 
 use Apha\Annotations\DefaultParameterResolver;
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\CommandGateway;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
-use Apha\EventHandling\LoggingEventBus;
+use Apha\EventHandling\EventLogger;
 use Apha\EventHandling\SimpleEventBus;
 use Apha\EventStore\EventClassMap;
 use Apha\EventStore\EventStore;
@@ -50,11 +51,8 @@ class AnnotatedSagaRunner extends Runner
     public function run()
     {
         $logger = new Logger('default');
-
-        $eventBus = new LoggingEventBus(
-            new SimpleEventBus(),
-            $logger
-        );
+        $eventBus = new SimpleEventBus();
+        $eventBus->setLogger(new EventLogger($logger));
 
         $scheduler = new SimpleEventScheduler($eventBus);
         $parameterResolver = new DefaultParameterResolver();
@@ -96,7 +94,7 @@ class AnnotatedSagaRunner extends Runner
             MarkItemDone::class => $commandHandler
         ]);
 
-        $commandGateway = new DefaultCommandGateway($commandBus, [new LoggingInterceptor($logger)]);
+        $commandGateway = new DefaultCommandGateway($commandBus, [new LoggingInterceptor(new CommandLogger($logger))]);
 
         // Send commands to create two todoitems
         $todoItemExpireSeconds = 3;

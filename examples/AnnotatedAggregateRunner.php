@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Apha\Examples;
 
+use Apha\CommandHandling\CommandLogger;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
 use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
@@ -66,7 +67,7 @@ class AnnotatedAggregateRunner extends Runner
                 CreateToDoItem::class => $toDoItemCommandHandler,
                 MarkItemDone::class => $toDoItemCommandHandler
             ]),
-            [new LoggingInterceptor($logger)]
+            [new LoggingInterceptor(new CommandLogger($logger))]
         );
 
         $toDoId = Identity::createNew();
