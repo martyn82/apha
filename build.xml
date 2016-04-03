@@ -70,7 +70,7 @@
         <echo message="Test report at: file://${project.basedir}/target/reports/test/index.html" />
     </target>
 
-    <target name="analyse" description="Static code analysis.">
+    <target name="analyse" description="Static code analysis." depends="test">
         <exec
             command="mvn sonar:sonar ${maven.args}"
             passthru="true"
