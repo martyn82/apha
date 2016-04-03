@@ -34,6 +34,22 @@ class GenericSagaFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new GenericSagaFactory();
         $factory->createSaga(\stdClass::class, Identity::createNew(), new AssociationValues([]));
     }
+
+    /**
+     * @test
+     */
+    public function hydrateDoesNothing()
+    {
+        $saga = $this->getMockBuilder(GenericSagaFactoryTest_Saga::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $saga->expects(self::never())
+            ->method(self::anything());
+
+        $factory = new GenericSagaFactory();
+        $factory->hydrate($saga);
+    }
 }
 
 class GenericSagaFactoryTest_Saga extends Saga
