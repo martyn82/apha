@@ -18,4 +18,4 @@ before_script:
   - sleep 20
 
 script:
-  - ./bin/phing build:ci
+  - ./bin/phing build -Dphpunit.args="--exclude-group elasticsearch"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>martyn82.apha</groupId>
+    <artifactId>Apha</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+
+    <name>APHA</name>
+
+    <build>
+        <sourceDirectory>src/main/</sourceDirectory>
+        <testSourceDirectory>src/test/</testSourceDirectory>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.testSourceEncoding>UTF-8</project.build.testSourceEncoding>
+
+        <sonar.php.coverage.reportPath>target/reports/test/phpunit.coverage.xml</sonar.php.coverage.reportPath>
+        <sonar.php.tests.reportPath>target/reports/test/phpunit.test.xml</sonar.php.tests.reportPath>
+    </properties>
+</project>
