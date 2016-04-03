@@ -2,6 +2,24 @@
 <project name="apha" default="build">
     <property file="${project.basedir}/config/build.properties" />
 
+    <if>
+        <not>
+            <isset property="phpunit.args"></isset>
+        </not>
+        <then>
+            <property name="phpunit.args" value="" />
+        </then>
+    </if>
+
+    <if>
+        <not>
+            <isset property="maven.args"></isset>
+        </not>
+        <then>
+            <property name="maven.args" value="" />
+        </then>
+    </if>
+
     <fileset dir="${sources.dir}" id="sources">
         <include name="**/*.php" />
     </fileset>
@@ -50,5 +68,13 @@
         />
         <exec command="cat ${project.basedir}/target/reports/test/testdox.txt" passthru="true" />
         <echo message="Test report at: file://${project.basedir}/target/reports/test/index.html" />
+    </target>
+
+    <target name="analyse" description="Static code analysis.">
+        <exec
+            command="mvn sonar:sonar ${maven.args}"
+            passthru="true"
+            checkreturn="false"
+        />
     </target>
 </project>
