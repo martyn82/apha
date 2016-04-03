@@ -66,6 +66,7 @@ class AnnotatedSagaFactory implements SagaFactory
     public function hydrate(Saga $saga)
     {
         if (!$this->supports(get_class($saga))) {
+            $sagaType = get_class($saga);
             throw new \InvalidArgumentException("This factory does not support Sagas of type '{$sagaType}'.");
         }
 
