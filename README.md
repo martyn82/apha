@@ -13,11 +13,11 @@ you need to build an application that implements Command-Query Responsibility
 Segregation either with or without Event Sourcing.
 
 APHA provides:
-* Typed command and event handling
+* Typed command and event handling with annotations
 * Using MongoDB as event store and/or read store
 * Using ElasticSearch as read store
 * Replay of events
-* Sagas (experimental)
+* Sagas
 * Event scheduling (experimental)
 
 ## Prerequisites
