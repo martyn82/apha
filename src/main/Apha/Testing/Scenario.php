@@ -93,7 +93,7 @@ class Scenario
      */
     public function when(array $commands = []): self
     {
-        $this->eventStore->getEventBus()->clearLog();
+        $this->eventStore->clearTraceLog();
 
         if (empty($commands)) {
             return $this;
@@ -112,7 +112,7 @@ class Scenario
      */
     public function then(array $expectEvents = [])
     {
-        $actualEvents = $this->eventStore->getEventBus()->getPublishedEvents();
+        $actualEvents = $this->eventStore->getEvents();
 
         /* @var $event Event */
         foreach ($expectEvents as $index => $event) {

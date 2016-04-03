@@ -9,7 +9,7 @@ use Apha\EventStore\EventStore;
 use Apha\EventStore\Storage\EventStorage;
 use Apha\Serializer\Serializer;
 
-class TraceableEventStore extends EventStore
+class TraceableEventStore extends EventStore implements TraceableEventHandler
 {
     /**
      * @var TraceableEventBus
@@ -36,8 +36,15 @@ class TraceableEventStore extends EventStore
     /**
      * @return TraceableEventBus
      */
-    public function getEventBus(): TraceableEventBus
+    public function getEvents(): array
     {
-        return $this->eventBus;
+        return $this->eventBus->getEvents();
+    }
+
+    /**
+     */
+    public function clearTraceLog()
+    {
+        $this->eventBus->clearTraceLog();
     }
 }

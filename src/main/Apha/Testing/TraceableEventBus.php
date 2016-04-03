@@ -7,7 +7,7 @@ use Apha\EventHandling\EventBus;
 use Apha\EventHandling\EventHandler;
 use Apha\Message\Event;
 
-class TraceableEventBus extends EventBus
+class TraceableEventBus extends EventBus implements TraceableEventHandler
 {
     /**
      * @var EventBus
@@ -60,7 +60,7 @@ class TraceableEventBus extends EventBus
 
     /**
      */
-    public function clearLog()
+    public function clearTraceLog()
     {
         $this->eventLog = [];
     }
@@ -68,7 +68,7 @@ class TraceableEventBus extends EventBus
     /**
      * @return array
      */
-    public function getPublishedEvents(): array
+    public function getEvents(): array
     {
         return $this->eventLog;
     }
