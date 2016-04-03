@@ -5,7 +5,6 @@ namespace Apha\CommandHandling\Gateway;
 
 use Apha\CommandHandling\CommandBus;
 use Apha\CommandHandling\Interceptor\CommandDispatchInterceptor;
-use Apha\CommandHandling\NoCommandHandlerException;
 use Apha\Message\Command;
 
 class DefaultCommandGateway implements CommandGateway
@@ -46,7 +45,7 @@ class DefaultCommandGateway implements CommandGateway
         try {
             $this->commandBus->send($command);
             $this->notifyDispatchSuccessful($command);
-        } catch (NoCommandHandlerException $e) {
+        } catch (\Exception $e) {
             $this->notifyDispatchFailed($command, $e);
         }
     }

@@ -8,7 +8,7 @@ namespace Apha\Examples;
 use Apha\Annotations\DefaultParameterResolver;
 use Apha\CommandHandling\Gateway\CommandGateway;
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
-use Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor;
+use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
@@ -96,7 +96,7 @@ class AnnotatedSagaRunner extends Runner
             MarkItemDone::class => $commandHandler
         ]);
 
-        $commandGateway = new DefaultCommandGateway($commandBus, [new LoggingCommandDispatchInterceptor($logger)]);
+        $commandGateway = new DefaultCommandGateway($commandBus, [new LoggingInterceptor($logger)]);
 
         // Send commands to create two todoitems
         $todoItemExpireSeconds = 3;

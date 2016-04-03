@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Apha\Examples;
 
 use Apha\CommandHandling\Gateway\DefaultCommandGateway;
-use Apha\CommandHandling\Interceptor\LoggingCommandDispatchInterceptor;
+use Apha\CommandHandling\Interceptor\LoggingInterceptor;
 use Apha\CommandHandling\SimpleCommandBus;
 use Apha\Domain\GenericAggregateFactory;
 use Apha\Domain\Identity;
@@ -81,7 +81,7 @@ class AggregateEventStoreRunner extends Runner
             CreateUser::class => new CreateUserHandler($repository, $logger)
         ]);
 
-        $loggingCommandInterceptor = new LoggingCommandDispatchInterceptor($logger);
+        $loggingCommandInterceptor = new LoggingInterceptor($logger);
         $commandGateway = new DefaultCommandGateway($commandBus, [$loggingCommandInterceptor]);
 
         // Send the command

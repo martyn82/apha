@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @group commandhandling
  */
-class LoggingCommandDispatchInterceptorTest extends \PHPUnit_Framework_TestCase
+class LoggingInterceptorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -25,7 +25,7 @@ class LoggingCommandDispatchInterceptorTest extends \PHPUnit_Framework_TestCase
         $logger->expects(self::once())
             ->method('info');
 
-        $interceptor = new LoggingCommandDispatchInterceptor($logger);
+        $interceptor = new LoggingInterceptor($logger);
         $interceptor->onBeforeDispatch($command);
     }
 
@@ -43,7 +43,7 @@ class LoggingCommandDispatchInterceptorTest extends \PHPUnit_Framework_TestCase
         $logger->expects(self::never())
             ->method(self::anything());
 
-        $interceptor = new LoggingCommandDispatchInterceptor($logger);
+        $interceptor = new LoggingInterceptor($logger);
         $interceptor->onDispatchSuccessful($command);
     }
 
@@ -61,7 +61,7 @@ class LoggingCommandDispatchInterceptorTest extends \PHPUnit_Framework_TestCase
         $logger->expects(self::once())
             ->method('error');
 
-        $interceptor = new LoggingCommandDispatchInterceptor($logger);
+        $interceptor = new LoggingInterceptor($logger);
         $interceptor->onDispatchFailed($command, new \Exception());
     }
 }

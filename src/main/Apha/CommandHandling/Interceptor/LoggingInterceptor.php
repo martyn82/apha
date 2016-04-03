@@ -3,13 +3,12 @@ declare(strict_types = 1);
 
 namespace Apha\CommandHandling\Interceptor;
 
+use Apha\CommandHandling\NoCommandHandlerException;
 use Apha\Message\Command;
 use Apha\Serializer\ArrayConverter;
-use Apha\Serializer\JsonSerializer;
-use Apha\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
-class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
+class LoggingInterceptor implements CommandDispatchInterceptor
 {
     /**
      * @var LoggerInterface
@@ -57,9 +56,16 @@ class LoggingCommandDispatchInterceptor implements CommandDispatchInterceptor
      */
     public function onDispatchFailed(Command $command, \Exception $exception)
     {
-        $this->logger->error('Dead letter message', [
+        $message = 'Dispatch failed!';
+
+        if ($exception instanceOf NoCommandHandlerException) {
+            $message = 'Dead letter message encountered!';
+        }
+
+        $this->logger->error($message, [
             'type' => get_class($command),
-            'command' => $this->converter->objectToArray($command)
+            'command' => $this->converter->objectToArray($command),
+            'exception' => $exception->getMessage()
         ]);
     }
 }
