@@ -6,6 +6,9 @@ namespace Apha\CommandHandling;
 use Apha\Message\Command;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @group commandhandling
+ */
 class CommandLoggerTest extends \PHPUnit_Framework_TestCase
 {
     /**

@@ -6,6 +6,9 @@ namespace Apha\EventHandling;
 use Apha\Message\Event;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @group eventhandling
+ */
 class EventLoggerTest extends \PHPUnit_Framework_TestCase
 {
     /**
