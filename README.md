@@ -7,6 +7,7 @@ APHA
 ====
 
 [![Build Status](https://travis-ci.org/martyn82/apha.svg?branch=master)](https://travis-ci.org/martyn82/apha)
+[![Latest Stable Version](https://poser.pugx.org/martyn82/apha/v/stable)](https://packagist.org/packages/martyn82/apha) [![Total Downloads](https://poser.pugx.org/martyn82/apha/downloads)](https://packagist.org/packages/martyn82/apha) [![Latest Unstable Version](https://poser.pugx.org/martyn82/apha/v/unstable)](https://packagist.org/packages/martyn82/apha) [![License](https://poser.pugx.org/martyn82/apha/license)](https://packagist.org/packages/martyn82/apha)
 
 APHA is a CQRS/ES library for PHP. It contains all the building blocks
 you need to build an application that implements Command-Query Responsibility
