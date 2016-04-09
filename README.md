@@ -37,11 +37,16 @@ Optional:
 $ composer install
 ```
 
-## Running
+## Usage
 
 Run the tests:
 ```
 $ bin/phing test:unit
+```
+
+Use in your own project:
+```
+$ composer require martyn82/apha:~0.1
 ```
 
 ## Documentation
